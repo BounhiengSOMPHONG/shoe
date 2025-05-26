@@ -1,14 +1,53 @@
+import 'package:app_shoe/view/Home/checkout.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:convert';
 import '../model/product_m.dart';
 
 class CartC extends GetxController {
   final RxList<PItem> _items = <PItem>[].obs;
   final RxDouble _total = 0.0.obs;
+  static const String CART_ITEMS_KEY = 'cart_items';
+
+  @override
+  void onInit() {
+    super.onInit();
+    loadCartItems();
+  }
 
   List<PItem> get items => _items;
   double get total => _total.value;
+
+  // Load cart items from local storage
+  Future<void> loadCartItems() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final String? cartItemsJson = prefs.getString(CART_ITEMS_KEY);
+      if (cartItemsJson != null) {
+        final List<dynamic> decodedItems = json.decode(cartItemsJson);
+        _items.value =
+            decodedItems.map((item) => PItem.fromJson(item)).toList();
+        _calculateTotal();
+      }
+    } catch (e) {
+      print('Error loading cart items: $e');
+    }
+  }
+
+  // Save cart items to local storage
+  Future<void> saveCartItems() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final String cartItemsJson = json.encode(
+        _items.map((item) => item.toJson()).toList(),
+      );
+      await prefs.setString(CART_ITEMS_KEY, cartItemsJson);
+    } catch (e) {
+      print('Error saving cart items: $e');
+    }
+  }
 
   void addItem(PItem item) {
     // Check if item already exists with same id, size and color
@@ -49,11 +88,13 @@ class CartC extends GetxController {
       );
     }
     _calculateTotal();
+    saveCartItems(); // Save after adding item
   }
 
   void removeItem(int index) {
     _items.removeAt(index);
     _calculateTotal();
+    saveCartItems(); // Save after removing item
   }
 
   void updateQuantity(int index, int change) {
@@ -65,6 +106,7 @@ class CartC extends GetxController {
         item.quantity = item.quantity! + change;
         _items.refresh();
         _calculateTotal();
+        saveCartItems(); // Save after updating quantity
       }
     }
   }
@@ -79,17 +121,19 @@ class CartC extends GetxController {
   Future<void> Checkout() async {
     try {
       EasyLoading.show(status: 'Processing checkout...');
-      await Future.delayed(Duration(seconds: 2));
-      _items.clear();
+      await Future.delayed(Duration(seconds: 1));
+      // await saveCartItems(); // Save after clearing cart
+      // _items.clear();
       _calculateTotal();
-      Get.snackbar(
-        'Success',
-        'Your order has been placed successfully',
-        backgroundColor: Colors.green,
-        colorText: Colors.white,
-        snackPosition: SnackPosition.BOTTOM,
-        duration: Duration(seconds: 2),
-      );
+      // Get.snackbar(
+      //   'Success',
+      //   'Your order has been placed successfully',
+      //   backgroundColor: Colors.green,
+      //   colorText: Colors.white,
+      //   snackPosition: SnackPosition.BOTTOM,
+      //   duration: Duration(seconds: 2),
+      // );
+      Get.to(() => CheckoutPage(), transition: Transition.rightToLeft);
     } catch (e) {
       Get.snackbar(
         'Error',

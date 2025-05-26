@@ -1,4 +1,7 @@
+import 'package:app_shoe/controller/account/account_c.dart';
+import 'package:app_shoe/controller/login_c.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class Account extends StatefulWidget {
   const Account({super.key});
@@ -8,8 +11,10 @@ class Account extends StatefulWidget {
 }
 
 class _AccountState extends State<Account> {
+  final _loginC = Get.put(LoginC());
   @override
   Widget build(BuildContext context) {
+    final _account = Get.put(AccountC());
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(
@@ -124,24 +129,33 @@ class _AccountState extends State<Account> {
                       color: const Color(0xFF77E5C9),
                       borderRadius: BorderRadius.circular(10),
                     ),
-                    child: ListTile(
-                      dense: true,
-                      leading: const Icon(
-                        Icons.shopping_bag,
-                        color: Colors.black54,
-                        size: 20,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor:
+                            Colors.transparent, // เปลี่ยนสีพื้นหลังเป็นขาว
+                        elevation: 0, // ไม่ต้องการเงา
+                        padding: EdgeInsets.zero,
                       ),
-                      title: Text(
-                        'My order',
-                        style: const TextStyle(
-                          fontWeight: FontWeight.w500,
-                          fontSize: 15,
+                      onPressed: () {},
+                      child: ListTile(
+                        dense: true,
+                        leading: const Icon(
+                          Icons.person, // เพิ่มไอคอน logout
+                          color: Colors.black54,
+                          size: 20,
                         ),
-                      ),
-                      trailing: const Icon(
-                        Icons.chevron_right,
-                        color: Colors.black54,
-                        size: 20,
+                        title: const Text(
+                          'Profile',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 15,
+                          ),
+                        ),
+                        trailing: const Icon(
+                          Icons.chevron_right,
+                          color: Colors.black54,
+                          size: 20,
+                        ),
                       ),
                     ),
                   ),
@@ -151,52 +165,81 @@ class _AccountState extends State<Account> {
                       color: const Color(0xFF77E5C9),
                       borderRadius: BorderRadius.circular(10),
                     ),
-                    child: ListTile(
-                      dense: true,
-                      title: Text(
-                        'Notification',
-                        style: const TextStyle(
-                          fontWeight: FontWeight.w500,
-                          fontSize: 15,
-                        ),
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor:
+                            Colors.transparent, // เปลี่ยนสีพื้นหลังเป็นขาว
+                        elevation: 0, // ไม่ต้องการเงา
+                        padding: EdgeInsets.zero,
                       ),
-                      trailing: const Icon(
-                        Icons.chevron_right,
-                        color: Colors.black54,
-                        size: 20,
+                      onPressed: () {
+                        _account.page_add_address();
+                      },
+                      child: ListTile(
+                        dense: true,
+                        leading: const Icon(
+                          Icons.person, // เพิ่มไอคอน logout
+                          color: Colors.black54,
+                          size: 20,
+                        ),
+                        title: const Text(
+                          'Address',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 15,
+                          ),
+                        ),
+                        trailing: const Icon(
+                          Icons.chevron_right,
+                          color: Colors.black54,
+                          size: 20,
+                        ),
                       ),
                     ),
                   ),
+
                   const Divider(
                     // เพิ่มเส้นขีดคั่น
                     color: Colors.grey,
                     thickness: 1,
                     height: 32,
                   ),
+                  //Logout
                   Container(
                     margin: const EdgeInsets.only(bottom: 8),
                     decoration: BoxDecoration(
                       color: const Color(0xFF77E5C9),
                       borderRadius: BorderRadius.circular(10),
                     ),
-                    child: ListTile(
-                      dense: true,
-                      leading: const Icon(
-                        Icons.logout, // เพิ่มไอคอน logout
-                        color: Colors.black54,
-                        size: 20,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor:
+                            Colors.transparent, // เปลี่ยนสีพื้นหลังเป็นขาว
+                        elevation: 0, // ไม่ต้องการเงา
+                        padding: EdgeInsets.zero,
                       ),
-                      title: const Text(
-                        'Sign out',
-                        style: TextStyle(
-                          fontWeight: FontWeight.w500,
-                          fontSize: 15,
+                      onPressed: () {
+                        _loginC.logout(); // เรียกใช้ฟังก์ชัน logout จาก LoginC
+                      },
+                      child: ListTile(
+                        dense: true,
+                        leading: const Icon(
+                          Icons.logout, // เพิ่มไอคอน logout
+                          color: Colors.black54,
+                          size: 20,
                         ),
-                      ),
-                      trailing: const Icon(
-                        Icons.chevron_right,
-                        color: Colors.black54,
-                        size: 20,
+                        title: const Text(
+                          'Sign out',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 15,
+                          ),
+                        ),
+                        trailing: const Icon(
+                          Icons.chevron_right,
+                          color: Colors.black54,
+                          size: 20,
+                        ),
                       ),
                     ),
                   ),

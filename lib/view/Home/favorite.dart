@@ -2,6 +2,7 @@ import 'package:app_shoe/controller/shop_c.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../controller/favorite_c.dart';
+import '../../controller/product_details_c.dart';
 
 class Favorite extends StatefulWidget {
   const Favorite({super.key});
@@ -13,6 +14,7 @@ class Favorite extends StatefulWidget {
 class _FavoriteState extends State<Favorite> {
   final favorite_c = Get.put(FavoriteC());
   final shop_c = Get.put(ShopC());
+  final PDC = Get.put(ProductDetailsC());
 
   @override
   Widget build(BuildContext context) {
@@ -94,7 +96,7 @@ class _FavoriteState extends State<Favorite> {
                     mainAxisSpacing: 16.0,
                     childAspectRatio:
                         MediaQuery.of(context).size.width /
-                        (MediaQuery.of(context).size.height / 1.8),
+                        (MediaQuery.of(context).size.height / 1.6),
                   ),
                   itemCount: favorite_c.favoriteItems.length,
                   itemBuilder: (context, index) {
@@ -113,79 +115,119 @@ class _FavoriteState extends State<Favorite> {
                             ),
                           ],
                         ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                        child: Stack(
                           children: [
-                            Stack(
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Container(
-                                  height: 120,
-                                  width: double.infinity,
-                                  child: Center(
-                                    child: Image.network(
-                                      item.image ?? '',
-                                      fit: BoxFit.contain,
-                                      errorBuilder: (
-                                        context,
-                                        error,
-                                        stackTrace,
-                                      ) {
-                                        return Icon(
-                                          Icons.image_not_supported,
-                                          size: 50,
-                                          color: Colors.grey,
-                                        );
-                                      },
-                                    ),
-                                  ),
-                                ),
-                                Positioned(
-                                  top: 0,
-                                  left: 8,
-                                  child: Obx(
-                                    () => IconButton(
-                                      icon: Icon(
-                                        favorite_c.isFavorite(item.id)
-                                            ? Icons.favorite
-                                            : Icons.favorite_border,
-                                        color:
-                                            favorite_c.isFavorite(item.id)
-                                                ? Colors.red
-                                                : Colors.grey,
+                                Stack(
+                                  children: [
+                                    Container(
+                                      height: 120,
+                                      width: double.infinity,
+                                      child: Center(
+                                        child: Image.network(
+                                          item.image ?? '',
+                                          fit: BoxFit.contain,
+                                          errorBuilder: (
+                                            context,
+                                            error,
+                                            stackTrace,
+                                          ) {
+                                            return Icon(
+                                              Icons.image_not_supported,
+                                              size: 50,
+                                              color: Colors.grey,
+                                            );
+                                          },
+                                        ),
                                       ),
-                                      onPressed:
-                                          () => favorite_c.toggleFavorite(item),
                                     ),
+                                    Positioned(
+                                      top: 0,
+                                      left: 8,
+                                      child: Obx(
+                                        () => IconButton(
+                                          icon: Icon(
+                                            favorite_c.isFavorite(item.id)
+                                                ? Icons.favorite
+                                                : Icons.favorite_border,
+                                            color:
+                                                favorite_c.isFavorite(item.id)
+                                                    ? Colors.red
+                                                    : Colors.grey,
+                                          ),
+                                          onPressed:
+                                              () => favorite_c.toggleFavorite(
+                                                item,
+                                              ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        item.name ?? 'Unnamed Product',
+                                        style: TextStyle(
+                                          fontSize:
+                                              MediaQuery.of(
+                                                        context,
+                                                      ).size.width >
+                                                      380
+                                                  ? 16
+                                                  : 10,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                        maxLines: 2,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                      SizedBox(height: 4),
+                                      Text(
+                                        'ລາຄາ: ${item.price} K',
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          color: Colors.green,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
                               ],
                             ),
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    item.name ?? 'Unnamed Product',
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                    maxLines: 2,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                  SizedBox(height: 4),
-                                  Text(
-                                    'ລາຄາ: ${item.price} K',
-                                    style: TextStyle(
-                                      fontSize: 14,
-                                      color: Colors.green,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
+                            // Positioned(
+                            //   right: 0,
+                            //   bottom: 0,
+                            //   child: ElevatedButton(
+                            //     onPressed: () {
+                            //       List<String> sizes = (item.size ?? "null")
+                            //           .split(',');
+                            //       List<String> colors = (item.color ?? "null")
+                            //           .split(',');
+                            //       PDC.showOptionsModal(
+                            //         item,
+                            //         sizes,
+                            //         colors,
+                            //         context,
+                            //       );
+                            //     },
+                            //     style: ElevatedButton.styleFrom(
+                            //       backgroundColor: Colors.blue,
+                            //       shape: CircleBorder(),
+                            //       padding: EdgeInsets.all(8),
+                            //     ),
+                            //     child: Icon(
+                            //       Icons.add_shopping_cart,
+                            //       color: Colors.white,
+                            //     ),
+                            //   ),
+                            // ),
                           ],
                         ),
                       ),

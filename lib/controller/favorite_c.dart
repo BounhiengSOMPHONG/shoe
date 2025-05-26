@@ -41,7 +41,7 @@ class FavoriteC extends GetxController {
 
     try {
       final response = await _apiService.post(
-        '${ApiConstants.showWishlistEndpoint}${userId.value}',
+        '${ApiConstants.showWishlistEndpoint}',
         data: {},
       );
       debugPrint('Response: ${response.data}');

@@ -1,3 +1,4 @@
+import 'package:app_shoe/view/Home/layout.dart';
 import 'package:app_shoe/view/Login/login.dart';
 import 'package:app_shoe/view/onBoarding/onboard.dart';
 import 'package:get/get.dart';
@@ -24,7 +25,8 @@ class SplashC extends GetxController {
     if (!isLoggedIn.value) {
       Get.off(Onboard());
     } else {
-      Get.to(Login());
+      // Get.off(Login());
+      Get.off(Layout());
     }
   }
 }

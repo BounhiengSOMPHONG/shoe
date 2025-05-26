@@ -1,21 +1,24 @@
-import 'package:app_shoe/controller/cart_c.dart';
 import 'package:flutter/material.dart';
 import 'package:app_shoe/model/product_m.dart';
 import 'package:get/get.dart';
-import 'package:app_shoe/controller/shop_c.dart';
+import 'package:app_shoe/controller/product_details_c.dart';
 
-class ProductDetails extends StatelessWidget {
+class ProductDetails extends StatefulWidget {
   final PItem product;
-  final shop_c = Get.find<ShopC>();
-  final RxInt selectedSizeIndex = (0).obs;
-  final RxInt selectedColorIndex = (0).obs;
 
   ProductDetails({required this.product});
-  final cart_c = Get.put(CartC());
+
+  @override
+  State<ProductDetails> createState() => _ProductDetailsState();
+}
+
+class _ProductDetailsState extends State<ProductDetails> {
+  final ProductDetailsC controller = Get.put(ProductDetailsC());
+
   @override
   Widget build(BuildContext context) {
-    List<String> sizes = (product.size ?? "null").split(',');
-    List<String> colors = (product.color ?? "null").split(',');
+    List<String> sizes = (widget.product.size ?? "null").split(',');
+    List<String> colors = (widget.product.color ?? "null").split(',');
 
     return Scaffold(
       appBar: AppBar(
@@ -31,7 +34,7 @@ class ProductDetails extends StatelessWidget {
               height: 300,
               decoration: BoxDecoration(color: Color(0xFFE8F5E9)),
               child: Image.network(
-                product.image ?? '',
+                widget.product.image ?? '',
                 fit: BoxFit.contain,
                 errorBuilder: (context, error, stackTrace) {
                   return Icon(
@@ -51,7 +54,7 @@ class ProductDetails extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        product.name ?? 'Unnamed Product',
+                        widget.product.name ?? 'Unnamed Product',
                         style: TextStyle(
                           fontSize: 24,
                           fontWeight: FontWeight.bold,
@@ -60,7 +63,7 @@ class ProductDetails extends StatelessWidget {
                     ],
                   ),
                   Text(
-                    '${product.price} K',
+                    '${widget.product.price} K',
                     style: TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
@@ -74,7 +77,7 @@ class ProductDetails extends StatelessWidget {
                   ),
                   SizedBox(height: 8),
                   Text(
-                    product.description ?? 'No description available',
+                    widget.product.description ?? 'No description available',
                     style: TextStyle(fontSize: 16, color: Colors.grey[600]),
                   ),
                   SizedBox(height: 24),
@@ -91,7 +94,7 @@ class ProductDetails extends StatelessWidget {
                       itemBuilder: (context, index) {
                         return Obx(
                           () => GestureDetector(
-                            onTap: () => selectedSizeIndex.value = index,
+                            onTap: () => controller.setSelectedSize(index),
                             child: Padding(
                               padding: EdgeInsets.only(right: 10),
                               child: Container(
@@ -99,13 +102,15 @@ class ProductDetails extends StatelessWidget {
                                 decoration: BoxDecoration(
                                   border: Border.all(
                                     color:
-                                        selectedSizeIndex.value == index
+                                        controller.selectedSizeIndex.value ==
+                                                index
                                             ? Colors.green
                                             : Colors.grey,
                                   ),
                                   borderRadius: BorderRadius.circular(8),
                                   color:
-                                      selectedSizeIndex.value == index
+                                      controller.selectedSizeIndex.value ==
+                                              index
                                           ? Colors.green.withOpacity(0.1)
                                           : Colors.white,
                                 ),
@@ -116,7 +121,8 @@ class ProductDetails extends StatelessWidget {
                                       fontSize: 16,
                                       fontWeight: FontWeight.bold,
                                       color:
-                                          selectedSizeIndex.value == index
+                                          controller.selectedSizeIndex.value ==
+                                                  index
                                               ? Colors.green
                                               : Colors.black,
                                     ),
@@ -143,7 +149,7 @@ class ProductDetails extends StatelessWidget {
                       itemBuilder: (context, index) {
                         return Obx(
                           () => GestureDetector(
-                            onTap: () => selectedColorIndex.value = index,
+                            onTap: () => controller.setSelectedColor(index),
                             child: Padding(
                               padding: EdgeInsets.only(right: 10),
                               child: Container(
@@ -151,13 +157,15 @@ class ProductDetails extends StatelessWidget {
                                 decoration: BoxDecoration(
                                   border: Border.all(
                                     color:
-                                        selectedColorIndex.value == index
+                                        controller.selectedColorIndex.value ==
+                                                index
                                             ? Colors.green
                                             : Colors.grey,
                                   ),
                                   borderRadius: BorderRadius.circular(8),
                                   color:
-                                      selectedColorIndex.value == index
+                                      controller.selectedColorIndex.value ==
+                                              index
                                           ? Colors.green.withOpacity(0.1)
                                           : Colors.white,
                                 ),
@@ -168,7 +176,8 @@ class ProductDetails extends StatelessWidget {
                                       fontSize: 16,
                                       fontWeight: FontWeight.bold,
                                       color:
-                                          selectedColorIndex.value == index
+                                          controller.selectedColorIndex.value ==
+                                                  index
                                               ? Colors.green
                                               : Colors.black,
                                     ),
@@ -183,29 +192,9 @@ class ProductDetails extends StatelessWidget {
                   ),
                   SizedBox(height: 24),
                   ElevatedButton(
-                    onPressed: () {
-                      int index = shop_c.items.indexOf(product);
-                      if (index != -1) {
-                        String selectedSize =
-                            sizes[selectedSizeIndex.value].trim();
-                        String selectedColor =
-                            colors[selectedColorIndex.value].trim();
-
-                        // Create a copy of the product with selected options
-                        final cartItem = PItem(
-                          id: product.id,
-                          name: product.name,
-                          price: product.price,
-                          description: product.description,
-                          image: product.image,
-                          size: selectedSize,
-                          color: selectedColor,
-                          quantity: 1,
-                        );
-
-                        cart_c.addItem(cartItem);
-                      }
-                    },
+                    onPressed:
+                        () =>
+                            controller.addToCart(widget.product, sizes, colors),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.green,
                       minimumSize: Size(double.infinity, 50),

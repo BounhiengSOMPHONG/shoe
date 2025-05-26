@@ -28,63 +28,77 @@ class _LayoutState extends State<Layout> {
   ]; // Add your other pages here
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar:
-          _currentPage == 4
-              ? null
-              : AppBar(
-                backgroundColor: Colors.transparent,
-                elevation: 0,
-                leading: SizedBox.shrink(),
-                title: Center(child: Image.asset('images/TUV.png', width: 50)),
-                actions: [
-                  Padding(
-                    padding: const EdgeInsets.only(right: 16.0),
-                    child: IconButton(
-                      icon: Icon(Icons.search, color: Colors.black),
-                      onPressed: () {},
-                    ),
+    var s = MediaQuery.of(context).size;
+    return SafeArea(
+      child: Scaffold(
+        appBar:
+            _currentPage == 4
+                ? null
+                : AppBar(
+                  toolbarHeight: s.height * 0.08,
+                  backgroundColor: Colors.transparent,
+                  elevation: 0,
+                  // leading: SizedBox.shrink(),
+                  leading: Padding(
+                    padding: const EdgeInsets.only(left: 16.0),
+                    child: IconButton(onPressed: () {}, icon: Icon(Icons.apps)),
                   ),
-                ],
-              ),
-      body: _pages[_currentPage],
-      bottomNavigationBar: BottomNavigationBar(
-        items: [
-          BottomNavigationBarItem(
-            icon: Image.asset('images/icons/home.png', width: 24),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Image.asset('images/icons/shop.png', width: 24),
-            label: 'Shop',
-          ),
-          BottomNavigationBarItem(
-            icon: Image.asset('images/icons/cart.png', width: 24),
-            label: 'Cart',
-          ),
-          BottomNavigationBarItem(
-            icon: Image.asset('images/icons/like.png', width: 24),
-            label: 'Favorite',
-          ),
-          BottomNavigationBarItem(
-            icon: Image.asset('images/icons/profile.png', width: 24),
-            label: 'Account',
-          ),
-        ],
-        currentIndex: _currentPage,
-        selectedItemColor: Colors.green,
-        unselectedItemColor: Colors.grey,
-        onTap: (index) {
-          setState(() {
-            _currentPage = index;
-          });
-          if (_currentPage == 1) {
-            shop_c.refreshShopData();
-          }
-          if (_currentPage == 3) {
-            fav_c.initUserId();
-          }
-        },
+                  title: InkWell(
+                    child: Center(
+                      child: Image.asset(
+                        'images/LOGO.png',
+                        width: s.width * 0.3,
+                      ),
+                    ),
+                    onTap: () {
+                      setState(() {
+                        _currentPage = 0;
+                      });
+                    },
+                  ),
+                  actions: [
+                    Padding(
+                      padding: const EdgeInsets.only(right: 16.0),
+                      child: IconButton(
+                        icon: Icon(Icons.search, color: Colors.black),
+                        onPressed: () {},
+                      ),
+                    ),
+                  ],
+                ),
+        body: _pages[_currentPage],
+        bottomNavigationBar: BottomNavigationBar(
+          items: [
+            BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.shopping_bag),
+              label: 'Shop',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.shopping_cart),
+              label: 'Cart',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.favorite),
+              label: 'Favorite',
+            ),
+            BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Account'),
+          ],
+          currentIndex: _currentPage,
+          selectedItemColor: Colors.blue,
+          unselectedItemColor: Colors.grey,
+          onTap: (index) {
+            setState(() {
+              _currentPage = index;
+            });
+            if (_currentPage == 1) {
+              shop_c.refreshShopData();
+            }
+            if (_currentPage == 3) {
+              fav_c.initUserId();
+            }
+          },
+        ),
       ),
     );
   }

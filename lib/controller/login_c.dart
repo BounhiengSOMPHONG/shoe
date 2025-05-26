@@ -141,4 +141,14 @@ class LoginC extends GetxController {
       duration: const Duration(milliseconds: 300),
     );
   }
+
+  void logout() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove('token');
+    await prefs.remove('userId');
+    await prefs.remove('identifier');
+    await prefs.setString('isLoggedIn', 'false');
+
+    Get.to(() => Welcome());
+  }
 }

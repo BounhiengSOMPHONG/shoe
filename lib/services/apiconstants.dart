@@ -10,5 +10,11 @@ class ApiConstants {
   static const String showWishlistEndpoint = '/api/showWishlist/';
   static const String addToWishlistEndpoint = '/api/insertWishlist';
   static const String removeFromWishlistEndpoint = '/api/deleteWishlist/';
+
+  // Address endpoints
+  static const String showAddressEndpoint = '/api/address';
+  static const String insertAddressEndpoint = '/api/insertaddress';
+  //Checkout endpoints
+  static const String checkoutEndpoint = '/api/checkout';
   // Add other endpoints as needed
 }

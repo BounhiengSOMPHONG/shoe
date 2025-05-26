@@ -186,53 +186,6 @@ class _CartState extends State<Cart> {
                                                 ),
                                               ),
                                               SizedBox(height: 4),
-                                              Row(
-                                                children: [
-                                                  Container(
-                                                    padding:
-                                                        EdgeInsets.symmetric(
-                                                          horizontal: 8,
-                                                          vertical: 2,
-                                                        ),
-                                                    decoration: BoxDecoration(
-                                                      color: Colors.teal[50],
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                            4,
-                                                          ),
-                                                    ),
-                                                    child: Text(
-                                                      'Size: ${item.size ?? "N/A"}',
-                                                      style: TextStyle(
-                                                        fontSize: 12,
-                                                        color: Colors.teal[800],
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  SizedBox(width: 8),
-                                                  Container(
-                                                    padding:
-                                                        EdgeInsets.symmetric(
-                                                          horizontal: 8,
-                                                          vertical: 2,
-                                                        ),
-                                                    decoration: BoxDecoration(
-                                                      color: Colors.teal[50],
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                            4,
-                                                          ),
-                                                    ),
-                                                    child: Text(
-                                                      'Color: ${item.color ?? "N/A"}',
-                                                      style: TextStyle(
-                                                        fontSize: 12,
-                                                        color: Colors.teal[800],
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
                                             ],
                                           ),
                                         ),
