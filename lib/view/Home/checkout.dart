@@ -325,7 +325,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                     () => Column(
                       children: [
                         RadioListTile<String>(
-                          value: 'qr',
+                          value: 'card',
                           groupValue:
                               checkoutController.selectedPaymentMethod.value,
                           onChanged:
@@ -336,7 +336,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                             children: [
                               Icon(Icons.qr_code),
                               SizedBox(width: 10),
-                              Text('QR Payment'),
+                              Text('Payment'),
                             ],
                           ),
                         ),

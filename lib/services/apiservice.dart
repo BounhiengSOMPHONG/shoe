@@ -28,7 +28,6 @@ class ApiService {
     } else {
       print('Token is null or empty');
     }
-
     return headers;
   }
 

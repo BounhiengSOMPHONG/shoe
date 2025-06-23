@@ -1,12 +1,10 @@
-import 'dart:math';
-
-import 'package:app_shoe/view/Home/cart.dart';
-import 'package:app_shoe/view/Home/layout.dart';
+import 'package:app_shoe/view/Home/pendingpayment.dart';
 import 'package:get/get.dart';
 import 'package:app_shoe/model/address_m.dart';
 import 'package:app_shoe/services/apiservice.dart';
 import 'package:app_shoe/services/apiconstants.dart';
 import 'package:app_shoe/controller/cart_c.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 class CheckoutC extends GetxController {
   final ApiService _apiService = ApiService();
@@ -34,30 +32,57 @@ class CheckoutC extends GetxController {
         "totalAmount": totalAmount,
         "items": items,
       };
-      print('Order Data: $orderData');
+      // print('Order Data: $orderData');
       final response = await _apiService.post(
         ApiConstants.checkoutEndpoint,
         data: orderData,
       );
       if (response.success) {
-        print('Order placed successfully: ${response.data}');
-        final cartController = Get.find<CartC>();
-        cartController.items.clear();
-        await cartController.saveCartItems(); // Save empty cart to storage
-        Get.snackbar(
-          'Success',
-          'Order placed successfully',
-          snackPosition: SnackPosition.TOP,
-        );
-        Get.offAll(() => Layout());
+        final datas = response.data; // ไม่ต้อง jsonDecode แล้ว
+        print('Response status: $datas');
+        final returnedUrl = datas['session_url'];
+        print('URL received: $returnedUrl');
+        try {
+          bool launched = await launchUrlString(returnedUrl);
+          final cartController = Get.find<CartC>();
+          cartController.items.clear();
+          await cartController.saveCartItems();
+          if (launched) {
+            // เปิด Stripe ได้ → พาไปหน้ารอดำเนินการ
+            await Future.delayed(Duration(seconds: 5));
+            Get.off(() => Pendingpayment());
+          } else {
+            Get.snackbar(
+              'Error',
+              'ไม่สามารถเปิดหน้าชำระเงินได้',
+              snackPosition: SnackPosition.TOP,
+            );
+          }
+        } catch (e) {
+          print('Could not launch URL: $e');
+          Get.snackbar(
+            'Error',
+            'Cannot open payment page. Please try again.',
+            snackPosition: SnackPosition.TOP,
+          );
+        }
       } else {
         throw Exception(response.message ?? 'Failed to place order');
       }
     } catch (e) {
-      Get.snackbar(
-        'Error',
-        'Failed to place order: ${e.toString()}',
-        snackPosition: SnackPosition.TOP,
+      print('Error placing order: $e');
+      // Get.snackbar(
+      //   'Error',
+      //   'Failed to place order: ${e.toString()}',
+      //   snackPosition: SnackPosition.TOP,
+      // );
+      Get.defaultDialog(
+        title: 'Error',
+        middleText: 'Failed to place order: ${e.toString()}',
+        onConfirm: () {
+          Get.back();
+        },
+        textConfirm: 'OK',
       );
     }
   }

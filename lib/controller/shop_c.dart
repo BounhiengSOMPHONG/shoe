@@ -58,7 +58,6 @@ class ShopC extends GetxController {
     }
   }
 
-
   void openProductDetails(int index) {
     Get.to(() => ProductDetails(product: _items[index]));
   }

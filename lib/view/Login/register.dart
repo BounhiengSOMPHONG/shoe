@@ -482,7 +482,7 @@ class _RegisterState extends State<Register> {
                 height: 40,
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
-                    colors: [Color(0xFF1723AC), Color(0xFF16A886)],
+                    colors: [Color(0xFF1723AC), Color(0xFF1723AC)],
                     begin: Alignment.topCenter,
                     end: Alignment.bottomCenter,
                   ),

@@ -8,6 +8,7 @@ class PItem {
   String? size;
   String? color;
   int? quantity;
+  final List<StockItem>? Stock;
 
   PItem({
     this.id,
@@ -19,6 +20,7 @@ class PItem {
     this.size,
     this.color,
     this.quantity = 1,
+    this.Stock,
   });
 
   factory PItem.fromJson(Map<String, dynamic> json) {
@@ -32,6 +34,10 @@ class PItem {
       size: json['Sizes']?.toString(),
       color: json['Colors'],
       quantity: json['Quantity'] ?? 1,
+      Stock:
+          (json['Stock'] as List<dynamic>?)
+              ?.map((stockJson) => StockItem.fromJson(stockJson))
+              .toList(),
     );
   }
 
@@ -47,5 +53,21 @@ class PItem {
     data['Colors'] = color;
     data['Quantity'] = quantity;
     return data;
+  }
+}
+
+class StockItem {
+  final String? Size;
+  final String? Color;
+  final int? Quantity;
+
+  StockItem({this.Size, this.Color, this.Quantity});
+
+  factory StockItem.fromJson(Map<String, dynamic> json) {
+    return StockItem(
+      Size: json['Size'] as String?,
+      Color: json['Color'] as String?,
+      Quantity: json['Quantity'] as int?,
+    );
   }
 }

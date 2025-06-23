@@ -24,223 +24,276 @@ class _AccountState extends State<Account> {
               children: [
                 ClipPath(
                   clipper: WaveClipper(),
-                  child: Container(height: 350, color: const Color(0xFF5CDCB5)),
+                  child: Container(
+                    height: 350,
+                    color: Colors.white,
+                  ), // Changed color
                 ),
-                Column(
-                  children: [
-                    const SizedBox(height: 50), // เพิ่มระยะห่างด้านบน
-                    // โลโก้
-                    Center(
-                      child: Container(
-                        padding: const EdgeInsets.all(4),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16.0,
+                  ), // Added horizontal padding
+                  child: Column(
+                    children: [
+                      const SizedBox(height: 50), // เพิ่มระยะห่างด้านบน
+                      // โลโก้
+                      Center(
+                        child: Container(
+                          padding: const EdgeInsets.all(4),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                          child: Image.asset(
+                            'images/LOGO.png',
+                            width: 50,
+                            height: 50,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 30), // Reduced space
+                      // รูปโปรไฟล์
+                      Container(
+                        width: 120, // Slightly larger
+                        height: 120, // Slightly larger
                         decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(4),
+                          color: Colors.white, // Use white background
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            color: Colors.white,
+                            width: 4,
+                          ), // White border
+                          boxShadow: [
+                            // Add a subtle shadow
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.1),
+                              spreadRadius: 2,
+                              blurRadius: 5,
+                              offset: Offset(0, 3),
+                            ),
+                          ],
                         ),
-                        child: Image.asset(
-                          'images/TUV.png',
-                          width: 50,
-                          height: 50,
+                        child: const Icon(
+                          Icons.person, // Keep person icon for now
+                          size: 70, // Larger icon
+                          color: Colors.teal, // Use a teal color
                         ),
                       ),
-                    ),
-                    const SizedBox(height: 40),
-                    // รูปโปรไฟล์
-                    Container(
-                      width: 100,
-                      height: 100,
-                      decoration: BoxDecoration(
-                        color: Colors.grey[300],
-                        shape: BoxShape.circle,
-                        border: Border.all(color: Colors.white, width: 4),
+                      const SizedBox(height: 20), // Reduced space
+                      const Text(
+                        'NAME', // Placeholder name
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 22, // Slightly larger font
+                          color: Colors.white, // White text for contrast
+                        ),
                       ),
-                      child: const Icon(
-                        Icons.person,
-                        size: 60,
-                        color: Colors.black45,
+                      const Text(
+                        'NAME@gmail.com', // Placeholder email
+                        style: TextStyle(
+                          fontSize: 18,
+                          color: Colors.black,
+                        ), // Slightly smaller and lighter white
                       ),
-                    ),
-                    const SizedBox(height: 30),
-                    const Text(
-                      'NAME',
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 20,
-                      ),
-                    ),
-                    const Text(
-                      'NAME@gmail.com',
-                      style: TextStyle(fontSize: 20, color: Colors.black54),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ],
             ),
 
-            const SizedBox(height: 15),
-
+            const SizedBox(height: 25), // Adjusted space
             // กล่องแสดงยอดเงิน
-            Container(
-              margin: const EdgeInsets.symmetric(horizontal: 100),
-              padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 30),
-              decoration: BoxDecoration(
-                color: const Color.fromARGB(156, 25, 212, 169),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Center(
-                    child: Text(
-                      'ຍອດເງີນຂອງທ່ານ',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w500,
-                        fontSize: 17,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: const [
-                      Text(
-                        '12x,xxxx',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      Icon(Icons.visibility, color: Colors.black54, size: 25),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-
-            const SizedBox(height: 35),
-
+            // Container(
+            //   margin: const EdgeInsets.symmetric(
+            //     horizontal: 16,
+            //   ), // Adjusted margin to match padding
+            //   padding: const EdgeInsets.symmetric(
+            //     vertical: 25,
+            //     horizontal: 25,
+            //   ), // Adjusted padding
+            //   decoration: BoxDecoration(
+            //     color: Colors.white, // White background
+            //     borderRadius: BorderRadius.circular(12), // More rounded corners
+            //     boxShadow: [
+            //       BoxShadow(
+            //         color: Colors.black.withOpacity(0.1),
+            //         spreadRadius: 2,
+            //         blurRadius: 8,
+            //         offset: Offset(0, 4),
+            //       ),
+            //     ],
+            //   ),
+            //   child: Column(
+            //     crossAxisAlignment: CrossAxisAlignment.start,
+            //     children: [
+            //       const Center(
+            //         child: Text(
+            //           'ຍອດເງີນຂອງທ່ານ', // Money title
+            //           style: TextStyle(
+            //             fontWeight: FontWeight.w600, // Slightly bolder
+            //             fontSize: 18, // Slightly larger
+            //             color: Colors.black87, // Darker text
+            //           ),
+            //         ),
+            //       ),
+            //       const SizedBox(height: 12), // Increased space
+            //       Row(
+            //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            //         children: const [
+            //           Text(
+            //             '12x,xxxx', // Placeholder amount
+            //             style: TextStyle(
+            //               fontSize: 20, // Larger font
+            //               fontWeight: FontWeight.bold,
+            //               color: Colors.teal, // Teal color for amount
+            //             ),
+            //           ),
+            //           Icon(
+            //             Icons.visibility,
+            //             color: Colors.teal,
+            //             size: 28,
+            //           ), // Teal icon, slightly larger
+            //         ],
+            //       ),
+            //     ],
+            //   ),
+            // ),
+            const SizedBox(height: 35), // Keep space
             // รายการตั้งค่า
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 25),
+              padding: const EdgeInsets.symmetric(
+                horizontal: 16,
+              ), // Adjusted padding
               child: Column(
                 children: [
-                  Container(
+                  // Profile
+                  Card(
+                    // Using Card for better visual separation
+                    elevation: 2, // Add a subtle shadow
                     margin: const EdgeInsets.only(bottom: 8),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFF77E5C9),
+                    shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor:
-                            Colors.transparent, // เปลี่ยนสีพื้นหลังเป็นขาว
-                        elevation: 0, // ไม่ต้องการเงา
-                        padding: EdgeInsets.zero,
+                    child: ListTile(
+                      leading: const Icon(
+                        Icons.account_circle_outlined, // More appropriate icon
+                        color: Colors.black54,
+                        size: 24, // Slightly larger icon
                       ),
-                      onPressed: () {},
-                      child: ListTile(
-                        dense: true,
-                        leading: const Icon(
-                          Icons.person, // เพิ่มไอคอน logout
-                          color: Colors.black54,
-                          size: 20,
-                        ),
-                        title: const Text(
-                          'Profile',
-                          style: TextStyle(
-                            fontWeight: FontWeight.w500,
-                            fontSize: 15,
-                          ),
-                        ),
-                        trailing: const Icon(
-                          Icons.chevron_right,
-                          color: Colors.black54,
-                          size: 20,
+                      title: const Text(
+                        'Profile',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w500,
+                          fontSize: 16, // Slightly larger font
                         ),
                       ),
+                      trailing: const Icon(
+                        Icons.chevron_right,
+                        color: Colors.black54,
+                        size: 24, // Slightly larger icon
+                      ),
+                      onTap: () {
+                        // TODO: Implement navigation to Profile page
+                      },
                     ),
                   ),
-                  Container(
+                  // Address
+                  Card(
+                    // Using Card for better visual separation
+                    elevation: 2, // Add a subtle shadow
                     margin: const EdgeInsets.only(bottom: 8),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFF77E5C9),
+                    shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor:
-                            Colors.transparent, // เปลี่ยนสีพื้นหลังเป็นขาว
-                        elevation: 0, // ไม่ต้องการเงา
-                        padding: EdgeInsets.zero,
+                    child: ListTile(
+                      leading: const Icon(
+                        Icons.location_on_outlined, // More appropriate icon
+                        color: Colors.black54,
+                        size: 24, // Slightly larger icon
                       ),
-                      onPressed: () {
+                      title: const Text(
+                        'Address',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w500,
+                          fontSize: 16, // Slightly larger font
+                        ),
+                      ),
+                      trailing: const Icon(
+                        Icons.chevron_right,
+                        color: Colors.black54,
+                        size: 24, // Slightly larger icon
+                      ),
+                      onTap: () {
                         _account.page_add_address();
                       },
-                      child: ListTile(
-                        dense: true,
-                        leading: const Icon(
-                          Icons.person, // เพิ่มไอคอน logout
-                          color: Colors.black54,
-                          size: 20,
-                        ),
-                        title: const Text(
-                          'Address',
-                          style: TextStyle(
-                            fontWeight: FontWeight.w500,
-                            fontSize: 15,
-                          ),
-                        ),
-                        trailing: const Icon(
-                          Icons.chevron_right,
-                          color: Colors.black54,
-                          size: 20,
+                    ),
+                  ),
+                  Card(
+                    // Using Card for better visual separation
+                    elevation: 2, // Add a subtle shadow
+                    margin: const EdgeInsets.only(bottom: 8),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: ListTile(
+                      leading: const Icon(
+                        Icons.history, // More appropriate icon
+                        color: Colors.black54,
+                        size: 24, // Slightly larger icon
+                      ),
+                      title: const Text(
+                        'history',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w500,
+                          fontSize: 16, // Slightly larger font
                         ),
                       ),
+                      trailing: const Icon(
+                        Icons.chevron_right,
+                        color: Colors.black54,
+                        size: 24, // Slightly larger icon
+                      ),
+                      onTap: () {
+                        _account.page_history();
+                      },
                     ),
                   ),
 
                   const Divider(
-                    // เพิ่มเส้นขีดคั่น
+                    // Keep divider for separation
                     color: Colors.grey,
-                    thickness: 1,
+                    thickness: 0.5, // Slightly thinner divider
                     height: 32,
                   ),
                   //Logout
-                  Container(
+                  Card(
+                    // Using Card for better visual separation
+                    color: Colors.red,
+                    elevation: 2, // Add a subtle shadow
                     margin: const EdgeInsets.only(bottom: 8),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFF77E5C9),
+                    shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor:
-                            Colors.transparent, // เปลี่ยนสีพื้นหลังเป็นขาว
-                        elevation: 0, // ไม่ต้องการเงา
-                        padding: EdgeInsets.zero,
+                    child: ListTile(
+                      leading: const Icon(
+                        Icons.logout, // Logout icon is fine
+                        color: Colors.black54,
+                        size: 24, // Slightly larger icon
                       ),
-                      onPressed: () {
-                        _loginC.logout(); // เรียกใช้ฟังก์ชัน logout จาก LoginC
+                      title: const Text(
+                        'Sign out',
+                        style: TextStyle(
+                          fontWeight: FontWeight.w500,
+                          fontSize: 16, // Slightly larger font
+                        ),
+                      ),
+                      trailing: const Icon(
+                        Icons.chevron_right,
+                        color: Colors.black54,
+                        size: 24, // Slightly larger icon
+                      ),
+                      onTap: () {
+                        _loginC.logout(); // Calling logout function
                       },
-                      child: ListTile(
-                        dense: true,
-                        leading: const Icon(
-                          Icons.logout, // เพิ่มไอคอน logout
-                          color: Colors.black54,
-                          size: 20,
-                        ),
-                        title: const Text(
-                          'Sign out',
-                          style: TextStyle(
-                            fontWeight: FontWeight.w500,
-                            fontSize: 15,
-                          ),
-                        ),
-                        trailing: const Icon(
-                          Icons.chevron_right,
-                          color: Colors.black54,
-                          size: 20,
-                        ),
-                      ),
                     ),
                   ),
                 ],

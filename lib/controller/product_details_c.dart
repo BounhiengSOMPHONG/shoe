@@ -17,58 +17,149 @@ class ProductDetailsC extends GetxController {
 
   final RxInt selectedSizeIndex = 0.obs;
   final RxInt selectedColorIndex = 0.obs;
+  final Rx<PItem?> currentProduct = Rx<PItem?>(null);
+  final Rx<StockItem?> selectedStockItem = Rx<StockItem?>(null);
+
+  void setProduct(PItem product) {
+    currentProduct.value = product;
+    // Reset selections when a new product is set
+    selectedSizeIndex.value = 0;
+    selectedColorIndex.value = 0;
+    updateSelectedStockItem();
+  }
 
   void setSelectedSize(int index) {
     selectedSizeIndex.value = index;
+    // Reset color selection when size changes
+    selectedColorIndex.value = 0;
+    updateSelectedStockItem();
   }
 
   void setSelectedColor(int index) {
     selectedColorIndex.value = index;
+    updateSelectedStockItem();
   }
 
-  void showOptionsModal(
-    PItem product,
-    List<String> sizes,
-    List<String> colors,
-    BuildContext context,
-  ) {
+  void updateSelectedStockItem() {
+    if (currentProduct.value == null ||
+        currentProduct.value!.Stock == null ||
+        currentProduct.value!.Stock!.isEmpty) {
+      selectedStockItem.value = null;
+      return;
+    }
+
+    final availableStockForSelectedSize =
+        currentProduct.value!.Stock!
+            .where(
+              (stock) =>
+                  stock.Size == getAvailableSizes()[selectedSizeIndex.value],
+            )
+            .toList();
+
+    if (availableStockForSelectedSize.isEmpty) {
+      selectedStockItem.value = null;
+      return;
+    }
+
+    // Ensure selectedColorIndex is within bounds of available colors for the selected size
+    final availableColors = getAvailableColors();
+    if (selectedColorIndex.value >= availableColors.length) {
+      selectedColorIndex.value = 0;
+    }
+
+    final selectedSize = getAvailableSizes()[selectedSizeIndex.value];
+    final selectedColor = availableColors[selectedColorIndex.value];
+
+    selectedStockItem.value = currentProduct.value!.Stock!.firstWhereOrNull(
+      (stock) => stock.Size == selectedSize && stock.Color == selectedColor,
+    );
+  }
+
+  List<String> getAvailableSizes() {
+    if (currentProduct.value == null || currentProduct.value!.Stock == null) {
+      return [];
+    }
+    return currentProduct.value!.Stock!
+        .map((stock) => stock.Size)
+        .where((size) => size != null && size.isNotEmpty)
+        .cast<String>() // Cast to non-nullable String
+        .toSet()
+        .toList();
+  }
+
+  List<String> getAvailableColors() {
+    if (currentProduct.value == null || currentProduct.value!.Stock == null) {
+      return [];
+    }
+    final selectedSize = getAvailableSizes()[selectedSizeIndex.value];
+    return currentProduct.value!.Stock!
+        .where(
+          (stock) => stock.Size == selectedSize && (stock.Quantity ?? 0) > 0,
+        )
+        .map((stock) => stock.Color)
+        .where((color) => color != null && color.isNotEmpty)
+        .cast<String>() // Cast to non-nullable String
+        .toSet()
+        .toList();
+  }
+
+  int getQuantity() {
+    return selectedStockItem.value?.Quantity ?? 0;
+  }
+
+  void showOptionsModal(PItem product, BuildContext context) {
+    setProduct(product); // Set the current product when showing the modal
     showModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
         return Container(
           padding: EdgeInsets.all(16),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                product.name ?? 'Product',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              ),
-              SizedBox(height: 8),
-              Text(
-                '${product.price} K',
-                style: TextStyle(
-                  fontSize: 18,
-                  color: Colors.green,
-                  fontWeight: FontWeight.bold,
+          child: Obx(() {
+            final sizes = getAvailableSizes();
+            final colors = getAvailableColors();
+            final quantity = getQuantity();
+            return Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  product.name ?? 'Product',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
-              ),
-              SizedBox(height: 16),
-              Text(
-                'Select Size:',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-              ),
-              SizedBox(height: 8),
-              Container(
-                height: 50,
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: sizes.length,
-                  itemBuilder: (context, index) {
-                    return Obx(
-                      () => GestureDetector(
-                        onTap: () => setSelectedSize(index),
+                SizedBox(height: 8),
+                Text(
+                  '${product.price} K',
+                  style: TextStyle(
+                    fontSize: 18,
+                    color: Colors.green,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                SizedBox(height: 16),
+                Text(
+                  'Select Size:',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                ),
+                SizedBox(height: 8),
+                Container(
+                  height: 50,
+                  child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: sizes.length,
+                    itemBuilder: (context, index) {
+                      final size = sizes[index];
+                      // Check if this size has any stock with quantity > 0
+                      final isSizeAvailable =
+                          product.Stock?.any(
+                            (stock) =>
+                                stock.Size == size && (stock.Quantity ?? 0) > 0,
+                          ) ??
+                          false;
+                      return GestureDetector(
+                        onTap:
+                            isSizeAvailable
+                                ? () => setSelectedSize(index)
+                                : null,
                         child: Container(
                           margin: EdgeInsets.only(right: 8),
                           padding: EdgeInsets.symmetric(horizontal: 16),
@@ -83,40 +174,57 @@ class ProductDetailsC extends GetxController {
                             color:
                                 selectedSizeIndex.value == index
                                     ? Colors.green.withOpacity(0.1)
-                                    : Colors.white,
+                                    : (isSizeAvailable
+                                        ? Colors.white
+                                        : Colors.grey.shade300),
                           ),
                           child: Center(
                             child: Text(
-                              sizes[index].trim(),
+                              size.trim(),
                               style: TextStyle(
                                 color:
                                     selectedSizeIndex.value == index
                                         ? Colors.green
-                                        : Colors.black,
+                                        : (isSizeAvailable
+                                            ? Colors.black
+                                            : Colors.grey.shade600),
                               ),
                             ),
                           ),
                         ),
-                      ),
-                    );
-                  },
+                      );
+                    },
+                  ),
                 ),
-              ),
-              SizedBox(height: 16),
-              Text(
-                'Select Color:',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-              ),
-              SizedBox(height: 8),
-              Container(
-                height: 50,
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: colors.length,
-                  itemBuilder: (context, index) {
-                    return Obx(
-                      () => GestureDetector(
-                        onTap: () => setSelectedColor(index),
+                SizedBox(height: 16),
+                Text(
+                  'Select Color:',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                ),
+                SizedBox(height: 8),
+                Container(
+                  height: 50,
+                  child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: colors.length,
+                    itemBuilder: (context, index) {
+                      final color = colors[index];
+                      // Check if this color has stock with quantity > 0 for the selected size
+                      final isColorAvailable =
+                          product.Stock?.any(
+                            (stock) =>
+                                stock.Size ==
+                                    getAvailableSizes()[selectedSizeIndex
+                                        .value] &&
+                                stock.Color == color &&
+                                (stock.Quantity ?? 0) > 0,
+                          ) ??
+                          false;
+                      return GestureDetector(
+                        onTap:
+                            isColorAvailable
+                                ? () => setSelectedColor(index)
+                                : null,
                         child: Container(
                           margin: EdgeInsets.only(right: 8),
                           padding: EdgeInsets.symmetric(horizontal: 16),
@@ -131,68 +239,85 @@ class ProductDetailsC extends GetxController {
                             color:
                                 selectedColorIndex.value == index
                                     ? Colors.green.withOpacity(0.1)
-                                    : Colors.white,
+                                    : (isColorAvailable
+                                        ? Colors.white
+                                        : Colors.grey.shade300),
                           ),
                           child: Center(
                             child: Text(
-                              colors[index].trim(),
+                              color.trim(),
                               style: TextStyle(
                                 color:
                                     selectedColorIndex.value == index
                                         ? Colors.green
-                                        : Colors.black,
+                                        : (isColorAvailable
+                                            ? Colors.black
+                                            : Colors.grey.shade600),
                               ),
                             ),
                           ),
                         ),
-                      ),
-                    );
-                  },
-                ),
-              ),
-              SizedBox(height: 24),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: () {
-                    addToCart(product, sizes, colors);
-                    Navigator.pop(context);
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.green,
-                    padding: EdgeInsets.symmetric(vertical: 16),
-                  ),
-                  child: Text(
-                    'Add to Cart',
-                    style: TextStyle(fontSize: 18, color: Colors.white),
+                      );
+                    },
                   ),
                 ),
-              ),
-            ],
-          ),
+                SizedBox(height: 16),
+                Text(
+                  'Quantity Available: ${quantity}',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                ),
+                SizedBox(height: 24),
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    onPressed:
+                        quantity > 0
+                            ? () {
+                              addToCart();
+                              Navigator.pop(context);
+                            }
+                            : null,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.green,
+                      padding: EdgeInsets.symmetric(vertical: 16),
+                    ),
+                    child: Text(
+                      'Add to Cart',
+                      style: TextStyle(fontSize: 18, color: Colors.white),
+                    ),
+                  ),
+                ),
+              ],
+            );
+          }),
         );
       },
     );
   }
 
-  void addToCart(PItem product, List<String> sizes, List<String> colors) {
-    int index = shopC.items.indexOf(product);
-    if (index != -1) {
-      String selectedSize = sizes[selectedSizeIndex.value].trim();
-      String selectedColor = colors[selectedColorIndex.value].trim();
-
-      final cartItem = PItem(
-        id: product.id,
-        name: product.name,
-        price: product.price,
-        description: product.description,
-        image: product.image,
-        size: selectedSize,
-        color: selectedColor,
-        quantity: 1,
-      );
-
-      cartC.addItem(cartItem);
+  void addToCart() {
+    if (currentProduct.value == null ||
+        selectedStockItem.value == null ||
+        (selectedStockItem.value!.Quantity ?? 0) == 0) {
+      // Cannot add to cart if no product or stock item is selected, or if quantity is 0
+      return;
     }
+
+    final product = currentProduct.value!;
+    final stockItem = selectedStockItem.value!;
+
+    final cartItem = PItem(
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      description: product.description,
+      image: product.image,
+      size: stockItem.Size,
+      color: stockItem.Color,
+      quantity: 1, // Add one item at a time
+      Stock: [stockItem], // Include the selected stock item
+    );
+
+    cartC.addItem(cartItem);
   }
 }

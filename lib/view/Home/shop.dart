@@ -1,8 +1,9 @@
-import 'package:app_shoe/controller/product_details_c.dart';
 import 'package:app_shoe/controller/shop_c.dart';
 import 'package:app_shoe/controller/favorite_c.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:app_shoe/view/Home/product_details.dart'; // Import ProductDetails page
+import 'package:app_shoe/controller/product_details_c.dart'; // Import ProductDetailsC
 
 class Shop extends StatefulWidget {
   const Shop({super.key});
@@ -14,7 +15,7 @@ class Shop extends StatefulWidget {
 class _ShopState extends State<Shop> {
   final shop_c = Get.put(ShopC());
   final favorite_c = Get.put(FavoriteC());
-  final PDC = Get.put(ProductDetailsC());
+  final PDC = Get.put(ProductDetailsC()); // Add ProductDetailsC back
 
   @override
   Widget build(BuildContext context) {
@@ -202,7 +203,10 @@ class _ShopState extends State<Shop> {
                 itemBuilder: (context, index) {
                   final item = shop_c.items[index];
                   return GestureDetector(
-                    onTap: () => shop_c.openProductDetails(index),
+                    onTap:
+                        () => Get.to(
+                          () => ProductDetails(product: item),
+                        ), // Keep navigation on item tap
                     child: Container(
                       decoration: BoxDecoration(
                         color: Colors.white,
@@ -302,16 +306,8 @@ class _ShopState extends State<Shop> {
                             bottom: 0,
                             child: ElevatedButton(
                               onPressed: () {
-                                List<String> sizes = (item.size ?? "null")
-                                    .split(',');
-                                List<String> colors = (item.color ?? "null")
-                                    .split(',');
-                                PDC.showOptionsModal(
-                                  item,
-                                  sizes,
-                                  colors,
-                                  context,
-                                );
+                                // Show the modal bottom sheet when the button is pressed
+                                PDC.showOptionsModal(item, context);
                               },
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.blue,
