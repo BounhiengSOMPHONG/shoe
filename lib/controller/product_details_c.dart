@@ -111,9 +111,28 @@ class ProductDetailsC extends GetxController {
     setProduct(product); // Set the current product when showing the modal
     showModalBottomSheet(
       context: context,
+      shape: RoundedRectangleBorder(
+        // Add rounded corners to the top of the modal
+        borderRadius: BorderRadius.vertical(top: Radius.circular(25.0)),
+      ),
       builder: (BuildContext context) {
         return Container(
           padding: EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            // Add decoration for shadow and background
+            color: Colors.white,
+            borderRadius: BorderRadius.vertical(
+              top: Radius.circular(25.0),
+            ), // Match shape radius
+            boxShadow: [
+              BoxShadow(
+                color: Colors.blue.withOpacity(0.1), // Soft blue shadow
+                spreadRadius: 5,
+                blurRadius: 10,
+                offset: Offset(0, 3),
+              ),
+            ],
+          ),
           child: Obx(() {
             final sizes = getAvailableSizes();
             final colors = getAvailableColors();
@@ -124,21 +143,29 @@ class ProductDetailsC extends GetxController {
               children: [
                 Text(
                   product.name ?? 'Product',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.blue[800],
+                  ), // Changed text color
                 ),
                 SizedBox(height: 8),
                 Text(
                   '${product.price} K',
                   style: TextStyle(
                     fontSize: 18,
-                    color: Colors.green,
+                    color: Colors.blue, // Changed price color to blue
                     fontWeight: FontWeight.bold,
                   ),
                 ),
                 SizedBox(height: 16),
                 Text(
                   'Select Size:',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.blue[800],
+                  ), // Changed text color
                 ),
                 SizedBox(height: 8),
                 Container(
@@ -167,16 +194,22 @@ class ProductDetailsC extends GetxController {
                             border: Border.all(
                               color:
                                   selectedSizeIndex.value == index
-                                      ? Colors.green
-                                      : Colors.grey,
+                                      ? Colors
+                                          .blue // Changed border color to blue
+                                      : Colors
+                                          .grey[300]!, // Adjusted grey shade
                             ),
                             borderRadius: BorderRadius.circular(8),
                             color:
                                 selectedSizeIndex.value == index
-                                    ? Colors.green.withOpacity(0.1)
+                                    ? Colors.blue.withOpacity(
+                                      0.1,
+                                    ) // Changed background color to blue with opacity
                                     : (isSizeAvailable
                                         ? Colors.white
-                                        : Colors.grey.shade300),
+                                        : Colors
+                                            .grey
+                                            .shade200), // Adjusted grey shade
                           ),
                           child: Center(
                             child: Text(
@@ -184,9 +217,11 @@ class ProductDetailsC extends GetxController {
                               style: TextStyle(
                                 color:
                                     selectedSizeIndex.value == index
-                                        ? Colors.green
+                                        ? Colors
+                                            .blue[800] // Changed text color to blue
                                         : (isSizeAvailable
-                                            ? Colors.black
+                                            ? Colors
+                                                .blue[600] // Changed text color to blue
                                             : Colors.grey.shade600),
                               ),
                             ),
@@ -199,7 +234,11 @@ class ProductDetailsC extends GetxController {
                 SizedBox(height: 16),
                 Text(
                   'Select Color:',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.blue[800],
+                  ), // Changed text color
                 ),
                 SizedBox(height: 8),
                 Container(
@@ -232,16 +271,22 @@ class ProductDetailsC extends GetxController {
                             border: Border.all(
                               color:
                                   selectedColorIndex.value == index
-                                      ? Colors.green
-                                      : Colors.grey,
+                                      ? Colors
+                                          .blue // Changed border color to blue
+                                      : Colors
+                                          .grey[300]!, // Adjusted grey shade
                             ),
                             borderRadius: BorderRadius.circular(8),
                             color:
                                 selectedColorIndex.value == index
-                                    ? Colors.green.withOpacity(0.1)
+                                    ? Colors.blue.withOpacity(
+                                      0.1,
+                                    ) // Changed background color to blue with opacity
                                     : (isColorAvailable
                                         ? Colors.white
-                                        : Colors.grey.shade300),
+                                        : Colors
+                                            .grey
+                                            .shade200), // Adjusted grey shade
                           ),
                           child: Center(
                             child: Text(
@@ -249,9 +294,11 @@ class ProductDetailsC extends GetxController {
                               style: TextStyle(
                                 color:
                                     selectedColorIndex.value == index
-                                        ? Colors.green
+                                        ? Colors
+                                            .blue[800] // Changed text color to blue
                                         : (isColorAvailable
-                                            ? Colors.black
+                                            ? Colors
+                                                .blue[600] // Changed text color to blue
                                             : Colors.grey.shade600),
                               ),
                             ),
@@ -264,7 +311,11 @@ class ProductDetailsC extends GetxController {
                 SizedBox(height: 16),
                 Text(
                   'Quantity Available: ${quantity}',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.blue[800],
+                  ), // Changed text color
                 ),
                 SizedBox(height: 24),
                 SizedBox(
@@ -278,12 +329,20 @@ class ProductDetailsC extends GetxController {
                             }
                             : null,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.green,
+                      backgroundColor:
+                          Colors.blue, // Changed button color to blue
                       padding: EdgeInsets.symmetric(vertical: 16),
+                      shape: RoundedRectangleBorder(
+                        // Added rounded corners to button
+                        borderRadius: BorderRadius.circular(8),
+                      ),
                     ),
                     child: Text(
                       'Add to Cart',
-                      style: TextStyle(fontSize: 18, color: Colors.white),
+                      style: TextStyle(
+                        fontSize: 18,
+                        color: Colors.white,
+                      ), // Kept text white for contrast
                     ),
                   ),
                 ),

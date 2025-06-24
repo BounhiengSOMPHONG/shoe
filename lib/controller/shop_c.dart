@@ -15,6 +15,7 @@ class ShopC extends GetxController {
   final RxBool isLoading = false.obs;
   final RxString error = ''.obs;
   final RxString currentCategory = ''.obs;
+  final RxString selectedCategory = ''.obs; // เพิ่ม selectedCategory ที่นี่
   RxList<PItem> get items => _items;
   RxList<PItem> get cartItems => _cartItems;
 

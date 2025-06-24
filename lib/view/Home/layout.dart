@@ -56,7 +56,7 @@ class _LayoutState extends State<Layout> {
                   Padding(
                     padding: const EdgeInsets.only(right: 16.0),
                     child: IconButton(
-                      icon: Icon(Icons.search, color: Colors.black),
+                      icon: Icon(Icons.notifications, color: Colors.yellow),
                       onPressed: () {},
                     ),
                   ),
@@ -88,6 +88,7 @@ class _LayoutState extends State<Layout> {
             _currentPage = index;
           });
           if (_currentPage == 1) {
+            shop_c.selectedCategory.value = '';
             shop_c.refreshShopData();
           }
           if (_currentPage == 3) {

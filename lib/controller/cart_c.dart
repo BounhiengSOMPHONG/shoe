@@ -63,28 +63,40 @@ class CartC extends GetxController {
       _items[existingItemIndex].quantity =
           (_items[existingItemIndex].quantity ?? 1) + 1;
       _items.refresh();
+      // Get.snackbar(
+      //   'Cart Updated',
+      //   'Item quantity has been increased\nSize: ${item.size}\nColor: ${item.color}',
+      //   backgroundColor: Colors.green.withOpacity(0.7),
+      //   colorText: Colors.white,
+      //   duration: Duration(seconds: 2),
+      //   margin: EdgeInsets.all(8),
+      //   borderRadius: 8,
+      // );
       Get.snackbar(
-        'Cart Updated',
-        'Item quantity has been increased\nSize: ${item.size}\nColor: ${item.color}',
-        backgroundColor: Colors.green.withOpacity(0.7),
-        colorText: Colors.white,
-        duration: Duration(seconds: 2),
-        margin: EdgeInsets.all(8),
-        borderRadius: 8,
+        'Added to Cart',
+        'Successfully added',
+        backgroundColor: Colors.blueAccent.withOpacity(0.7),
+        snackPosition: SnackPosition.BOTTOM,
       );
     } else {
       // Add new item
       item.quantity ??= 1;
       item.price ??= 0.0;
       _items.add(item);
+      // Get.snackbar(
+      //   'Added to Cart',
+      //   'Product ${item.name} has been added to your cart\nSize: ${item.size}\nColor: ${item.color}',
+      //   backgroundColor: Colors.green.withOpacity(0.7),
+      //   colorText: Colors.white,
+      //   duration: Duration(seconds: 2),
+      //   margin: EdgeInsets.all(8),
+      //   borderRadius: 8,
+      // );
       Get.snackbar(
         'Added to Cart',
-        'Product ${item.name} has been added to your cart\nSize: ${item.size}\nColor: ${item.color}',
-        backgroundColor: Colors.green.withOpacity(0.7),
-        colorText: Colors.white,
-        duration: Duration(seconds: 2),
-        margin: EdgeInsets.all(8),
-        borderRadius: 8,
+        'Successfully added',
+        backgroundColor: Colors.blueAccent.withOpacity(0.7),
+        snackPosition: SnackPosition.BOTTOM,
       );
     }
     _calculateTotal();

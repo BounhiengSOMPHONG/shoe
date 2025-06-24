@@ -26,7 +26,7 @@ class _ProductDetailsState extends State<ProductDetails> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Product Details'),
-        backgroundColor: Colors.green,
+        backgroundColor: Colors.blueAccent, // Changed to light blue accent
       ),
       body: Obx(() {
         final product = controller.currentProduct.value;
@@ -45,17 +45,41 @@ class _ProductDetailsState extends State<ProductDetails> {
               Container(
                 width: double.infinity,
                 height: 300,
-                decoration: BoxDecoration(color: Color(0xFFE8F5E9)),
-                child: Image.network(
-                  product.image ?? '',
-                  fit: BoxFit.contain,
-                  errorBuilder: (context, error, stackTrace) {
-                    return Icon(
-                      Icons.image_not_supported,
-                      size: 50,
-                      color: Colors.grey,
-                    );
-                  },
+                decoration: BoxDecoration(
+                  color: Colors.blueAccent.withOpacity(
+                    0.1,
+                  ), // Light blue background
+                  borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(30), // Rounded bottom corners
+                    bottomRight: Radius.circular(30),
+                  ),
+                  boxShadow: [
+                    // Subtle shadow
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.3),
+                      spreadRadius: 2, // Corrected from spreadFactor
+                      blurRadius: 5,
+                      offset: Offset(0, 3),
+                    ),
+                  ],
+                ),
+                child: ClipRRect(
+                  // Clip image to rounded corners
+                  borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(30),
+                    bottomRight: Radius.circular(30),
+                  ),
+                  child: Image.network(
+                    product.image ?? '',
+                    fit: BoxFit.contain,
+                    errorBuilder: (context, error, stackTrace) {
+                      return Icon(
+                        Icons.image_not_supported,
+                        size: 50,
+                        color: Colors.grey,
+                      );
+                    },
+                  ),
                 ),
               ),
               Padding(
@@ -81,7 +105,9 @@ class _ProductDetailsState extends State<ProductDetails> {
                       style: TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
-                        color: Colors.green,
+                        color:
+                            Colors
+                                .blueAccent, // Changed price color to light blue
                       ),
                     ),
                     SizedBox(height: 16),
@@ -134,17 +160,41 @@ class _ProductDetailsState extends State<ProductDetails> {
                                     color:
                                         controller.selectedSizeIndex.value ==
                                                 index
-                                            ? Colors.green
-                                            : Colors.grey,
+                                            ? Colors
+                                                .blueAccent // Selected border color
+                                            : Colors
+                                                .grey
+                                                .shade400, // Default border color
                                   ),
-                                  borderRadius: BorderRadius.circular(8),
+                                  borderRadius: BorderRadius.circular(
+                                    12,
+                                  ), // Rounded corners
                                   color:
                                       controller.selectedSizeIndex.value ==
                                               index
-                                          ? Colors.green.withOpacity(0.1)
+                                          ? Colors.blueAccent.withOpacity(
+                                            0.2,
+                                          ) // Selected background color
                                           : (isSizeAvailable
                                               ? Colors.white
-                                              : Colors.grey.shade300),
+                                              : Colors
+                                                  .grey
+                                                  .shade200), // Unavailable background color
+                                  boxShadow:
+                                      controller.selectedSizeIndex.value ==
+                                              index
+                                          ? [
+                                            // Shadow for selected item
+                                            BoxShadow(
+                                              color: Colors.blueAccent
+                                                  .withOpacity(0.3),
+                                              spreadRadius:
+                                                  1, // Corrected from spreadFactor
+                                              blurRadius: 3,
+                                              offset: Offset(0, 2),
+                                            ),
+                                          ]
+                                          : [],
                                 ),
                                 child: Center(
                                   child: Text(
@@ -155,10 +205,14 @@ class _ProductDetailsState extends State<ProductDetails> {
                                       color:
                                           controller.selectedSizeIndex.value ==
                                                   index
-                                              ? Colors.green
+                                              ? Colors
+                                                  .blueAccent // Selected text color
                                               : (isSizeAvailable
-                                                  ? Colors.black
-                                                  : Colors.grey.shade600),
+                                                  ? Colors
+                                                      .black87 // Available text color
+                                                  : Colors
+                                                      .grey
+                                                      .shade600), // Unavailable text color
                                     ),
                                   ),
                                 ),
@@ -209,17 +263,41 @@ class _ProductDetailsState extends State<ProductDetails> {
                                     color:
                                         controller.selectedColorIndex.value ==
                                                 index
-                                            ? Colors.green
-                                            : Colors.grey,
+                                            ? Colors
+                                                .blueAccent // Selected border color
+                                            : Colors
+                                                .grey
+                                                .shade400, // Default border color
                                   ),
-                                  borderRadius: BorderRadius.circular(8),
+                                  borderRadius: BorderRadius.circular(
+                                    12,
+                                  ), // Rounded corners
                                   color:
                                       controller.selectedColorIndex.value ==
                                               index
-                                          ? Colors.green.withOpacity(0.1)
+                                          ? Colors.blueAccent.withOpacity(
+                                            0.2,
+                                          ) // Selected background color
                                           : (isColorAvailable
                                               ? Colors.white
-                                              : Colors.grey.shade300),
+                                              : Colors
+                                                  .grey
+                                                  .shade200), // Unavailable background color
+                                  boxShadow:
+                                      controller.selectedColorIndex.value ==
+                                              index
+                                          ? [
+                                            // Shadow for selected item
+                                            BoxShadow(
+                                              color: Colors.blueAccent
+                                                  .withOpacity(0.3),
+                                              spreadRadius:
+                                                  1, // Corrected from spreadFactor
+                                              blurRadius: 3,
+                                              offset: Offset(0, 2),
+                                            ),
+                                          ]
+                                          : [],
                                 ),
                                 child: Center(
                                   child: Text(
@@ -230,10 +308,14 @@ class _ProductDetailsState extends State<ProductDetails> {
                                       color:
                                           controller.selectedColorIndex.value ==
                                                   index
-                                              ? Colors.green
+                                              ? Colors
+                                                  .blueAccent // Selected text color
                                               : (isColorAvailable
-                                                  ? Colors.black
-                                                  : Colors.grey.shade600),
+                                                  ? Colors
+                                                      .black87 // Available text color
+                                                  : Colors
+                                                      .grey
+                                                      .shade600), // Unavailable text color
                                     ),
                                   ),
                                 ),
@@ -256,8 +338,15 @@ class _ProductDetailsState extends State<ProductDetails> {
                       onPressed:
                           quantity > 0 ? () => controller.addToCart() : null,
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.green,
+                        backgroundColor:
+                            Colors.blueAccent, // Light blue button color
                         minimumSize: Size(double.infinity, 50),
+                        shape: RoundedRectangleBorder(
+                          // Rounded corners
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        elevation: 8, // Prominent shadow
+                        shadowColor: Colors.blueAccent.withOpacity(0.5),
                       ),
                       child: Text(
                         'Add to Cart',

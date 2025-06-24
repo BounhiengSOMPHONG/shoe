@@ -15,7 +15,7 @@ class _CartState extends State<Cart> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[100],
+      backgroundColor: Colors.white, // Changed background to white
       body: SafeArea(
         child: Padding(
           padding: EdgeInsets.all(16.0),
@@ -27,12 +27,17 @@ class _CartState extends State<Cart> {
                 padding: EdgeInsets.all(16),
                 decoration: BoxDecoration(
                   color: Colors.white,
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(
+                    16,
+                  ), // Increased border radius
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.grey.withOpacity(0.1),
-                      spreadRadius: 1,
-                      blurRadius: 5,
+                      color: Colors.blue.withOpacity(
+                        0.1,
+                      ), // Changed shadow color to blue
+                      spreadRadius: 2, // Adjusted spread radius
+                      blurRadius: 8, // Adjusted blur radius
+                      offset: Offset(0, 4), // Adjusted offset
                     ),
                   ],
                 ),
@@ -44,13 +49,16 @@ class _CartState extends State<Cart> {
                       style: TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
-                        color: Colors.teal[800],
+                        color: Colors.blue[800], // Changed text color to blue
                       ),
                     ),
                     Obx(
                       () => Text(
                         '${cart_c.items.length} Items',
-                        style: TextStyle(fontSize: 16, color: Colors.grey[600]),
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.blue[600],
+                        ), // Changed text color to blue
                       ),
                     ),
                   ],
@@ -70,14 +78,18 @@ class _CartState extends State<Cart> {
                                 Icon(
                                   Icons.shopping_cart_outlined,
                                   size: 64,
-                                  color: Colors.grey[400],
+                                  color:
+                                      Colors
+                                          .blue[300], // Changed icon color to blue
                                 ),
                                 SizedBox(height: 16),
                                 Text(
                                   'Your cart is empty',
                                   style: TextStyle(
                                     fontSize: 18,
-                                    color: Colors.grey[600],
+                                    color:
+                                        Colors
+                                            .blue[600], // Changed text color to blue
                                     fontWeight: FontWeight.w500,
                                   ),
                                 ),
@@ -97,7 +109,9 @@ class _CartState extends State<Cart> {
                                 background: Container(
                                   alignment: Alignment.centerRight,
                                   padding: EdgeInsets.only(right: 20.0),
-                                  color: Colors.red,
+                                  color:
+                                      Colors
+                                          .redAccent, // Kept red for delete action
                                   child: Icon(
                                     Icons.delete,
                                     color: Colors.white,
@@ -107,12 +121,18 @@ class _CartState extends State<Cart> {
                                   margin: EdgeInsets.only(bottom: 12),
                                   decoration: BoxDecoration(
                                     color: Colors.white,
-                                    borderRadius: BorderRadius.circular(12),
+                                    borderRadius: BorderRadius.circular(
+                                      16,
+                                    ), // Increased border radius
                                     boxShadow: [
                                       BoxShadow(
-                                        color: Colors.grey.withOpacity(0.1),
-                                        spreadRadius: 1,
-                                        blurRadius: 5,
+                                        color: Colors.blue.withOpacity(
+                                          0.1,
+                                        ), // Changed shadow color to blue
+                                        spreadRadius:
+                                            2, // Adjusted spread radius
+                                        blurRadius: 8, // Adjusted blur radius
+                                        offset: Offset(0, 4), // Adjusted offset
                                       ),
                                     ],
                                   ),
@@ -123,7 +143,7 @@ class _CartState extends State<Cart> {
                                         // Product image
                                         ClipRRect(
                                           borderRadius: BorderRadius.circular(
-                                            8,
+                                            12, // Adjusted image border radius
                                           ),
                                           child: Image.network(
                                             item.image ?? '',
@@ -138,10 +158,14 @@ class _CartState extends State<Cart> {
                                               return Container(
                                                 width: 80,
                                                 height: 80,
-                                                color: Colors.grey[200],
+                                                color:
+                                                    Colors
+                                                        .blue[50], // Changed placeholder color to light blue
                                                 child: Icon(
                                                   Icons.image_not_supported,
-                                                  color: Colors.grey[400],
+                                                  color:
+                                                      Colors
+                                                          .blue[300], // Changed icon color to blue
                                                 ),
                                               );
                                             },
@@ -159,7 +183,9 @@ class _CartState extends State<Cart> {
                                                 style: TextStyle(
                                                   fontSize: 16,
                                                   fontWeight: FontWeight.bold,
-                                                  color: Colors.teal[800],
+                                                  color:
+                                                      Colors
+                                                          .blue[800], // Changed text color to blue
                                                 ),
                                               ),
                                               SizedBox(height: 4),
@@ -167,14 +193,18 @@ class _CartState extends State<Cart> {
                                                 Text(
                                                   'Size: ${item.size}',
                                                   style: TextStyle(
-                                                    color: Colors.grey[600],
+                                                    color:
+                                                        Colors
+                                                            .blue[600], // Changed text color to blue
                                                   ),
                                                 ),
                                               if (item.color != null)
                                                 Text(
                                                   'Color: ${item.color}',
                                                   style: TextStyle(
-                                                    color: Colors.grey[600],
+                                                    color:
+                                                        Colors
+                                                            .blue[600], // Changed text color to blue
                                                   ),
                                                 ),
                                               SizedBox(height: 4),
@@ -182,7 +212,9 @@ class _CartState extends State<Cart> {
                                                 'ລາຄາ: ${item.price} K',
                                                 style: TextStyle(
                                                   fontWeight: FontWeight.w500,
-                                                  color: Colors.teal,
+                                                  color:
+                                                      Colors
+                                                          .blue, // Changed price color to blue
                                                 ),
                                               ),
                                               SizedBox(height: 4),
@@ -194,7 +226,9 @@ class _CartState extends State<Cart> {
                                           children: [
                                             Container(
                                               decoration: BoxDecoration(
-                                                color: Colors.teal[50],
+                                                color:
+                                                    Colors
+                                                        .blue[50], // Changed background color to light blue
                                                 borderRadius:
                                                     BorderRadius.circular(8),
                                               ),
@@ -206,7 +240,9 @@ class _CartState extends State<Cart> {
                                                       Icons.remove,
                                                       size: 20,
                                                     ),
-                                                    color: Colors.teal,
+                                                    color:
+                                                        Colors
+                                                            .blue, // Changed icon color to blue
                                                     onPressed:
                                                         () => cart_c
                                                             .updateQuantity(
@@ -220,7 +256,9 @@ class _CartState extends State<Cart> {
                                                       fontSize: 16,
                                                       fontWeight:
                                                           FontWeight.bold,
-                                                      color: Colors.teal[800],
+                                                      color:
+                                                          Colors
+                                                              .blue[800], // Changed text color to blue
                                                     ),
                                                   ),
                                                   IconButton(
@@ -228,7 +266,9 @@ class _CartState extends State<Cart> {
                                                       Icons.add,
                                                       size: 20,
                                                     ),
-                                                    color: Colors.teal,
+                                                    color:
+                                                        Colors
+                                                            .blue, // Changed icon color to blue
                                                     onPressed:
                                                         () => cart_c
                                                             .updateQuantity(
@@ -256,12 +296,17 @@ class _CartState extends State<Cart> {
                 padding: EdgeInsets.all(16),
                 decoration: BoxDecoration(
                   color: Colors.white,
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(
+                    16,
+                  ), // Increased border radius
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.grey.withOpacity(0.1),
-                      spreadRadius: 1,
-                      blurRadius: 5,
+                      color: Colors.blue.withOpacity(
+                        0.1,
+                      ), // Changed shadow color to blue
+                      spreadRadius: 2, // Adjusted spread radius
+                      blurRadius: 8, // Adjusted blur radius
+                      offset: Offset(0, 4), // Adjusted offset
                     ),
                   ],
                 ),
@@ -276,7 +321,9 @@ class _CartState extends State<Cart> {
                             style: TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
-                              color: Colors.teal[800],
+                              color:
+                                  Colors
+                                      .blue[800], // Changed text color to blue
                             ),
                           ),
                           Text(
@@ -284,7 +331,7 @@ class _CartState extends State<Cart> {
                             style: TextStyle(
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
-                              color: Colors.teal,
+                              color: Colors.blue, // Changed text color to blue
                             ),
                           ),
                         ],
@@ -299,7 +346,8 @@ class _CartState extends State<Cart> {
                                   ? null
                                   : () => cart_c.Checkout(),
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.teal[400],
+                            backgroundColor:
+                                Colors.blue, // Changed button color to blue
                             foregroundColor: Colors.white,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(12),
