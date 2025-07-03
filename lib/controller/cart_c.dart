@@ -72,12 +72,12 @@ class CartC extends GetxController {
       //   margin: EdgeInsets.all(8),
       //   borderRadius: 8,
       // );
-      Get.snackbar(
-        'Added to Cart',
-        'Successfully added',
-        backgroundColor: Colors.blueAccent.withOpacity(0.7),
-        snackPosition: SnackPosition.BOTTOM,
-      );
+      // Get.snackbar(
+      //   'Added to Cart',
+      //   'Successfully added',
+      //   backgroundColor: Colors.blueAccent.withOpacity(0.7),
+      //   snackPosition: SnackPosition.BOTTOM,
+      // );
     } else {
       // Add new item
       item.quantity ??= 1;
@@ -92,12 +92,12 @@ class CartC extends GetxController {
       //   margin: EdgeInsets.all(8),
       //   borderRadius: 8,
       // );
-      Get.snackbar(
-        'Added to Cart',
-        'Successfully added',
-        backgroundColor: Colors.blueAccent.withOpacity(0.7),
-        snackPosition: SnackPosition.BOTTOM,
-      );
+      // Get.snackbar(
+      //   'Added to Cart',
+      //   'Successfully added',
+      //   backgroundColor: Colors.blueAccent.withOpacity(0.7),
+      //   snackPosition: SnackPosition.BOTTOM,
+      // );
     }
     _calculateTotal();
     saveCartItems(); // Save after adding item
@@ -130,21 +130,23 @@ class CartC extends GetxController {
     );
   }
 
+  // Public method to clear cart and recalculate total
+  Future<void> clearCart() async {
+    print('Clearing cart...');
+    _items.clear();
+    _total.value = 0.0; // Force reset total to 0
+    print('Cart cleared. Items: ${_items.length}, Total: ${_total.value}');
+    await saveCartItems(); // รอให้ save เสร็จก่อน
+    _items.refresh(); // Force refresh the list
+    _total.refresh(); // Force refresh the total
+    update(); // Force update UI
+  }
+
   Future<void> Checkout() async {
     try {
       EasyLoading.show(status: 'Processing checkout...');
       await Future.delayed(Duration(seconds: 1));
-      // await saveCartItems(); // Save after clearing cart
-      // _items.clear();
-      _calculateTotal();
-      // Get.snackbar(
-      //   'Success',
-      //   'Your order has been placed successfully',
-      //   backgroundColor: Colors.green,
-      //   colorText: Colors.white,
-      //   snackPosition: SnackPosition.BOTTOM,
-      //   duration: Duration(seconds: 2),
-      // );
+      // ไม่ล้างตะกร้าที่นี่ เพราะจะล้างหลังชำระเงินสำเร็จ
       Get.to(() => CheckoutPage(), transition: Transition.rightToLeft);
     } catch (e) {
       Get.snackbar(

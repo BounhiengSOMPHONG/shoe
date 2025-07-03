@@ -1,3 +1,4 @@
+import 'package:app_shoe/controller/cart_c.dart';
 import 'package:app_shoe/controller/favorite_c.dart';
 import 'package:app_shoe/controller/shop_c.dart';
 import 'package:app_shoe/view/Home/account.dart';
@@ -18,6 +19,7 @@ class Layout extends StatefulWidget {
 class _LayoutState extends State<Layout> {
   final shop_c = Get.put(ShopC());
   final fav_c = Get.put(FavoriteC());
+  final cart_c = Get.put(CartC()); // Add CartC controller
   int _currentPage = 0;
   final List<Widget> _pages = [
     Home(),
@@ -71,7 +73,39 @@ class _LayoutState extends State<Layout> {
             label: 'Shop',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.shopping_cart),
+            icon: Stack(
+              children: [
+                Icon(Icons.shopping_cart),
+                Obx(
+                  () =>
+                      cart_c.items.length >
+                              0 // Add conditional check here
+                          ? Positioned(
+                            right: 0,
+                            child: Container(
+                              padding: EdgeInsets.all(1),
+                              decoration: BoxDecoration(
+                                color: Colors.red,
+                                borderRadius: BorderRadius.circular(6),
+                              ),
+                              constraints: BoxConstraints(
+                                minWidth: 12,
+                                minHeight: 12,
+                              ),
+                              child: Text(
+                                '${cart_c.items.length}',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 8,
+                                ),
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+                          )
+                          : SizedBox.shrink(), // Hide the badge if count is 0
+                ),
+              ],
+            ),
             label: 'Cart',
           ),
           BottomNavigationBarItem(

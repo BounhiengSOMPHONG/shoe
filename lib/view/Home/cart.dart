@@ -52,15 +52,15 @@ class _CartState extends State<Cart> {
                         color: Colors.blue[800], // Changed text color to blue
                       ),
                     ),
-                    Obx(
-                      () => Text(
-                        '${cart_c.items.length} Items',
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.blue[600],
-                        ), // Changed text color to blue
-                      ),
-                    ),
+                    // Obx(
+                    //   () => Text(
+                    //     '${cart_c.items.length} Items',
+                    //     style: TextStyle(
+                    //       fontSize: 16,
+                    //       color: Colors.blue[600],
+                    //     ), // Changed text color to blue
+                    //   ),
+                    // ),
                   ],
                 ),
               ),

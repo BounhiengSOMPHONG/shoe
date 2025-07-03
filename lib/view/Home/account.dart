@@ -1,5 +1,6 @@
 import 'package:app_shoe/controller/account/account_c.dart';
 import 'package:app_shoe/controller/login_c.dart';
+import 'package:app_shoe/view/Home/orders.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -227,33 +228,33 @@ class _AccountState extends State<Account> {
                       },
                     ),
                   ),
+                  // Orders
                   Card(
-                    // Using Card for better visual separation
-                    elevation: 2, // Add a subtle shadow
+                    elevation: 2,
                     margin: const EdgeInsets.only(bottom: 8),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
                     child: ListTile(
                       leading: const Icon(
-                        Icons.history, // More appropriate icon
+                        Icons.shopping_bag_outlined,
                         color: Colors.black54,
-                        size: 24, // Slightly larger icon
+                        size: 24,
                       ),
                       title: const Text(
-                        'history',
+                        'ການສັ່ງຊື້ຂອງຂ້ອຍ',
                         style: TextStyle(
                           fontWeight: FontWeight.w500,
-                          fontSize: 16, // Slightly larger font
+                          fontSize: 16,
                         ),
                       ),
                       trailing: const Icon(
                         Icons.chevron_right,
                         color: Colors.black54,
-                        size: 24, // Slightly larger icon
+                        size: 24,
                       ),
                       onTap: () {
-                        _account.page_history();
+                        Get.to(() => OrdersPage());
                       },
                     ),
                   ),

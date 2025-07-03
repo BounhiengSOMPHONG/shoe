@@ -1,4 +1,4 @@
-import 'package:app_shoe/view/Home/pendingpayment.dart';
+import 'package:app_shoe/view/Home/orders.dart';
 import 'package:get/get.dart';
 import 'package:app_shoe/model/address_m.dart';
 import 'package:app_shoe/services/apiservice.dart';
@@ -45,12 +45,11 @@ class CheckoutC extends GetxController {
         try {
           bool launched = await launchUrlString(returnedUrl);
           final cartController = Get.find<CartC>();
-          cartController.items.clear();
-          await cartController.saveCartItems();
+          await cartController.clearCart(); // ใช้ method ใหม่แทน (async)
           if (launched) {
             // เปิด Stripe ได้ → พาไปหน้ารอดำเนินการ
             await Future.delayed(Duration(seconds: 5));
-            Get.off(() => Pendingpayment());
+            Get.off(() => OrdersPage());
           } else {
             Get.snackbar(
               'Error',

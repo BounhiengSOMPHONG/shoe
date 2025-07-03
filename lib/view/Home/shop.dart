@@ -1,5 +1,6 @@
 import 'package:app_shoe/controller/shop_c.dart';
 import 'package:app_shoe/controller/favorite_c.dart';
+import 'package:app_shoe/controller/search_c.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:app_shoe/view/Home/product_details.dart'; // Import ProductDetails page
@@ -16,6 +17,35 @@ class _ShopState extends State<Shop> {
   final shop_c = Get.put(ShopC());
   final favorite_c = Get.put(FavoriteC());
   final PDC = Get.put(ProductDetailsC());
+  final search_c = Get.put(SearchC());
+
+  // Add a ScrollController
+  final ScrollController _scrollController = ScrollController();
+  final TextEditingController _searchController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    // Add a listener to the scroll controller
+    _scrollController.addListener(_onScroll);
+  }
+
+  @override
+  void dispose() {
+    // Dispose the scroll controller
+    _scrollController.dispose();
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  // Scroll listener to detect when the user reaches the end of the list
+  void _onScroll() {
+    if (_scrollController.position.pixels ==
+        _scrollController.position.maxScrollExtent) {
+      // User has scrolled to the end, load more products
+      shop_c.loadMoreProducts();
+    }
+  }
 
   Widget _buildCategoryButton(
     String category,
@@ -25,7 +55,47 @@ class _ShopState extends State<Shop> {
     return ElevatedButton(
       onPressed: () {
         shop_c.selectedCategory.value = category;
+        // Reset pagination and fetch products for the new category
+        shop_c.page.value = 1;
+        shop_c.hasMore.value = true;
         shop_c.fetchProducts(category);
+      },
+      style: ElevatedButton.styleFrom(
+        backgroundColor:
+            selectedCategory == category ? Colors.blue : Colors.white,
+        padding: EdgeInsets.symmetric(horizontal: 24),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+          side: BorderSide(color: Colors.blue.shade300),
+        ),
+      ),
+      child: Text(
+        label,
+        style: TextStyle(
+          color: selectedCategory == category ? Colors.white : Colors.black,
+        ),
+      ),
+    );
+  }
+
+  // ปุ่ม category สำหรับโหมดค้นหา
+  Widget _buildSearchCategoryButton(
+    String category,
+    String label,
+    String selectedCategory,
+  ) {
+    return ElevatedButton(
+      onPressed: () {
+        if (search_c.isSearchActive.value) {
+          // ในโหมดค้นหา - ใช้ search filter
+          search_c.applyCategoryFilter(category);
+        } else {
+          // ในโหมดปกติ - ใช้ shop filter
+          shop_c.selectedCategory.value = category;
+          shop_c.page.value = 1;
+          shop_c.hasMore.value = true;
+          shop_c.fetchProducts(category);
+        }
       },
       style: ElevatedButton.styleFrom(
         backgroundColor:
@@ -51,28 +121,212 @@ class _ShopState extends State<Shop> {
       body: SafeArea(
         child: Column(
           children: [
-            // Search Bar
+            // Search Bar with Price Filter
             Padding(
               padding: const EdgeInsets.all(16.0),
-              child: TextField(
-                decoration: InputDecoration(
-                  hintText: 'Search products...',
-                  prefixIcon: Icon(Icons.search, color: Colors.blueGrey[300]),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(30.0),
-                    borderSide: BorderSide.none,
+              child: Column(
+                children: [
+                  // Search input
+                  TextField(
+                    controller: _searchController,
+                    decoration: InputDecoration(
+                      hintText: 'ค้นหาสินค้า เช่น Nike, Adidas, ເກີບແຟຊັ່ນ...',
+                      prefixIcon: Icon(
+                        Icons.search,
+                        color: Colors.blueGrey[300],
+                      ),
+                      suffixIcon: Obx(
+                        () =>
+                            search_c.isSearchActive.value
+                                ? IconButton(
+                                  icon: Icon(
+                                    Icons.clear,
+                                    color: Colors.blueGrey[300],
+                                  ),
+                                  onPressed: () {
+                                    _searchController.clear();
+                                    search_c.clearSearch();
+                                  },
+                                )
+                                : SizedBox.shrink(),
+                      ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(30.0),
+                        borderSide: BorderSide.none,
+                      ),
+                      filled: true,
+                      fillColor: Colors.grey[200],
+                      contentPadding: EdgeInsets.symmetric(
+                        horizontal: 20.0,
+                        vertical: 15.0,
+                      ),
+                    ),
+                    onChanged: (value) {
+                      // Real-time search เมื่อพิมพ์ครบ 2 ตัวอักษร
+                      if (value.length >= 2) {
+                        search_c.searchProducts(value);
+                      } else if (value.isEmpty) {
+                        search_c.clearSearch();
+                      }
+                    },
+                    onSubmitted: (value) {
+                      // ค้นหาเมื่อกด Enter
+                      if (value.trim().isNotEmpty) {
+                        search_c.searchProducts(value);
+                      }
+                    },
                   ),
-                  filled: true,
-                  fillColor: Colors.grey[200],
-                  contentPadding: EdgeInsets.symmetric(
-                    horizontal: 20.0,
-                    vertical: 15.0,
+                  SizedBox(height: 12),
+                  // Price Filter Row
+                  Row(
+                    children: [
+                      // Min Price Dropdown
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'ราคาต่ำสุด',
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: Colors.grey[600],
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            SizedBox(height: 4),
+                            Obx(
+                              () => Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.grey[100],
+                                  borderRadius: BorderRadius.circular(15),
+                                ),
+                                padding: EdgeInsets.symmetric(horizontal: 12),
+                                child: DropdownButton<double?>(
+                                  value: search_c.selectedMinPrice.value,
+                                  hint: Text('ไม่จำกัด'),
+                                  isExpanded: true,
+                                  underline: SizedBox(),
+                                  icon: Icon(
+                                    Icons.arrow_drop_down,
+                                    color: Colors.grey[600],
+                                  ),
+                                  items:
+                                      search_c.minPriceOptions.map((
+                                        double? value,
+                                      ) {
+                                        return DropdownMenuItem<double?>(
+                                          value: value,
+                                          child: Text(
+                                            search_c.formatPriceText(
+                                              value,
+                                              isMin: true,
+                                            ),
+                                            style: TextStyle(fontSize: 13),
+                                          ),
+                                        );
+                                      }).toList(),
+                                  onChanged: (double? newValue) {
+                                    search_c.selectedMinPrice.value = newValue;
+                                    search_c.applyPriceFilter();
+                                  },
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(width: 12),
+                      // Max Price Dropdown
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'ราคาสูงสุด',
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: Colors.grey[600],
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            SizedBox(height: 4),
+                            Obx(
+                              () => Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.grey[100],
+                                  borderRadius: BorderRadius.circular(15),
+                                ),
+                                padding: EdgeInsets.symmetric(horizontal: 12),
+                                child: DropdownButton<double?>(
+                                  value: search_c.selectedMaxPrice.value,
+                                  hint: Text('ไม่จำกัด'),
+                                  isExpanded: true,
+                                  underline: SizedBox(),
+                                  icon: Icon(
+                                    Icons.arrow_drop_down,
+                                    color: Colors.grey[600],
+                                  ),
+                                  items:
+                                      search_c.maxPriceOptions.map((
+                                        double? value,
+                                      ) {
+                                        return DropdownMenuItem<double?>(
+                                          value: value,
+                                          child: Text(
+                                            search_c.formatPriceText(
+                                              value,
+                                              isMin: false,
+                                            ),
+                                            style: TextStyle(fontSize: 13),
+                                          ),
+                                        );
+                                      }).toList(),
+                                  onChanged: (double? newValue) {
+                                    search_c.selectedMaxPrice.value = newValue;
+                                    search_c.applyPriceFilter();
+                                  },
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(width: 12),
+                      // Clear Filter Button
+                      Obx(
+                        () =>
+                            (search_c.isSearchActive.value ||
+                                    search_c.hasAnyFilter)
+                                ? Container(
+                                  margin: EdgeInsets.only(top: 16),
+                                  child: ElevatedButton(
+                                    onPressed: () {
+                                      _searchController.clear();
+                                      search_c.clearAllFilters();
+                                    },
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.orange,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(15),
+                                      ),
+                                      padding: EdgeInsets.symmetric(
+                                        horizontal: 16,
+                                        vertical: 8,
+                                      ),
+                                      minimumSize: Size(60, 36),
+                                    ),
+                                    child: Icon(
+                                      Icons.clear_all,
+                                      color: Colors.white,
+                                      size: 18,
+                                    ),
+                                  ),
+                                )
+                                : SizedBox.shrink(),
+                      ),
+                    ],
                   ),
-                ),
-                onChanged: (value) {
-                  // Implement search logic here
-                  // shop_c.searchProducts(value);
-                },
+                ],
               ),
             ),
             //category buttons
@@ -84,20 +338,28 @@ class _ShopState extends State<Shop> {
                 child: Padding(
                   padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   child: Obx(() {
-                    final selected = shop_c.selectedCategory.value;
+                    // ใช้ selectedCategory จาก search_c เมื่อมีการค้นหา หรือจาก shop_c เมื่อไม่ได้ค้นหา
+                    final selected =
+                        search_c.isSearchActive.value
+                            ? search_c.selectedCategory.value
+                            : shop_c.selectedCategory.value;
                     return Row(
                       children: [
-                        _buildCategoryButton('', 'ALL', selected),
+                        _buildSearchCategoryButton('', 'ALL', selected),
                         SizedBox(width: 8),
-                        _buildCategoryButton('1', 'Nike', selected),
+                        _buildSearchCategoryButton('1', 'Nike', selected),
                         SizedBox(width: 8),
-                        _buildCategoryButton('2', 'Adidas', selected),
+                        _buildSearchCategoryButton('2', 'Adidas', selected),
                         SizedBox(width: 8),
-                        _buildCategoryButton('3', 'Puma', selected),
+                        _buildSearchCategoryButton('3', 'Puma', selected),
                         SizedBox(width: 8),
-                        _buildCategoryButton('4', 'New Balance', selected),
+                        _buildSearchCategoryButton(
+                          '4',
+                          'New Balance',
+                          selected,
+                        ),
                         SizedBox(width: 8),
-                        _buildCategoryButton('5', 'Converse', selected),
+                        _buildSearchCategoryButton('5', 'Converse', selected),
                       ],
                     );
                   }),
@@ -107,7 +369,151 @@ class _ShopState extends State<Shop> {
             //products grid
             Expanded(
               child: Obx(() {
-                if (shop_c.isLoading.value) {
+                // แสดงผลการค้นหาถ้ากำลังค้นหา
+                if (search_c.isSearchActive.value) {
+                  if (search_c.isLoading.value) {
+                    return Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          CircularProgressIndicator(color: Colors.blue),
+                          SizedBox(height: 16),
+                          Text(
+                            'กำลังค้นหา "${search_c.searchQuery.value}"...',
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.blueGrey[600],
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  }
+
+                  if (search_c.error.value.isNotEmpty) {
+                    return Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.search_off,
+                            size: 64,
+                            color: Colors.orange,
+                          ),
+                          SizedBox(height: 16),
+                          Text(
+                            search_c.error.value,
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.orange,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                          SizedBox(height: 16),
+                          ElevatedButton(
+                            onPressed: () => search_c.refreshSearch(),
+                            child: Text('ลองค้นหาอีกครั้ง'),
+                          ),
+                        ],
+                      ),
+                    );
+                  }
+
+                  // แสดงผลการค้นหา
+                  if (search_c.searchResults.isEmpty) {
+                    // ไม่พบผลการค้นหา
+                    return Center(
+                      child: Padding(
+                        padding: const EdgeInsets.all(32.0),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.search_off,
+                              size: 80,
+                              color: Colors.grey[400],
+                            ),
+                            SizedBox(height: 16),
+                            Text(
+                              'ไม่พบสินค้าที่ค้นหา',
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.grey[600],
+                              ),
+                            ),
+                            SizedBox(height: 8),
+                            Text(
+                              '"${search_c.searchQuery.value}"',
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: Colors.grey[500],
+                                fontStyle: FontStyle.italic,
+                              ),
+                            ),
+                            SizedBox(height: 16),
+                            Text(
+                              'ลองค้นหาด้วยคำอื่น เช่น Nike, Adidas หรือชื่อสินค้า',
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Colors.grey[500],
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  }
+
+                  return Column(
+                    children: [
+                      // แสดงจำนวนผลการค้นหา
+                      Container(
+                        width: double.infinity,
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 8,
+                        ),
+                        margin: EdgeInsets.only(bottom: 8),
+                        decoration: BoxDecoration(
+                          color: Colors.green.shade50,
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(color: Colors.green.shade200),
+                        ),
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.check_circle,
+                              color: Colors.green.shade600,
+                              size: 20,
+                            ),
+                            SizedBox(width: 8),
+                            Expanded(
+                              child: Text(
+                                'พบสินค้า ${search_c.searchResults.length} รายการสำหรับ "${search_c.searchQuery.value}"',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.green.shade700,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Expanded(
+                        child: _buildProductGrid(
+                          search_c.searchResults,
+                          isSearchResults: true,
+                        ),
+                      ),
+                    ],
+                  );
+                }
+
+                // แสดงสินค้าปกติเมื่อไม่ได้ค้นหา
+                if (shop_c.isLoading.value && shop_c.items.isEmpty) {
                   return Center(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -156,7 +562,7 @@ class _ShopState extends State<Shop> {
                   );
                 }
 
-                if (shop_c.items.isEmpty) {
+                if (shop_c.items.isEmpty && !shop_c.isLoading.value) {
                   return Center(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -179,169 +585,7 @@ class _ShopState extends State<Shop> {
                   );
                 }
 
-                return GridView.builder(
-                  padding: EdgeInsets.all(16),
-                  physics: BouncingScrollPhysics(),
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    crossAxisSpacing: 16.0,
-                    mainAxisSpacing: 16.0,
-                    childAspectRatio:
-                        MediaQuery.of(context).size.width /
-                        (MediaQuery.of(context).size.height / 1.6),
-                  ),
-                  itemCount: shop_c.items.length,
-                  itemBuilder: (context, index) {
-                    final item = shop_c.items[index];
-                    return GestureDetector(
-                      onTap:
-                          () => Get.to(
-                            () => ProductDetails(product: item),
-                          ), // Keep navigation on item tap
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(
-                            12,
-                          ), // Keep rounded corners
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.grey.withOpacity(
-                                0.2,
-                              ), // Adjusted shadow opacity for softness
-                              spreadRadius: 2, // Adjusted spread radius
-                              blurRadius: 8, // Adjusted blur radius
-                              offset: Offset(
-                                0,
-                                4,
-                              ), // Added offset for soft shadow
-                            ),
-                          ],
-                        ),
-                        child: Stack(
-                          children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Stack(
-                                  children: [
-                                    Container(
-                                      height: 120,
-                                      width: double.infinity,
-                                      child: Center(
-                                        child: Image.network(
-                                          item.image ?? '',
-                                          fit: BoxFit.contain,
-                                          errorBuilder: (
-                                            context,
-                                            error,
-                                            stackTrace,
-                                          ) {
-                                            return Icon(
-                                              Icons.image_not_supported,
-                                              size: 50,
-                                              color:
-                                                  Colors
-                                                      .blueGrey[300], // Changed color
-                                            );
-                                          },
-                                        ),
-                                      ),
-                                    ),
-                                    Positioned(
-                                      top: 0,
-                                      left: 8,
-                                      child: Obx(
-                                        () => IconButton(
-                                          icon: Icon(
-                                            favorite_c.isFavorite(item.id)
-                                                ? Icons.favorite
-                                                : Icons.favorite_border,
-                                            color:
-                                                favorite_c.isFavorite(item.id)
-                                                    ? Colors
-                                                        .red // Keep red for favorite
-                                                    : Colors
-                                                        .blueGrey[300], // Changed color
-                                          ),
-                                          onPressed:
-                                              () => favorite_c.toggleFavorite(
-                                                item,
-                                              ),
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        item.name ?? 'Unnamed Product',
-                                        style: TextStyle(
-                                          fontSize:
-                                              MediaQuery.of(
-                                                        context,
-                                                      ).size.width >
-                                                      380
-                                                  ? 16
-                                                  : 10,
-                                          fontWeight: FontWeight.bold,
-                                          color:
-                                              Colors
-                                                  .blueGrey[800], // Changed color
-                                        ),
-                                        maxLines: 2,
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                      SizedBox(height: 4),
-                                      Text(
-                                        'ລາຄາ: ${item.price} K',
-                                        style: TextStyle(
-                                          fontSize: 14,
-                                          color:
-                                              Colors
-                                                  .green, // Keep green for price
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                            Positioned(
-                              right: 8, // Adjusted position
-                              bottom: 8, // Adjusted position
-                              child: ElevatedButton(
-                                onPressed: () {
-                                  // Show the modal bottom sheet when the button is pressed
-                                  PDC.showOptionsModal(item, context);
-                                },
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: Colors.blue, // Keep blue
-                                  shape: CircleBorder(),
-                                  padding: EdgeInsets.all(
-                                    10,
-                                  ), // Adjusted padding
-                                  elevation:
-                                      4, // Added elevation for button shadow
-                                ),
-                                child: Icon(
-                                  Icons.add_shopping_cart,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    );
-                  },
-                );
+                return _buildProductGrid(shop_c.items);
               }),
             ),
           ],
@@ -356,6 +600,149 @@ class _ShopState extends State<Shop> {
       //   child: Icon(Icons.shopping_cart, color: Colors.white),
       //   tooltip: 'Cart',
       // ),
+    );
+  }
+
+  // Method สำหรับสร้าง Product Grid
+  Widget _buildProductGrid(
+    List<dynamic> items, {
+    bool isSearchResults = false,
+  }) {
+    return GridView.builder(
+      controller: isSearchResults ? null : _scrollController,
+      padding: EdgeInsets.all(16),
+      physics: BouncingScrollPhysics(),
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        crossAxisSpacing: 16.0,
+        mainAxisSpacing: 16.0,
+        childAspectRatio:
+            MediaQuery.of(context).size.width /
+            (MediaQuery.of(context).size.height / 1.6),
+      ),
+      itemCount:
+          items.length +
+          (!isSearchResults && shop_c.hasMore.value
+              ? 1
+              : 0), // Add loading indicator only for regular products
+      itemBuilder: (context, index) {
+        if (!isSearchResults && index == items.length) {
+          // Show loading indicator at the end of the list (only for regular products)
+          return Center(child: CircularProgressIndicator(color: Colors.blue));
+        }
+        final item = items[index];
+        return GestureDetector(
+          onTap: () => Get.to(() => ProductDetails(product: item)),
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(12),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.2),
+                  spreadRadius: 2,
+                  blurRadius: 8,
+                  offset: Offset(0, 4),
+                ),
+              ],
+            ),
+            child: Stack(
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Stack(
+                      children: [
+                        Container(
+                          height: 120,
+                          width: double.infinity,
+                          child: Center(
+                            child: Image.network(
+                              item.image ?? '',
+                              fit: BoxFit.contain,
+                              errorBuilder: (context, error, stackTrace) {
+                                return Icon(
+                                  Icons.image_not_supported,
+                                  size: 50,
+                                  color: Colors.blueGrey[300],
+                                );
+                              },
+                            ),
+                          ),
+                        ),
+                        Positioned(
+                          top: 0,
+                          left: 8,
+                          child: Obx(
+                            () => IconButton(
+                              icon: Icon(
+                                favorite_c.isFavorite(item.id)
+                                    ? Icons.favorite
+                                    : Icons.favorite_border,
+                                color:
+                                    favorite_c.isFavorite(item.id)
+                                        ? Colors.red
+                                        : Colors.blueGrey[300],
+                              ),
+                              onPressed: () => favorite_c.toggleFavorite(item),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            item.name ?? 'Unnamed Product',
+                            style: TextStyle(
+                              fontSize:
+                                  MediaQuery.of(context).size.width > 380
+                                      ? 16
+                                      : 10,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.blueGrey[800],
+                            ),
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                          SizedBox(height: 4),
+                          Text(
+                            'ລາຄາ: ${item.price} K',
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Colors.green,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                Positioned(
+                  right: 8,
+                  bottom: 8,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      PDC.showOptionsModal(item, context);
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.blue,
+                      shape: CircleBorder(),
+                      padding: EdgeInsets.all(10),
+                      elevation: 4,
+                    ),
+                    child: Icon(Icons.add_shopping_cart, color: Colors.white),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }
