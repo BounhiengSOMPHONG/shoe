@@ -1,6 +1,6 @@
 import 'package:app_shoe/controller/account/account_c.dart';
 import 'package:app_shoe/controller/login_c.dart';
-import 'package:app_shoe/view/Home/orders.dart';
+import 'package:app_shoe/view/Home/profile/orders.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

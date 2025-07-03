@@ -1,4 +1,4 @@
-import 'package:app_shoe/view/Home/orders.dart';
+import 'package:app_shoe/view/Home/profile/orders.dart';
 import 'package:get/get.dart';
 import 'package:app_shoe/model/address_m.dart';
 import 'package:app_shoe/services/apiservice.dart';

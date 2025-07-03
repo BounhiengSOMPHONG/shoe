@@ -10,6 +10,10 @@ class ApiConstants {
   // Search endpoint
   static const String searchProductsEndpoint = '/api/searchproducts';
 
+  // Product types and brands endpoints
+  static const String productTypesEndpoint = '/api/product-types';
+  static const String brandsEndpoint = '/api/brands';
+
   static const String showWishlistEndpoint = '/api/showWishlist/';
   static const String addToWishlistEndpoint = '/api/insertWishlist';
   static const String removeFromWishlistEndpoint = '/api/deleteWishlist/';
@@ -24,6 +28,9 @@ class ApiConstants {
   static const String ordersEndpoint = '/api/orders';
   static const String orderDetailEndpoint = '/api/order'; // + /:orderId
   static const String repayOrderEndpoint = '/api/order'; // + /:orderId/repay
+  static const String cancelOrderEndpoint = '/api/order'; // + /:orderId/cancel
+  static const String orderTimelineEndpoint =
+      '/api/order'; // + /:orderId/timeline
 
   // Add other endpoints as needed
 }

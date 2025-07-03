@@ -13,35 +13,85 @@ class SearchC extends GetxController {
   final RxString error = ''.obs;
   final RxString searchQuery = ''.obs;
 
-  // Price filter variables
-  var selectedMinPrice = Rxn<double>();
-  var selectedMaxPrice = Rxn<double>();
-
-  // Category filter variable
+  // Filter variables
   var selectedCategory = ''.obs;
+  var selectedProductType = ''.obs;
+  var selectedBrand = ''.obs;
 
-  // Price options in Kip (LAK)
-  final List<double?> minPriceOptions = [
-    null,
-    300000,
-    600000,
-    900000,
-    1200000,
-    1500000,
-    1800000,
-  ];
-  final List<double?> maxPriceOptions = [
-    600000,
-    900000,
-    1200000,
-    1500000,
-    1800000,
-    3000000,
-    6000000,
-    null,
+  // Dynamic data lists
+  final RxList<ProductType> _productTypes = <ProductType>[].obs;
+  final RxList<Brand> _brands = <Brand>[].obs;
+
+  // Price sorting variables
+  var sortOrder = ''.obs; // 'asc', 'desc', or empty for no sorting
+  var isSortingEnabled = false.obs;
+
+  // Sort options
+  final List<Map<String, String>> sortOptions = [
+    {'value': '', 'label': 'ไม่เรียงลำดับ'},
+    {'value': 'asc', 'label': 'ราคาต่ำ - สูง'},
+    {'value': 'desc', 'label': 'ราคาสูง - ต่ำ'},
   ];
 
   List<PItem> get searchResults => _searchResults;
+  List<ProductType> get productTypes => _productTypes;
+  List<Brand> get brands => _brands;
+
+  @override
+  void onInit() {
+    super.onInit();
+    fetchProductTypes();
+    fetchBrands();
+  }
+
+  // ดึงข้อมูล Product Types จาก API
+  Future<void> fetchProductTypes() async {
+    try {
+      final response = await _apiService.get(ApiConstants.productTypesEndpoint);
+
+      if (response.success) {
+        final List<dynamic> data = response.data['data'] ?? [];
+        _productTypes.clear();
+
+        for (var item in data) {
+          _productTypes.add(ProductType.fromJson(item));
+        }
+
+        print('✅ โหลด ProductTypes สำเร็จ: ${_productTypes.length} รายการ');
+      } else {
+        print('❌ ไม่สามารถโหลด ProductTypes ได้: ${response.message}');
+      }
+    } catch (e) {
+      print('💥 Error fetching product types: $e');
+    }
+  }
+
+  // ดึงข้อมูล Brands จาก API
+  Future<void> fetchBrands() async {
+    try {
+      final response = await _apiService.get(ApiConstants.brandsEndpoint);
+
+      if (response.success) {
+        final List<dynamic> data = response.data['data'] ?? [];
+        _brands.clear();
+
+        for (var item in data) {
+          _brands.add(Brand.fromJson(item));
+        }
+
+        print('✅ โหลด Brands สำเร็จ: ${_brands.length} รายการ');
+      } else {
+        print('❌ ไม่สามารถโหลด Brands ได้: ${response.message}');
+      }
+    } catch (e) {
+      print('💥 Error fetching brands: $e');
+    }
+  }
+
+  // รีเฟรชข้อมูล Product Types และ Brands
+  Future<void> refreshFilterData() async {
+    await Future.wait([fetchProductTypes(), fetchBrands()]);
+  }
 
   // ค้นหาสินค้า
   Future<void> searchProducts(String query) async {
@@ -96,26 +146,13 @@ class SearchC extends GetxController {
     }
   }
 
-  // ค้นหาแบบมีฟิลเตอร์ราคา (สำหรับ backward compatibility)
-  Future<void> searchProductsWithPriceRange(
-    String query, {
-    double? minPrice,
-    double? maxPrice,
-  }) async {
-    return searchProductsWithFilters(
-      query,
-      minPrice: minPrice,
-      maxPrice: maxPrice,
-      category: '',
-    );
-  }
-
-  // ค้นหาแบบมีฟิลเตอร์ครบถ้วน (ราคา + ประเภท)
+  // ค้นหาแบบมีฟิลเตอร์ครบถ้วน (ประเภท + แบรนด์ + การเรียงลำดับ)
   Future<void> searchProductsWithFilters(
     String query, {
-    double? minPrice,
-    double? maxPrice,
     String? category,
+    String? productType,
+    String? brand,
+    String? sortBy,
   }) async {
     if (query.trim().isEmpty && query != '*') {
       clearSearch();
@@ -130,14 +167,17 @@ class SearchC extends GetxController {
     try {
       Map<String, dynamic> searchData = {'q': query.trim()};
 
-      if (minPrice != null) {
-        searchData['min_price'] = minPrice;
-      }
-      if (maxPrice != null) {
-        searchData['max_price'] = maxPrice;
-      }
       if (category != null && category.isNotEmpty) {
         searchData['category'] = category;
+      }
+      if (productType != null && productType.isNotEmpty) {
+        searchData['productType'] = productType;
+      }
+      if (brand != null && brand.isNotEmpty) {
+        searchData['brand'] = brand;
+      }
+      if (sortBy != null && sortBy.isNotEmpty) {
+        searchData['sort'] = sortBy;
       }
 
       print('🔍 ค้นหาด้วยฟิลเตอร์: $searchData');
@@ -154,6 +194,9 @@ class SearchC extends GetxController {
         for (var item in productsData) {
           _searchResults.add(PItem.fromJson(item));
         }
+
+        // Apply local sorting if needed
+        _applySorting();
 
         if (_searchResults.isEmpty) {
           error.value = 'ไม่พบสินค้าที่ตรงกับเงื่อนไข';
@@ -186,14 +229,21 @@ class SearchC extends GetxController {
     }
   }
 
-  // ค้นหาด้วยฟิลเตอร์ราคา
-  void applyPriceFilter() {
-    applyAllFilters();
-  }
-
   // ค้นหาด้วยฟิลเตอร์ประเภท
   void applyCategoryFilter(String category) {
     selectedCategory.value = category;
+    applyAllFilters();
+  }
+
+  // ค้นหาด้วยฟิลเตอร์ Product Type
+  void applyProductTypeFilter(String productType) {
+    selectedProductType.value = productType;
+    applyAllFilters();
+  }
+
+  // ค้นหาด้วยฟิลเตอร์ Brand
+  void applyBrandFilter(String brand) {
+    selectedBrand.value = brand;
     applyAllFilters();
   }
 
@@ -201,61 +251,73 @@ class SearchC extends GetxController {
   void applyAllFilters() {
     String query = searchQuery.value;
     String category = selectedCategory.value;
-    double? minPrice = selectedMinPrice.value;
-    double? maxPrice = selectedMaxPrice.value;
+    String productType = selectedProductType.value;
+    String brand = selectedBrand.value;
+    String sort = sortOrder.value;
 
     // ถ้ามีการค้นหาข้อความหรือมีการกำหนดฟิลเตอร์ใดๆ
     if (query.isNotEmpty ||
-        minPrice != null ||
-        maxPrice != null ||
-        category.isNotEmpty) {
+        category.isNotEmpty ||
+        productType.isNotEmpty ||
+        brand.isNotEmpty ||
+        sort.isNotEmpty) {
       // ถ้าไม่มีคำค้นหา ใส่ * เป็น wildcard
       String searchQuery = query.isNotEmpty ? query : '*';
 
       searchProductsWithFilters(
         searchQuery,
-        minPrice: minPrice,
-        maxPrice: maxPrice,
         category: category,
+        productType: productType,
+        brand: brand,
+        sortBy: sort,
       );
     }
   }
 
-  // ล้างฟิลเตอร์ราคา
-  void clearPriceFilter() {
-    selectedMinPrice.value = null;
-    selectedMaxPrice.value = null;
-    clearSearch();
+  // Apply sorting to current search results
+  void _applySorting() {
+    if (sortOrder.value.isEmpty) return;
+
+    if (sortOrder.value == 'asc') {
+      _searchResults.sort((a, b) => (a.price ?? 0).compareTo(b.price ?? 0));
+    } else if (sortOrder.value == 'desc') {
+      _searchResults.sort((a, b) => (b.price ?? 0).compareTo(a.price ?? 0));
+    }
+  }
+
+  // Apply sorting without re-searching
+  void applySorting(String order) {
+    sortOrder.value = order;
+    _applySorting();
+    update();
+  }
+
+  // Sort current results by price
+  void sortByPrice(String order) {
+    sortOrder.value = order;
+    if (_searchResults.isNotEmpty) {
+      _applySorting();
+      update();
+    } else {
+      // If we have active search, re-search with sorting
+      if (isSearchActive.value) {
+        applyAllFilters();
+      }
+    }
   }
 
   // ล้างฟิลเตอร์ทั้งหมด
   void clearAllFilters() {
-    selectedMinPrice.value = null;
-    selectedMaxPrice.value = null;
     selectedCategory.value = '';
+    selectedProductType.value = '';
+    selectedBrand.value = '';
+    sortOrder.value = '';
     clearSearch();
   }
 
-  // Helper method เพื่อแสดงข้อความราคา
-  String formatPriceText(double? price, {bool isMin = true}) {
-    if (price == null) {
-      return isMin ? 'ไม่จำกัด' : 'ไม่จำกัด';
-    }
-    // จัดรูปแบบตัวเลขให้มีคอมมา
-    String formattedPrice = price.toInt().toString().replaceAllMapped(
-      RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
-      (Match m) => '${m[1]},',
-    );
-    return '$formattedPrice kip';
-  }
-
-  // ตรวจสอบว่ามีการตั้งค่าฟิลเตอร์หรือไม่
-  bool get hasPriceFilter =>
-      selectedMinPrice.value != null || selectedMaxPrice.value != null;
-
   // ตรวจสอบว่ามีการตั้งค่าฟิลเตอร์ใดๆ หรือไม่
   bool get hasAnyFilter =>
-      selectedMinPrice.value != null ||
-      selectedMaxPrice.value != null ||
-      selectedCategory.value.isNotEmpty;
+      selectedCategory.value.isNotEmpty ||
+      selectedProductType.value.isNotEmpty ||
+      selectedBrand.value.isNotEmpty;
 }

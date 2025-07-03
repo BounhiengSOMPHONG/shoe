@@ -71,3 +71,40 @@ class StockItem {
     );
   }
 }
+
+// เพิ่ม ProductType model
+class ProductType {
+  final int productTypeId;
+  final String productTypeName;
+
+  ProductType({required this.productTypeId, required this.productTypeName});
+
+  factory ProductType.fromJson(Map<String, dynamic> json) {
+    return ProductType(
+      productTypeId: json['productType_ID'] ?? 0,
+      productTypeName: json['productType_Name'] ?? '',
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'productType_ID': productTypeId,
+      'productType_Name': productTypeName,
+    };
+  }
+}
+
+// เพิ่ม Brand model
+class Brand {
+  final String brandName;
+
+  Brand({required this.brandName});
+
+  factory Brand.fromJson(Map<String, dynamic> json) {
+    return Brand(brandName: json['Brand'] ?? '');
+  }
+
+  Map<String, dynamic> toJson() {
+    return {'Brand': brandName};
+  }
+}

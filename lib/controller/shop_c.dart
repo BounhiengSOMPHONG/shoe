@@ -22,6 +22,16 @@ class ShopC extends GetxController {
   RxInt limit = 6.obs;
   RxBool hasMore = true.obs; // To check if there are more items to load
 
+  // Price sorting variables
+  var sortOrder = ''.obs; // 'asc', 'desc', or empty for no sorting
+
+  // Sort options
+  final List<Map<String, String>> sortOptions = [
+    {'value': '', 'label': 'ไม่เรียงลำดับ'},
+    {'value': 'asc', 'label': 'ราคาต่ำ - สูง'},
+    {'value': 'desc', 'label': 'ราคาสูง - ต่ำ'},
+  ];
+
   RxList<PItem> get items => _items;
   RxList<PItem> get cartItems => _cartItems;
 
@@ -52,7 +62,7 @@ class ShopC extends GetxController {
     try {
       final response = await _apiService.post(
         '${ApiConstants.categoriesEndpoint}$categoryId?page=${page.value}&limit=${limit.value}',
-        data: {},
+        data: {'sort': sortOrder.value.isNotEmpty ? sortOrder.value : null},
       );
       if (response.success) {
         List<PItem> products =
@@ -64,6 +74,9 @@ class ShopC extends GetxController {
           _items.clear(); // Clear only for the first page
         }
         _items.addAll(products);
+
+        // Apply sorting after adding products
+        _applySorting();
 
         // Check if the number of fetched products is less than the limit, indicating no more data
         if (products.length < limit.value) {
@@ -98,5 +111,31 @@ class ShopC extends GetxController {
 
   void openProductDetails(int index) {
     Get.to(() => ProductDetails(product: _items[index]));
+  }
+
+  // Apply sorting to current items
+  void _applySorting() {
+    if (sortOrder.value.isEmpty) return;
+
+    if (sortOrder.value == 'asc') {
+      _items.sort((a, b) => (a.price ?? 0).compareTo(b.price ?? 0));
+    } else if (sortOrder.value == 'desc') {
+      _items.sort((a, b) => (b.price ?? 0).compareTo(a.price ?? 0));
+    }
+  }
+
+  // Sort current results by price
+  void sortByPrice(String order) {
+    sortOrder.value = order;
+    if (_items.isNotEmpty) {
+      _applySorting();
+      update();
+    }
+  }
+
+  // Clear sorting
+  void clearSorting() {
+    sortOrder.value = '';
+    refreshShopData();
   }
 }
