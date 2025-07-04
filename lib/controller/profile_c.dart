@@ -81,6 +81,36 @@ class ProfileC extends GetxController {
     }
   }
 
+  // Convert sex values between different formats
+  String _convertSexToLao(String? sex) {
+    if (sex == null || sex.isEmpty) return 'ຊາຍ';
+    
+    switch (sex.toLowerCase()) {
+      case 'male':
+      case 'm':
+      case 'ຊາຍ':
+        return 'ຊາຍ';
+      case 'female':
+      case 'f':
+      case 'ຍິງ':
+        return 'ຍິງ';
+      default:
+        return 'ຊາຍ'; // Default fallback
+    }
+  }
+
+  // Convert Lao sex values back to English for API
+  String _convertSexToApi(String sex) {
+    switch (sex) {
+      case 'ຊາຍ':
+        return 'Male';
+      case 'ຍິງ':
+        return 'Female';
+      default:
+        return 'Male';
+    }
+  }
+
   // Populate form controllers with user data
   void _populateControllers() {
     final user = currentUser.value;
@@ -102,7 +132,8 @@ class ProfileC extends GetxController {
         datebirthController.text = '';
       }
 
-      selectedSex.value = user.sex ?? 'ຊາຍ';
+      // Convert sex value to Lao format for dropdown
+      selectedSex.value = _convertSexToLao(user.sex);
     }
   }
 
@@ -228,7 +259,7 @@ class ProfileC extends GetxController {
               datebirthController.text.trim().isEmpty
                   ? null
                   : datebirthController.text.trim(),
-          'Sex': selectedSex.value,
+          'Sex': _convertSexToApi(selectedSex.value),
         },
       );
 

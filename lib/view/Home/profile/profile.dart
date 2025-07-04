@@ -7,7 +7,7 @@ class ProfilePage extends StatelessWidget {
 
   // Helper function to format date for display using built-in Dart methods
   String _formatDateForDisplay(String? dateString) {
-    if (dateString == null || dateString.isEmpty) return 'Not specified';
+    if (dateString == null || dateString.isEmpty) return 'ບໍ່ໄດ້ລະບຸ';
 
     try {
       // Handle both date formats (YYYY-MM-DD or ISO format)
@@ -20,18 +20,18 @@ class ProfilePage extends StatelessWidget {
 
       // Format date manually: dd MMM yyyy
       final months = [
-        'Jan',
-        'Feb',
-        'Mar',
-        'Apr',
-        'May',
-        'Jun',
-        'Jul',
-        'Aug',
-        'Sep',
-        'Oct',
-        'Nov',
-        'Dec',
+        'ມ.ກ.',
+        'ກ.ພ.',
+        'ມ.ນ.',
+        'ເມ.ສ.',
+        'ພ.ຄ.',
+        'ມິ.ຖ.',
+        'ກ.ລ.',
+        'ສ.ຫ.',
+        'ກ.ຍ.',
+        'ຕ.ລ.',
+        'ພ.ຈ.',
+        'ທ.ວ.',
       ];
 
       return '${date.day.toString().padLeft(2, '0')} ${months[date.month - 1]} ${date.year}';
@@ -45,14 +45,24 @@ class ProfilePage extends StatelessWidget {
     final ProfileC profileC = Get.put(ProfileC());
 
     return Scaffold(
+      backgroundColor: Colors.grey[50],
       appBar: AppBar(
         title: const Text(
-          'Profile',
+          'ໂປຣໄຟລ໌',
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
-        backgroundColor: Colors.teal,
+        backgroundColor: Colors.blue,
         iconTheme: const IconThemeData(color: Colors.white),
         elevation: 0,
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Colors.blue.shade400, Colors.blue.shade600],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+          ),
+        ),
       ),
       body: Obx(() {
         if (profileC.isLoading.value && profileC.currentUser.value == null) {
@@ -89,16 +99,16 @@ class ProfilePage extends StatelessWidget {
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [Colors.teal.shade400, Colors.teal.shade600],
+          colors: [Colors.blue.shade400, Colors.blue.shade600],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: Colors.teal.withOpacity(0.3),
+            color: Colors.blue.withOpacity(0.2),
             spreadRadius: 2,
-            blurRadius: 8,
+            blurRadius: 12,
             offset: const Offset(0, 4),
           ),
         ],
@@ -113,8 +123,16 @@ class ProfilePage extends StatelessWidget {
               color: Colors.white,
               shape: BoxShape.circle,
               border: Border.all(color: Colors.white, width: 3),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.1),
+                  spreadRadius: 2,
+                  blurRadius: 8,
+                  offset: const Offset(0, 2),
+                ),
+              ],
             ),
-            child: const Icon(Icons.person, size: 40, color: Colors.teal),
+            child: const Icon(Icons.person, size: 40, color: Colors.blue),
           ),
           const SizedBox(width: 16),
 
@@ -125,7 +143,7 @@ class ProfilePage extends StatelessWidget {
               children: [
                 Obx(
                   () => Text(
-                    profileC.currentUser.value?.fullName ?? 'Loading...',
+                    profileC.currentUser.value?.fullName ?? 'ກຳລັງໂຫຼດ...',
                     style: const TextStyle(
                       fontSize: 22,
                       fontWeight: FontWeight.bold,
@@ -160,13 +178,13 @@ class ProfilePage extends StatelessWidget {
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
+            color: Colors.blue.withOpacity(0.08),
             spreadRadius: 2,
-            blurRadius: 8,
-            offset: const Offset(0, 2),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
           ),
         ],
       ),
@@ -177,7 +195,7 @@ class ProfilePage extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               const Text(
-                'Personal Information',
+                'ຂໍ້ມູນສ່ວນບຸກຄົນ',
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
@@ -189,7 +207,7 @@ class ProfilePage extends StatelessWidget {
                   onPressed: () => profileC.toggleEditMode(),
                   icon: Icon(
                     profileC.isEditing.value ? Icons.close : Icons.edit,
-                    color: Colors.teal,
+                    color: Colors.blue,
                   ),
                 ),
               ),
@@ -200,7 +218,7 @@ class ProfilePage extends StatelessWidget {
           // First Name
           _buildFormField(
             controller: profileC.firstNameController,
-            label: 'First Name',
+            label: 'ຊື່',
             icon: Icons.person_outline,
             enabled: profileC.isEditing.value,
           ),
@@ -208,7 +226,7 @@ class ProfilePage extends StatelessWidget {
           // Last Name
           _buildFormField(
             controller: profileC.lastNameController,
-            label: 'Last Name',
+            label: 'ນາມສະກຸນ',
             icon: Icons.person_outline,
             enabled: profileC.isEditing.value,
           ),
@@ -216,7 +234,7 @@ class ProfilePage extends StatelessWidget {
           // Email
           _buildFormField(
             controller: profileC.emailController,
-            label: 'Email',
+            label: 'ອີເມວ',
             icon: Icons.email_outlined,
             enabled: profileC.isEditing.value,
             keyboardType: TextInputType.emailAddress,
@@ -225,7 +243,7 @@ class ProfilePage extends StatelessWidget {
           // Phone
           _buildFormField(
             controller: profileC.phoneController,
-            label: 'Phone',
+            label: 'ເບີໂທ',
             icon: Icons.phone_outlined,
             enabled: profileC.isEditing.value,
             keyboardType: TextInputType.phone,
@@ -235,7 +253,7 @@ class ProfilePage extends StatelessWidget {
           Obx(
             () => _buildFormField(
               controller: profileC.datebirthController,
-              label: 'Date of Birth',
+              label: 'ວັນເກີດ',
               icon: Icons.calendar_today_outlined,
               enabled: profileC.isEditing.value,
               readOnly: true,
@@ -262,11 +280,12 @@ class ProfilePage extends StatelessWidget {
                                 ? null
                                 : () => profileC.updateProfile(),
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.teal,
+                          backgroundColor: Colors.blue,
                           padding: const EdgeInsets.symmetric(vertical: 12),
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
+                            borderRadius: BorderRadius.circular(12),
                           ),
+                          elevation: 3,
                         ),
                         child:
                             profileC.isLoading.value
@@ -279,7 +298,7 @@ class ProfilePage extends StatelessWidget {
                                   ),
                                 )
                                 : const Text(
-                                  'Update Profile',
+                                  'ອັບເດດໂປຣໄຟລ໌',
                                   style: TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.bold,
@@ -314,21 +333,21 @@ class ProfilePage extends StatelessWidget {
         onTap: onTap,
         decoration: InputDecoration(
           labelText: label,
-          prefixIcon: Icon(icon, color: Colors.teal),
+          prefixIcon: Icon(icon, color: Colors.blue),
           border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: BorderRadius.circular(12),
             borderSide: BorderSide(color: Colors.grey.shade300),
           ),
           enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: BorderRadius.circular(12),
             borderSide: BorderSide(color: Colors.grey.shade300),
           ),
           focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8),
-            borderSide: const BorderSide(color: Colors.teal, width: 2),
+            borderRadius: BorderRadius.circular(12),
+            borderSide: const BorderSide(color: Colors.blue, width: 2),
           ),
           disabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: BorderRadius.circular(12),
             borderSide: BorderSide(color: Colors.grey.shade200),
           ),
           filled: !enabled,
@@ -339,40 +358,54 @@ class ProfilePage extends StatelessWidget {
   }
 
   Widget _buildSexDropdown(ProfileC profileC) {
+    // Define the dropdown items
+    final List<DropdownMenuItem<String>> dropdownItems = [
+      const DropdownMenuItem<String>(value: 'ຊາຍ', child: Text('ຊາຍ')),
+      const DropdownMenuItem<String>(value: 'ຍິງ', child: Text('ຍິງ')),
+    ];
+
+    // Get current value, ensure it's valid
+    String currentValue = profileC.selectedSex.value;
+    if (currentValue != 'ຊາຍ' && currentValue != 'ຍິງ') {
+      currentValue = 'ຊາຍ'; // Default fallback
+      profileC.selectedSex.value = currentValue;
+    }
+
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       child: DropdownButtonFormField<String>(
-        value: profileC.selectedSex.value,
+        value: currentValue,
         onChanged:
             profileC.isEditing.value
-                ? (value) => profileC.selectedSex.value = value ?? 'ຊາຍ'
+                ? (value) {
+                  if (value != null) {
+                    profileC.selectedSex.value = value;
+                  }
+                }
                 : null,
         decoration: InputDecoration(
-          labelText: 'Sex',
-          prefixIcon: const Icon(Icons.wc_outlined, color: Colors.teal),
+          labelText: 'ເພດ',
+          prefixIcon: const Icon(Icons.wc_outlined, color: Colors.blue),
           border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: BorderRadius.circular(12),
             borderSide: BorderSide(color: Colors.grey.shade300),
           ),
           enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: BorderRadius.circular(12),
             borderSide: BorderSide(color: Colors.grey.shade300),
           ),
           focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8),
-            borderSide: const BorderSide(color: Colors.teal, width: 2),
+            borderRadius: BorderRadius.circular(12),
+            borderSide: const BorderSide(color: Colors.blue, width: 2),
           ),
           disabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: BorderRadius.circular(12),
             borderSide: BorderSide(color: Colors.grey.shade200),
           ),
           filled: !profileC.isEditing.value,
           fillColor: profileC.isEditing.value ? null : Colors.grey.shade50,
         ),
-        items:
-            ['ຊາຍ', 'ຍິງ'].map((String value) {
-              return DropdownMenuItem<String>(value: value, child: Text(value));
-            }).toList(),
+        items: dropdownItems,
       ),
     );
   }
@@ -382,13 +415,13 @@ class ProfilePage extends StatelessWidget {
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.1),
+            color: Colors.blue.withOpacity(0.08),
             spreadRadius: 2,
-            blurRadius: 8,
-            offset: const Offset(0, 2),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
           ),
         ],
       ),
@@ -399,7 +432,7 @@ class ProfilePage extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               const Text(
-                'Change Password',
+                'ປ່ຽນລະຫັດຜ່ານ',
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
@@ -413,7 +446,7 @@ class ProfilePage extends StatelessWidget {
                     profileC.isChangingPassword.value
                         ? Icons.close
                         : Icons.lock_outline,
-                    color: Colors.teal,
+                    color: Colors.blue,
                   ),
                 ),
               ),
@@ -430,7 +463,7 @@ class ProfilePage extends StatelessWidget {
                         // Current Password
                         _buildPasswordField(
                           controller: profileC.currentPasswordController,
-                          label: 'Current Password',
+                          label: 'ລະຫັດຜ່ານປັດຈຸບັນ',
                           isHidden: profileC.isCurrentPasswordHidden.value,
                           onToggleVisibility:
                               () => profileC.toggleCurrentPasswordVisibility(),
@@ -439,7 +472,7 @@ class ProfilePage extends StatelessWidget {
                         // New Password
                         _buildPasswordField(
                           controller: profileC.newPasswordController,
-                          label: 'New Password',
+                          label: 'ລະຫັດຜ່ານໃໝ່',
                           isHidden: profileC.isNewPasswordHidden.value,
                           onToggleVisibility:
                               () => profileC.toggleNewPasswordVisibility(),
@@ -448,7 +481,7 @@ class ProfilePage extends StatelessWidget {
                         // Confirm New Password
                         _buildPasswordField(
                           controller: profileC.confirmPasswordController,
-                          label: 'Confirm New Password',
+                          label: 'ຢືນຢັນລະຫັດຜ່ານໃໝ່',
                           isHidden: profileC.isConfirmPasswordHidden.value,
                           onToggleVisibility:
                               () => profileC.toggleConfirmPasswordVisibility(),
@@ -460,7 +493,7 @@ class ProfilePage extends StatelessWidget {
                           margin: const EdgeInsets.only(bottom: 16),
                           decoration: BoxDecoration(
                             color: Colors.blue.shade50,
-                            borderRadius: BorderRadius.circular(8),
+                            borderRadius: BorderRadius.circular(12),
                             border: Border.all(color: Colors.blue.shade200),
                           ),
                           child: Row(
@@ -473,7 +506,7 @@ class ProfilePage extends StatelessWidget {
                               const SizedBox(width: 8),
                               Expanded(
                                 child: Text(
-                                  'Password must be at least 6 characters long',
+                                  'ລະຫັດຜ່ານຕ້ອງມີຄວາມຍາວຢ່າງໜ້ອຍ 6 ຕົວອັກສອນ',
                                   style: TextStyle(
                                     color: Colors.blue.shade600,
                                     fontSize: 12,
@@ -493,11 +526,12 @@ class ProfilePage extends StatelessWidget {
                                     ? null
                                     : () => profileC.changePassword(),
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.orange,
+                              backgroundColor: Colors.blue,
                               padding: const EdgeInsets.symmetric(vertical: 12),
                               shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8),
+                                borderRadius: BorderRadius.circular(12),
                               ),
+                              elevation: 3,
                             ),
                             child:
                                 profileC.isLoading.value
@@ -510,7 +544,7 @@ class ProfilePage extends StatelessWidget {
                                       ),
                                     )
                                     : const Text(
-                                      'Change Password',
+                                      'ປ່ຽນລະຫັດຜ່ານ',
                                       style: TextStyle(
                                         fontSize: 16,
                                         fontWeight: FontWeight.bold,
@@ -523,6 +557,10 @@ class ProfilePage extends StatelessWidget {
                     )
                     : Container(
                       padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: Colors.grey.shade50,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
                       child: Row(
                         children: [
                           Icon(
@@ -532,7 +570,7 @@ class ProfilePage extends StatelessWidget {
                           ),
                           const SizedBox(width: 12),
                           Text(
-                            'Click to change your password',
+                            'ກົດເພື່ອປ່ຽນລະຫັດຜ່ານຂອງທ່ານ',
                             style: TextStyle(
                               color: Colors.grey.shade600,
                               fontSize: 14,
@@ -560,7 +598,7 @@ class ProfilePage extends StatelessWidget {
         obscureText: isHidden,
         decoration: InputDecoration(
           labelText: label,
-          prefixIcon: const Icon(Icons.lock_outline, color: Colors.teal),
+          prefixIcon: const Icon(Icons.lock_outline, color: Colors.blue),
           suffixIcon: IconButton(
             onPressed: onToggleVisibility,
             icon: Icon(
@@ -569,16 +607,16 @@ class ProfilePage extends StatelessWidget {
             ),
           ),
           border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: BorderRadius.circular(12),
             borderSide: BorderSide(color: Colors.grey.shade300),
           ),
           enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: BorderRadius.circular(12),
             borderSide: BorderSide(color: Colors.grey.shade300),
           ),
           focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8),
-            borderSide: const BorderSide(color: Colors.teal, width: 2),
+            borderRadius: BorderRadius.circular(12),
+            borderSide: const BorderSide(color: Colors.blue, width: 2),
           ),
         ),
       ),
@@ -598,14 +636,14 @@ class ProfilePage extends StatelessWidget {
                     : () => profileC.deleteAccount(),
             icon: const Icon(Icons.delete_outline, color: Colors.red),
             label: const Text(
-              'Delete Account',
+              'ລົບບັນຊີ',
               style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
             ),
             style: OutlinedButton.styleFrom(
               side: const BorderSide(color: Colors.red),
               padding: const EdgeInsets.symmetric(vertical: 12),
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
+                borderRadius: BorderRadius.circular(12),
               ),
             ),
           ),
@@ -618,14 +656,14 @@ class ProfilePage extends StatelessWidget {
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
               color: Colors.grey.shade100,
-              borderRadius: BorderRadius.circular(8),
+              borderRadius: BorderRadius.circular(12),
             ),
             child: Row(
               children: [
                 Icon(Icons.info_outline, color: Colors.grey.shade600, size: 16),
                 const SizedBox(width: 8),
                 Text(
-                  'Member since: ${_formatDateForDisplay(profileC.currentUser.value?.registrationDate)}',
+                  'ສະມາຊິກຕັ້ງແຕ່: ${_formatDateForDisplay(profileC.currentUser.value?.registrationDate)}',
                   style: TextStyle(color: Colors.grey.shade600, fontSize: 12),
                 ),
               ],

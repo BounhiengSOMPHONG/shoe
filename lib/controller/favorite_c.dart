@@ -121,7 +121,7 @@ class FavoriteC extends GetxController {
           Get.snackbar(
             'ສຳເລັດ',
             'ລຶບອອກຈາກລາຍການທີ່ມັກແລ້ວ',
-            snackPosition: SnackPosition.BOTTOM,
+            snackPosition: SnackPosition.TOP,
             backgroundColor: Colors.green.withOpacity(0.8),
             colorText: Colors.white,
           );
@@ -142,7 +142,7 @@ class FavoriteC extends GetxController {
           Get.snackbar(
             'ສຳເລັດ',
             'ເພີ່ມເຂົ້າລາຍການທີ່ມັກແລ້ວ',
-            snackPosition: SnackPosition.BOTTOM,
+            snackPosition: SnackPosition.TOP,
             backgroundColor: Colors.green.withOpacity(0.8),
             colorText: Colors.white,
           );
