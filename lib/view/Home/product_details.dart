@@ -695,7 +695,28 @@ class _ProductDetailsState extends State<ProductDetails>
       width: double.infinity,
       height: 60,
       child: ElevatedButton(
-        onPressed: quantity > 0 ? () => controller.addToCart() : null,
+        onPressed:
+            quantity > 0
+                ? () {
+                  controller.addToCart();
+                  // แสดงข้อความแจ้งเตือนสำเร็จ
+                  Get.snackbar(
+                    'สำเร็จ',
+                    'เพิ่มสินค้าลงตะกร้าแล้ว',
+                    snackPosition: SnackPosition.BOTTOM,
+                    backgroundColor: Colors.green.shade600,
+                    colorText: Colors.white,
+                    duration: Duration(seconds: 3),
+                    margin: EdgeInsets.all(16),
+                    borderRadius: 10,
+                    icon: Icon(
+                      Icons.check_circle_outline,
+                      color: Colors.white,
+                      size: 24,
+                    ),
+                  );
+                }
+                : null,
         style: ElevatedButton.styleFrom(
           backgroundColor:
               quantity > 0 ? Colors.blue.shade600 : Colors.grey.shade400,
@@ -912,6 +933,7 @@ class _ProductDetailsState extends State<ProductDetails>
                 color: Colors.blue.shade800,
               ),
             ),
+
             SizedBox(height: 16),
 
             // Star Rating
@@ -928,7 +950,9 @@ class _ProductDetailsState extends State<ProductDetails>
               children: List.generate(5, (index) {
                 final starValue = index + 1;
                 return GestureDetector(
-                  onTap: () => reviewController.setRating(starValue),
+                  onTap: () {
+                    reviewController.setRating(starValue);
+                  },
                   child: Container(
                     padding: EdgeInsets.all(4),
                     child: Icon(
@@ -974,7 +998,9 @@ class _ProductDetailsState extends State<ProductDetails>
                 filled: true,
                 fillColor: Colors.white,
               ),
-              onChanged: reviewController.updateComment,
+              onChanged: (value) {
+                reviewController.updateComment(value);
+              },
             ),
 
             SizedBox(height: 20),
@@ -987,12 +1013,17 @@ class _ProductDetailsState extends State<ProductDetails>
                     onPressed:
                         reviewController.canSubmitReview &&
                                 !reviewController.isSubmitting.value
-                            ? () => reviewController.submitReview(
-                              widget.product.id!.toInt(),
-                            )
+                            ? () {
+                              reviewController.submitReview(
+                                widget.product.id!.toInt(),
+                              );
+                            }
                             : null,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blue.shade600,
+                      backgroundColor:
+                          reviewController.canSubmitReview
+                              ? Colors.blue.shade600
+                              : Colors.grey.shade400,
                       foregroundColor: Colors.white,
                       padding: EdgeInsets.symmetric(vertical: 12),
                       shape: RoundedRectangleBorder(

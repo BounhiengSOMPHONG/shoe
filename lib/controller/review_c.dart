@@ -37,18 +37,62 @@ class ReviewC extends GetxController {
   }
 
   Future<void> initUserId() async {
-    final prefs = await SharedPreferences.getInstance();
-    userId.value = prefs.getString('userId') ?? '';
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final storedUserId = prefs.getString('userId') ?? '';
+      userId.value = storedUserId;
+      debugPrint('Initialized userId: "${userId.value}"');
+
+      // Also get token for debugging
+      final token = prefs.getString('token') ?? '';
+      debugPrint('Token exists: ${token.isNotEmpty}');
+    } catch (e) {
+      debugPrint('Error initializing userId: $e');
+    }
+  }
+
+  // Manual refresh method
+  Future<void> refreshReviewData() async {
+    if (currentProductId.value > 0) {
+      debugPrint(
+        'Refreshing review data for product ${currentProductId.value}',
+      );
+      await initUserId(); // Refresh user ID first
+      await initReviewsForProduct(currentProductId.value);
+    }
   }
 
   // Initialize reviews for a product
   Future<void> initReviewsForProduct(int productId) async {
-    currentProductId.value = productId;
-    await Future.wait([
-      fetchReviews(productId),
-      fetchReviewSummary(productId),
-      fetchUserReview(productId),
-    ]);
+    try {
+      debugPrint('=== Initializing reviews for product $productId ===');
+      currentProductId.value = productId;
+
+      // Reset form data
+      selectedRating.value = 0;
+      reviewComment.value = '';
+      commentController.text = '';
+      userReview.value = null;
+
+      // Ensure we have userId first
+      if (userId.value.isEmpty) {
+        debugPrint('UserId is empty, initializing...');
+        await initUserId();
+      }
+
+      debugPrint('Using userId: "${userId.value}"');
+
+      // Fetch data in parallel
+      await Future.wait([
+        fetchReviews(productId),
+        fetchReviewSummary(productId),
+        if (userId.value.isNotEmpty) fetchUserReview(productId),
+      ]);
+
+      debugPrint('Review initialization completed for product $productId');
+    } catch (e) {
+      debugPrint('Error initializing reviews: $e');
+    }
   }
 
   // Fetch all reviews for a product
@@ -115,11 +159,22 @@ class ReviewC extends GetxController {
   // Fetch user's review for a product
   Future<void> fetchUserReview(int productId) async {
     try {
-      if (userId.value.isEmpty) return;
+      if (userId.value.isEmpty) {
+        debugPrint('User not logged in, skipping user review fetch');
+        return;
+      }
 
-      final response = await _apiService.get(
-        '${ApiConstants.userReviewEndpoint}/$productId/user',
-      );
+      final endpoint = '${ApiConstants.userReviewEndpoint}/$productId/user';
+      final fullUrl = '${ApiConstants.baseUrl}$endpoint';
+      debugPrint('Fetching user review for product $productId');
+      debugPrint('User ID: "${userId.value}"');
+      debugPrint('Full URL: $fullUrl');
+
+      final response = await _apiService.get(endpoint);
+
+      debugPrint('User review response status: ${response.success}');
+      debugPrint('User review response data: ${response.data}');
+      debugPrint('User review response message: ${response.message}');
 
       if (response.success) {
         if (response.data != null && response.data['data'] != null) {
@@ -128,15 +183,35 @@ class ReviewC extends GetxController {
           selectedRating.value = userReview.value?.rating ?? 0;
           reviewComment.value = userReview.value?.comment ?? '';
           commentController.text = reviewComment.value;
+          debugPrint('✅ User review loaded successfully:');
+          debugPrint('   - Review ID: ${userReview.value?.reviewId}');
+          debugPrint('   - Rating: ${selectedRating.value}');
+          debugPrint('   - Comment: "${reviewComment.value}"');
         } else {
           userReview.value = null;
           selectedRating.value = 0;
           reviewComment.value = '';
           commentController.text = '';
+          debugPrint('ℹ️ No user review found for this product');
+        }
+      } else {
+        debugPrint('❌ Failed to fetch user review: ${response.message}');
+        // If it's a 404 or "No review found", that's normal
+        if (response.message?.contains('No review found') == true ||
+            response.message?.contains('404') == true) {
+          userReview.value = null;
+          selectedRating.value = 0;
+          reviewComment.value = '';
+          commentController.text = '';
+          debugPrint('ℹ️ User has not reviewed this product yet');
         }
       }
     } catch (e) {
-      debugPrint('Error fetching user review: $e');
+      debugPrint('❌ Error fetching user review: $e');
+      userReview.value = null;
+      selectedRating.value = 0;
+      reviewComment.value = '';
+      commentController.text = '';
     }
   }
 
@@ -294,10 +369,21 @@ class ReviewC extends GetxController {
   // Helper methods
   bool get hasUserReviewed => userReview.value != null;
 
-  bool get canSubmitReview =>
-      userId.value.isNotEmpty && selectedRating.value > 0;
+  bool get canSubmitReview {
+    final canSubmit = userId.value.isNotEmpty && selectedRating.value > 0;
+    debugPrint(
+      'canSubmitReview: userId=${userId.value.isNotEmpty}, rating=${selectedRating.value}, result=$canSubmit',
+    );
+    return canSubmit;
+  }
 
-  String get submitButtonText => hasUserReviewed ? 'อัปเดตรีวิว' : 'เพิ่มรีวิว';
+  String get submitButtonText {
+    final text = hasUserReviewed ? 'อัปเดตรีวิว' : 'เพิ่มรีวิว';
+    debugPrint(
+      'submitButtonText: hasUserReviewed=$hasUserReviewed, text="$text"',
+    );
+    return text;
+  }
 
   // Format date
   String formatReviewDate(DateTime? date) {
