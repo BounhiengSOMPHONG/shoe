@@ -141,7 +141,61 @@ class EditAddress extends StatelessWidget {
                 style: TextStyle(color: Colors.grey[600]),
               ),
             ),
-          const SizedBox(height: 8),
+          const SizedBox(height: 16),
+
+          // Action buttons
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              // Edit button
+              Expanded(
+                child: OutlinedButton.icon(
+                  onPressed: () => controller.editAddress(address),
+                  icon: const Icon(
+                    Icons.edit_outlined,
+                    size: 18,
+                    color: Colors.teal,
+                  ),
+                  label: const Text(
+                    'Edit',
+                    style: TextStyle(color: Colors.teal, fontSize: 14),
+                  ),
+                  style: OutlinedButton.styleFrom(
+                    side: const BorderSide(color: Colors.teal),
+                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                  ),
+                ),
+              ),
+
+              const SizedBox(width: 12),
+
+              // Delete button
+              Expanded(
+                child: OutlinedButton.icon(
+                  onPressed: () => controller.deleteAddress(address),
+                  icon: const Icon(
+                    Icons.delete_outline,
+                    size: 18,
+                    color: Colors.red,
+                  ),
+                  label: const Text(
+                    'Delete',
+                    style: TextStyle(color: Colors.red, fontSize: 14),
+                  ),
+                  style: OutlinedButton.styleFrom(
+                    side: const BorderSide(color: Colors.red),
+                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ],
       ),
     );

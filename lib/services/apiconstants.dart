@@ -28,6 +28,10 @@ class ApiConstants {
   // Address endpoints
   static const String showAddressEndpoint = '/api/address';
   static const String insertAddressEndpoint = '/api/insertaddress';
+  static const String editAddressEndpoint = '/api/editaddress'; // + /:id
+  static const String deleteAddressEndpoint =
+      '/api/address'; // + /:id (DELETE method)
+
   //Checkout endpoints
   static const String checkoutEndpoint = '/api/checkout';
 
