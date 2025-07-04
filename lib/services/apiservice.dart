@@ -103,4 +103,96 @@ class ApiService {
       return ApiResponse(success: false, message: 'Connection error');
     }
   }
+
+  Future<ApiResponse> put(
+    String endpoint, {
+    required Map<String, dynamic> data,
+  }) async {
+    try {
+      final headers = await _buildHeaders();
+
+      final response = await http.put(
+        Uri.parse('${ApiConstants.baseUrl}$endpoint'),
+        headers: headers,
+        body: jsonEncode(data),
+      );
+
+      final responseBody = jsonDecode(response.body);
+
+      if (response.statusCode == 200 || response.statusCode == 201) {
+        return ApiResponse(success: true, data: responseBody);
+      }
+      if (response.statusCode == 403) {
+        Get.dialog(
+          AlertDialog(
+            title: Text('Unauthorized Access'),
+            content: Text('Please log in again.'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Get.offAll(Login());
+                },
+                child: Text('OK'),
+              ),
+            ],
+          ),
+        );
+        return ApiResponse(
+          success: false,
+          message: 'Unauthorized access. Please log in again.',
+        );
+      } else {
+        return ApiResponse(
+          success: false,
+          message: responseBody['message'] ?? 'Request failed',
+        );
+      }
+    } catch (e) {
+      return ApiResponse(success: false, message: 'Connection error');
+    }
+  }
+
+  Future<ApiResponse> delete(String endpoint) async {
+    try {
+      final headers = await _buildHeaders();
+
+      final response = await http.delete(
+        Uri.parse('${ApiConstants.baseUrl}$endpoint'),
+        headers: headers,
+      );
+
+      final responseBody = jsonDecode(response.body);
+
+      if (response.statusCode == 200) {
+        return ApiResponse(success: true, data: responseBody);
+      }
+      if (response.statusCode == 403) {
+        Get.dialog(
+          AlertDialog(
+            title: Text('Unauthorized Access'),
+            content: Text('Please log in again.'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Get.offAll(Login());
+                },
+                child: Text('OK'),
+              ),
+            ],
+          ),
+        );
+        return ApiResponse(
+          success: false,
+          message: 'Unauthorized access. Please log in again.',
+        );
+      } else {
+        return ApiResponse(
+          success: false,
+          message: responseBody['message'] ?? 'Request failed',
+        );
+      }
+    } catch (e) {
+      return ApiResponse(success: false, message: 'Connection error');
+    }
+  }
 }

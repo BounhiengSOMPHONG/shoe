@@ -1,0 +1,257 @@
+import 'package:app_shoe/model/user_m.dart';
+import 'package:app_shoe/services/apiconstants.dart';
+import 'package:app_shoe/services/apiservice.dart';
+import 'package:app_shoe/view/Login/welcome.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+class ProfileC extends GetxController {
+  // Controllers for form fields
+  final TextEditingController firstNameController = TextEditingController();
+  final TextEditingController lastNameController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController phoneController = TextEditingController();
+  final TextEditingController datebirthController = TextEditingController();
+
+  // Observables
+  final RxBool isLoading = false.obs;
+  final RxBool isEditing = false.obs;
+  final Rx<User?> currentUser = Rx<User?>(null);
+  final RxString selectedSex = 'Male'.obs;
+
+  // Services
+  final ApiService _apiService = ApiService();
+
+  @override
+  void onInit() {
+    super.onInit();
+    loadUserProfile();
+  }
+
+  @override
+  void onClose() {
+    firstNameController.dispose();
+    lastNameController.dispose();
+    emailController.dispose();
+    phoneController.dispose();
+    datebirthController.dispose();
+    super.onClose();
+  }
+
+  // Load user profile data
+  Future<void> loadUserProfile() async {
+    isLoading.value = true;
+    EasyLoading.show(status: 'Loading profile...');
+
+    try {
+      final response = await _apiService.get(
+        ApiConstants.getUserProfileEndpoint,
+      );
+
+      if (response.success) {
+        currentUser.value = User.fromJson(response.data['data']);
+        _populateControllers();
+      } else {
+        _showErrorMessage(response.message ?? 'Failed to load profile');
+      }
+    } catch (e) {
+      _showErrorMessage('Connection error. Please try again.');
+      print('Load profile error: $e');
+    } finally {
+      isLoading.value = false;
+      EasyLoading.dismiss();
+    }
+  }
+
+  // Populate form controllers with user data
+  void _populateControllers() {
+    final user = currentUser.value;
+    if (user != null) {
+      firstNameController.text = user.firstName;
+      lastNameController.text = user.lastName;
+      emailController.text = user.email;
+      phoneController.text = user.phone ?? '';
+
+      // Handle date formatting properly
+      String dateValue = user.datebirth ?? '';
+      if (dateValue.isNotEmpty) {
+        // If the date contains 'T' (ISO format), extract only the date part
+        if (dateValue.contains('T')) {
+          dateValue = dateValue.split('T')[0];
+        }
+        datebirthController.text = dateValue;
+      } else {
+        datebirthController.text = '';
+      }
+
+      selectedSex.value = user.sex ?? 'Male';
+    }
+  }
+
+  // Toggle edit mode
+  void toggleEditMode() {
+    isEditing.value = !isEditing.value;
+    if (!isEditing.value) {
+      // Reset form when canceling edit
+      _populateControllers();
+    }
+  }
+
+  // Update user profile
+  Future<void> updateProfile() async {
+    if (!_validateInputs()) return;
+
+    isLoading.value = true;
+    EasyLoading.show(status: 'Updating profile...');
+
+    try {
+      final response = await _apiService.put(
+        ApiConstants.updateUserProfileEndpoint,
+        data: {
+          'FirstName': firstNameController.text.trim(),
+          'LastName': lastNameController.text.trim(),
+          'Email': emailController.text.trim(),
+          'Phone': phoneController.text.trim(),
+          'Datebirth':
+              datebirthController.text.trim().isEmpty
+                  ? null
+                  : datebirthController.text.trim(),
+          'Sex': selectedSex.value,
+        },
+      );
+
+      if (response.success) {
+        currentUser.value = User.fromJson(response.data['data']);
+        isEditing.value = false;
+        _showSuccessMessage('Profile updated successfully');
+      } else {
+        _showErrorMessage(response.message ?? 'Failed to update profile');
+      }
+    } catch (e) {
+      _showErrorMessage('Connection error. Please try again.');
+      print('Update profile error: $e');
+    } finally {
+      isLoading.value = false;
+      EasyLoading.dismiss();
+    }
+  }
+
+  // Delete user account
+  Future<void> deleteAccount() async {
+    // Show confirmation dialog
+    bool confirmDelete =
+        await Get.dialog<bool>(
+          AlertDialog(
+            title: const Text('Delete Account'),
+            content: const Text(
+              'Are you sure you want to delete your account? This action cannot be undone.',
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Get.back(result: false),
+                child: const Text('Cancel'),
+              ),
+              TextButton(
+                onPressed: () => Get.back(result: true),
+                style: TextButton.styleFrom(foregroundColor: Colors.red),
+                child: const Text('Delete'),
+              ),
+            ],
+          ),
+        ) ??
+        false;
+
+    if (!confirmDelete) return;
+
+    isLoading.value = true;
+    EasyLoading.show(status: 'Deleting account...');
+
+    try {
+      final response = await _apiService.delete(
+        ApiConstants.deleteUserProfileEndpoint,
+      );
+
+      if (response.success) {
+        // Clear stored data and navigate to welcome
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.clear();
+
+        _showSuccessMessage('Account deleted successfully');
+        Get.offAll(() => Welcome());
+      } else {
+        _showErrorMessage(response.message ?? 'Failed to delete account');
+      }
+    } catch (e) {
+      _showErrorMessage('Connection error. Please try again.');
+      print('Delete account error: $e');
+    } finally {
+      isLoading.value = false;
+      EasyLoading.dismiss();
+    }
+  }
+
+  // Select date for date of birth
+  Future<void> selectDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate:
+          datebirthController.text.isNotEmpty
+              ? DateTime.tryParse(datebirthController.text) ?? DateTime.now()
+              : DateTime.now(),
+      firstDate: DateTime(1900),
+      lastDate: DateTime.now(),
+    );
+
+    if (picked != null) {
+      datebirthController.text =
+          picked.toString().split(' ')[0]; // Format: YYYY-MM-DD
+    }
+  }
+
+  // Validation
+  bool _validateInputs() {
+    if (firstNameController.text.trim().isEmpty) {
+      _showErrorMessage('Please enter your first name');
+      return false;
+    }
+
+    if (lastNameController.text.trim().isEmpty) {
+      _showErrorMessage('Please enter your last name');
+      return false;
+    }
+
+    if (emailController.text.trim().isEmpty) {
+      _showErrorMessage('Please enter your email');
+      return false;
+    }
+
+    if (!GetUtils.isEmail(emailController.text.trim())) {
+      _showErrorMessage('Please enter a valid email');
+      return false;
+    }
+
+    return true;
+  }
+
+  void _showErrorMessage(String message) {
+    Get.snackbar(
+      'Error',
+      message,
+      snackPosition: SnackPosition.BOTTOM,
+      backgroundColor: Colors.red.withOpacity(0.8),
+      colorText: Colors.white,
+    );
+  }
+
+  void _showSuccessMessage(String message) {
+    Get.snackbar(
+      'Success',
+      message,
+      snackPosition: SnackPosition.BOTTOM,
+      backgroundColor: Colors.green.withOpacity(0.8),
+      colorText: Colors.white,
+    );
+  }
+}

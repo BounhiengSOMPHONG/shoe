@@ -27,8 +27,14 @@ class _AccountState extends State<Account> {
                   clipper: WaveClipper(),
                   child: Container(
                     height: 350,
-                    color: Colors.white,
-                  ), // Changed color
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [Colors.teal.shade400, Colors.teal.shade600],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
+                    ),
+                  ),
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(
@@ -80,20 +86,26 @@ class _AccountState extends State<Account> {
                         ),
                       ),
                       const SizedBox(height: 20), // Reduced space
-                      const Text(
-                        'NAME', // Placeholder name
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 22, // Slightly larger font
-                          color: Colors.white, // White text for contrast
+                      // แสดงชื่อจริงของผู้ใช้
+                      Obx(
+                        () => Text(
+                          _account.currentUser.value?.fullName ?? 'Loading...',
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 22, // Slightly larger font
+                            color: Colors.white, // White text for contrast
+                          ),
                         ),
                       ),
-                      const Text(
-                        'NAME@gmail.com', // Placeholder email
-                        style: TextStyle(
-                          fontSize: 18,
-                          color: Colors.black,
-                        ), // Slightly smaller and lighter white
+                      // แสดงอีเมลจริงของผู้ใช้
+                      Obx(
+                        () => Text(
+                          _account.currentUser.value?.email ?? 'Loading...',
+                          style: const TextStyle(
+                            fontSize: 18,
+                            color: Colors.white70,
+                          ), // Slightly smaller and lighter white
+                        ),
                       ),
                     ],
                   ),
@@ -193,7 +205,7 @@ class _AccountState extends State<Account> {
                         size: 24, // Slightly larger icon
                       ),
                       onTap: () {
-                        // TODO: Implement navigation to Profile page
+                        _account.navigateToProfile();
                       },
                     ),
                   ),
@@ -277,7 +289,7 @@ class _AccountState extends State<Account> {
                     child: ListTile(
                       leading: const Icon(
                         Icons.logout, // Logout icon is fine
-                        color: Colors.black54,
+                        color: Colors.white,
                         size: 24, // Slightly larger icon
                       ),
                       title: const Text(
@@ -285,11 +297,12 @@ class _AccountState extends State<Account> {
                         style: TextStyle(
                           fontWeight: FontWeight.w500,
                           fontSize: 16, // Slightly larger font
+                          color: Colors.white,
                         ),
                       ),
                       trailing: const Icon(
                         Icons.chevron_right,
-                        color: Colors.black54,
+                        color: Colors.white,
                         size: 24, // Slightly larger icon
                       ),
                       onTap: () {
