@@ -43,5 +43,10 @@ class ApiConstants {
   static const String orderTimelineEndpoint =
       '/api/order'; // + /:orderId/timeline
 
+  // Review endpoints
+  static const String reviewsEndpoint = '/api/reviews'; // GET /:productId, POST /
+  static const String reviewSummaryEndpoint = '/api/reviews'; // GET /:productId/summary
+  static const String userReviewEndpoint = '/api/reviews'; // GET /:productId/user, DELETE /:productId
+
   // Add other endpoints as needed
 }

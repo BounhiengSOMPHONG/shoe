@@ -108,3 +108,136 @@ class Brand {
     return {'Brand': brandName};
   }
 }
+
+class Review {
+  final int? reviewId;
+  final int? userId;
+  final int? productId;
+  final int? rating;
+  final String? comment;
+  final DateTime? reviewDate;
+  final String? firstName;
+  final String? lastName;
+  final String? userImage;
+
+  Review({
+    this.reviewId,
+    this.userId,
+    this.productId,
+    this.rating,
+    this.comment,
+    this.reviewDate,
+    this.firstName,
+    this.lastName,
+    this.userImage,
+  });
+
+  factory Review.fromJson(Map<String, dynamic> json) {
+    return Review(
+      reviewId: int.tryParse(json['Review_ID']?.toString() ?? '0'),
+      userId: int.tryParse(json['User_ID']?.toString() ?? '0'),
+      productId: int.tryParse(json['Product_ID']?.toString() ?? '0'),
+      rating: int.tryParse(json['Rating']?.toString() ?? '0'),
+      comment: json['Comment'] as String?,
+      reviewDate: json['Review_Date'] != null 
+        ? DateTime.tryParse(json['Review_Date'].toString())
+        : null,
+      firstName: json['FirstName'] as String?,
+      lastName: json['LastName'] as String?,
+      userImage: json['UserImage'] as String?,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'Review_ID': reviewId,
+      'User_ID': userId,
+      'Product_ID': productId,
+      'Rating': rating,
+      'Comment': comment,
+      'Review_Date': reviewDate?.toIso8601String(),
+      'FirstName': firstName,
+      'LastName': lastName,
+      'UserImage': userImage,
+    };
+  }
+
+  String get fullName => '${firstName ?? ''} ${lastName ?? ''}'.trim();
+  
+  String get displayName {
+    if (fullName.isNotEmpty) {
+      return fullName;
+    }
+    return 'Anonymous User';
+  }
+}
+
+class ReviewSummary {
+  final int totalReviews;
+  final double averageRating;
+  final int rating5;
+  final int rating4;
+  final int rating3;
+  final int rating2;
+  final int rating1;
+
+  ReviewSummary({
+    required this.totalReviews,
+    required this.averageRating,
+    required this.rating5,
+    required this.rating4,
+    required this.rating3,
+    required this.rating2,
+    required this.rating1,
+  });
+
+  factory ReviewSummary.fromJson(Map<String, dynamic> json) {
+    return ReviewSummary(
+      totalReviews: int.tryParse(json['totalReviews']?.toString() ?? '0') ?? 0,
+      averageRating: double.tryParse(json['averageRating']?.toString() ?? '0.0') ?? 0.0,
+      rating5: int.tryParse(json['rating5']?.toString() ?? '0') ?? 0,
+      rating4: int.tryParse(json['rating4']?.toString() ?? '0') ?? 0,
+      rating3: int.tryParse(json['rating3']?.toString() ?? '0') ?? 0,
+      rating2: int.tryParse(json['rating2']?.toString() ?? '0') ?? 0,
+      rating1: int.tryParse(json['rating1']?.toString() ?? '0') ?? 0,
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'totalReviews': totalReviews,
+      'averageRating': averageRating,
+      'rating5': rating5,
+      'rating4': rating4,
+      'rating3': rating3,
+      'rating2': rating2,
+      'rating1': rating1,
+    };
+  }
+
+  // Helper method to get rating percentage
+  double getRatingPercentage(int starRating) {
+    if (totalReviews == 0) return 0.0;
+    
+    switch (starRating) {
+      case 5: return (rating5 / totalReviews) * 100;
+      case 4: return (rating4 / totalReviews) * 100;
+      case 3: return (rating3 / totalReviews) * 100;
+      case 2: return (rating2 / totalReviews) * 100;
+      case 1: return (rating1 / totalReviews) * 100;
+      default: return 0.0;
+    }
+  }
+
+  // Helper method to get rating count by star
+  int getRatingCount(int starRating) {
+    switch (starRating) {
+      case 5: return rating5;
+      case 4: return rating4;
+      case 3: return rating3;
+      case 2: return rating2;
+      case 1: return rating1;
+      default: return 0;
+    }
+  }
+}
