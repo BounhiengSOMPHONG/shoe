@@ -15,11 +15,24 @@ class ProfileC extends GetxController {
   final TextEditingController phoneController = TextEditingController();
   final TextEditingController datebirthController = TextEditingController();
 
+  // Password change controllers
+  final TextEditingController currentPasswordController =
+      TextEditingController();
+  final TextEditingController newPasswordController = TextEditingController();
+  final TextEditingController confirmPasswordController =
+      TextEditingController();
+
   // Observables
   final RxBool isLoading = false.obs;
   final RxBool isEditing = false.obs;
+  final RxBool isChangingPassword = false.obs;
   final Rx<User?> currentUser = Rx<User?>(null);
   final RxString selectedSex = 'Male'.obs;
+
+  // Password visibility
+  final RxBool isCurrentPasswordHidden = true.obs;
+  final RxBool isNewPasswordHidden = true.obs;
+  final RxBool isConfirmPasswordHidden = true.obs;
 
   // Services
   final ApiService _apiService = ApiService();
@@ -37,6 +50,9 @@ class ProfileC extends GetxController {
     emailController.dispose();
     phoneController.dispose();
     datebirthController.dispose();
+    currentPasswordController.dispose();
+    newPasswordController.dispose();
+    confirmPasswordController.dispose();
     super.onClose();
   }
 
@@ -97,6 +113,100 @@ class ProfileC extends GetxController {
       // Reset form when canceling edit
       _populateControllers();
     }
+  }
+
+  // Toggle password change mode
+  void togglePasswordChangeMode() {
+    isChangingPassword.value = !isChangingPassword.value;
+    if (!isChangingPassword.value) {
+      // Clear password fields when canceling
+      currentPasswordController.clear();
+      newPasswordController.clear();
+      confirmPasswordController.clear();
+    }
+  }
+
+  // Toggle password visibility
+  void toggleCurrentPasswordVisibility() {
+    isCurrentPasswordHidden.value = !isCurrentPasswordHidden.value;
+  }
+
+  void toggleNewPasswordVisibility() {
+    isNewPasswordHidden.value = !isNewPasswordHidden.value;
+  }
+
+  void toggleConfirmPasswordVisibility() {
+    isConfirmPasswordHidden.value = !isConfirmPasswordHidden.value;
+  }
+
+  // Change password
+  Future<void> changePassword() async {
+    if (!_validatePasswordInputs()) return;
+
+    isLoading.value = true;
+    EasyLoading.show(status: 'Changing password...');
+
+    try {
+      final response = await _apiService.put(
+        ApiConstants.changePasswordEndpoint,
+        data: {
+          'currentPassword': currentPasswordController.text,
+          'newPassword': newPasswordController.text,
+        },
+      );
+
+      if (response.success) {
+        isChangingPassword.value = false;
+        // Clear password fields
+        currentPasswordController.clear();
+        newPasswordController.clear();
+        confirmPasswordController.clear();
+        _showSuccessMessage('Password changed successfully');
+      } else {
+        _showErrorMessage(response.message ?? 'Failed to change password');
+      }
+    } catch (e) {
+      _showErrorMessage('Connection error. Please try again.');
+      print('Change password error: $e');
+    } finally {
+      isLoading.value = false;
+      EasyLoading.dismiss();
+    }
+  }
+
+  // Validation for password change
+  bool _validatePasswordInputs() {
+    if (currentPasswordController.text.isEmpty) {
+      _showErrorMessage('Please enter your current password');
+      return false;
+    }
+
+    if (newPasswordController.text.isEmpty) {
+      _showErrorMessage('Please enter your new password');
+      return false;
+    }
+
+    if (newPasswordController.text.length < 6) {
+      _showErrorMessage('New password must be at least 6 characters long');
+      return false;
+    }
+
+    if (confirmPasswordController.text.isEmpty) {
+      _showErrorMessage('Please confirm your new password');
+      return false;
+    }
+
+    if (newPasswordController.text != confirmPasswordController.text) {
+      _showErrorMessage('New passwords do not match');
+      return false;
+    }
+
+    if (currentPasswordController.text == newPasswordController.text) {
+      _showErrorMessage('New password must be different from current password');
+      return false;
+    }
+
+    return true;
   }
 
   // Update user profile

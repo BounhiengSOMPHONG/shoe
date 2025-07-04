@@ -9,6 +9,7 @@ class ApiConstants {
   static const String getUserProfileEndpoint = '/api/auth/profile';
   static const String updateUserProfileEndpoint = '/api/auth/profile';
   static const String deleteUserProfileEndpoint = '/api/auth/profile';
+  static const String changePasswordEndpoint = '/api/auth/change-password';
 
   //category
   static const String categoriesEndpoint = '/api/categories/';

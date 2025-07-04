@@ -69,6 +69,10 @@ class ProfilePage extends StatelessWidget {
 
               // Profile Form
               _buildProfileForm(context, profileC),
+              const SizedBox(height: 24),
+
+              // Password Change Section
+              _buildPasswordChangeSection(profileC),
               const SizedBox(height: 32),
 
               // Action Buttons
@@ -369,6 +373,214 @@ class ProfilePage extends StatelessWidget {
             ['Male', 'Female'].map((String value) {
               return DropdownMenuItem<String>(value: value, child: Text(value));
             }).toList(),
+      ),
+    );
+  }
+
+  Widget _buildPasswordChangeSection(ProfileC profileC) {
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.1),
+            spreadRadius: 2,
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text(
+                'Change Password',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black87,
+                ),
+              ),
+              Obx(
+                () => IconButton(
+                  onPressed: () => profileC.togglePasswordChangeMode(),
+                  icon: Icon(
+                    profileC.isChangingPassword.value
+                        ? Icons.close
+                        : Icons.lock_outline,
+                    color: Colors.teal,
+                  ),
+                ),
+              ),
+            ],
+          ),
+
+          Obx(
+            () =>
+                profileC.isChangingPassword.value
+                    ? Column(
+                      children: [
+                        const SizedBox(height: 16),
+
+                        // Current Password
+                        _buildPasswordField(
+                          controller: profileC.currentPasswordController,
+                          label: 'Current Password',
+                          isHidden: profileC.isCurrentPasswordHidden.value,
+                          onToggleVisibility:
+                              () => profileC.toggleCurrentPasswordVisibility(),
+                        ),
+
+                        // New Password
+                        _buildPasswordField(
+                          controller: profileC.newPasswordController,
+                          label: 'New Password',
+                          isHidden: profileC.isNewPasswordHidden.value,
+                          onToggleVisibility:
+                              () => profileC.toggleNewPasswordVisibility(),
+                        ),
+
+                        // Confirm New Password
+                        _buildPasswordField(
+                          controller: profileC.confirmPasswordController,
+                          label: 'Confirm New Password',
+                          isHidden: profileC.isConfirmPasswordHidden.value,
+                          onToggleVisibility:
+                              () => profileC.toggleConfirmPasswordVisibility(),
+                        ),
+
+                        // Password Requirements Info
+                        Container(
+                          padding: const EdgeInsets.all(12),
+                          margin: const EdgeInsets.only(bottom: 16),
+                          decoration: BoxDecoration(
+                            color: Colors.blue.shade50,
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(color: Colors.blue.shade200),
+                          ),
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.info_outline,
+                                color: Colors.blue.shade600,
+                                size: 16,
+                              ),
+                              const SizedBox(width: 8),
+                              Expanded(
+                                child: Text(
+                                  'Password must be at least 6 characters long',
+                                  style: TextStyle(
+                                    color: Colors.blue.shade600,
+                                    fontSize: 12,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+
+                        // Change Password Button
+                        Container(
+                          width: double.infinity,
+                          child: ElevatedButton(
+                            onPressed:
+                                profileC.isLoading.value
+                                    ? null
+                                    : () => profileC.changePassword(),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.orange,
+                              padding: const EdgeInsets.symmetric(vertical: 12),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                            ),
+                            child:
+                                profileC.isLoading.value
+                                    ? const SizedBox(
+                                      height: 20,
+                                      width: 20,
+                                      child: CircularProgressIndicator(
+                                        color: Colors.white,
+                                        strokeWidth: 2,
+                                      ),
+                                    )
+                                    : const Text(
+                                      'Change Password',
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                          ),
+                        ),
+                      ],
+                    )
+                    : Container(
+                      padding: const EdgeInsets.all(12),
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.lock_outline,
+                            color: Colors.grey.shade600,
+                            size: 20,
+                          ),
+                          const SizedBox(width: 12),
+                          Text(
+                            'Click to change your password',
+                            style: TextStyle(
+                              color: Colors.grey.shade600,
+                              fontSize: 14,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildPasswordField({
+    required TextEditingController controller,
+    required String label,
+    required bool isHidden,
+    required VoidCallback onToggleVisibility,
+  }) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 16),
+      child: TextFormField(
+        controller: controller,
+        obscureText: isHidden,
+        decoration: InputDecoration(
+          labelText: label,
+          prefixIcon: const Icon(Icons.lock_outline, color: Colors.teal),
+          suffixIcon: IconButton(
+            onPressed: onToggleVisibility,
+            icon: Icon(
+              isHidden ? Icons.visibility : Icons.visibility_off,
+              color: Colors.grey.shade600,
+            ),
+          ),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+            borderSide: BorderSide(color: Colors.grey.shade300),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+            borderSide: BorderSide(color: Colors.grey.shade300),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+            borderSide: const BorderSide(color: Colors.teal, width: 2),
+          ),
+        ),
       ),
     );
   }
