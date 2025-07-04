@@ -383,18 +383,18 @@ class OrdersController extends GetxController {
 
       final months = [
         '',
-        'ม.ค.',
-        'ก.พ.',
-        'มี.ค.',
-        'เม.ย.',
-        'พ.ค.',
-        'มิ.ย.',
-        'ก.ค.',
-        'ส.ค.',
-        'ก.ย.',
-        'ต.ค.',
-        'พ.ย.',
-        'ธ.ค.',
+        'ມ.ກ.',
+        'ກ.ພ.',
+        'ມີ.ນ.',
+        'ເມ.ສ.',
+        'ພ.ຄ.',
+        'ມິ.ຖ.',
+        'ກ.ລ.',
+        'ສ.ຫ.',
+        'ກ.ຍ.',
+        'ຕ.ລ.',
+        'ພ.ຈ.',
+        'ທ.ວ.',
       ];
 
       return '${localDate.day} ${months[localDate.month]} ${localDate.year} ${localDate.hour.toString().padLeft(2, '0')}:${localDate.minute.toString().padLeft(2, '0')}';

@@ -48,8 +48,8 @@ class CheckoutC extends GetxController {
           await cartController.clearCart(); // ใช้ method ใหม่แทน (async)
           if (launched) {
             // เปิด Stripe ได้ → พาไปหน้ารอดำเนินการ
-            await Future.delayed(Duration(seconds: 5));
-            Get.off(() => OrdersPage());
+            await Future.delayed(Duration(milliseconds: 300));
+            Get.to(() => OrdersPage());
           } else {
             Get.snackbar(
               'Error',

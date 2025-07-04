@@ -472,6 +472,11 @@ class OrderDetailPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final OrdersController controller = Get.find<OrdersController>();
 
+    // โหลดข้อมูลล่าสุดเมื่อเข้าหน้า
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      controller.fetchOrderWithTimeline(order.oid);
+    });
+
     return Scaffold(
       backgroundColor: const Color(0xFFF5F5F5),
       appBar: AppBar(
@@ -493,122 +498,21 @@ class OrderDetailPage extends StatelessWidget {
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Order Status Card
-            Card(
-              elevation: 2,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        const Text(
-                          'ສະຖານະ',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 16,
-                            vertical: 8,
-                          ),
-                          decoration: BoxDecoration(
-                            color: order.statusColor.withOpacity(0.1),
-                            borderRadius: BorderRadius.circular(20),
-                            border: Border.all(
-                              color: order.statusColor,
-                              width: 1,
-                            ),
-                          ),
-                          child: Text(
-                            order.statusText,
-                            style: TextStyle(
-                              color: order.statusColor,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 16),
-                    _buildDetailRow(
-                      'ວັນທີສັ່ງ:',
-                      controller.formatDate(order.orderDate),
-                    ),
-                    _buildDetailRow(
-                      'ຍອດລວມ:',
-                      controller.formatPrice(order.totalAmount),
-                    ),
-                    if (order.paymentMethod != null)
-                      _buildDetailRow('ວິທີຈ່າຍ:', order.paymentMethod!),
-                    if (order.trackingNumber != null)
-                      _buildDetailRow('ເລກຕິດຕາມ:', order.trackingNumber!),
-                  ],
-                ),
-              ),
-            ),
+      body: Obx(() {
+        // ใช้ currentOrder จาก controller ถ้ามี ไม่งั้นใช้ order ที่ส่งมา
+        final currentOrderData = controller.currentOrder.value ?? order;
 
-            const SizedBox(height: 16),
+        if (controller.isLoading.value &&
+            controller.currentOrder.value == null) {
+          return const Center(child: CircularProgressIndicator());
+        }
 
-            // Shipping Timeline
-            Card(
-              elevation: 2,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        const Icon(Icons.timeline, color: Colors.blue),
-                        const SizedBox(width: 8),
-                        const Text(
-                          'ໄທມ໌ລາຍການຈັດສົ່ງ',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 16),
-                    Obx(() {
-                      if (controller.isLoadingTimeline.value) {
-                        return const Center(child: CircularProgressIndicator());
-                      }
-
-                      if (controller.timeline.isEmpty) {
-                        // Load timeline on first open
-                        controller.fetchShippingTimeline(order.oid);
-                        return const Center(child: CircularProgressIndicator());
-                      }
-
-                      return _buildTimeline(controller.timeline);
-                    }),
-                  ],
-                ),
-              ),
-            ),
-
-            const SizedBox(height: 16),
-
-            // Items List
-            if (order.items.isNotEmpty) ...[
+        return SingleChildScrollView(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Order Status Card
               Card(
                 elevation: 2,
                 shape: RoundedRectangleBorder(
@@ -619,73 +523,201 @@ class OrderDetailPage extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
-                        'ລາຍການສິນຄ້າ',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Text(
+                            'ສະຖານະ',
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 8,
+                            ),
+                            decoration: BoxDecoration(
+                              color: currentOrderData.statusColor.withOpacity(
+                                0.1,
+                              ),
+                              borderRadius: BorderRadius.circular(20),
+                              border: Border.all(
+                                color: currentOrderData.statusColor,
+                                width: 1,
+                              ),
+                            ),
+                            child: Text(
+                              currentOrderData.statusText,
+                              style: TextStyle(
+                                color: currentOrderData.statusColor,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 16),
+                      _buildDetailRow(
+                        'ວັນທີສັ່ງ:',
+                        controller.formatDate(currentOrderData.orderDate),
+                      ),
+                      _buildDetailRow(
+                        'ຍອດລວມ:',
+                        controller.formatPrice(currentOrderData.totalAmount),
+                      ),
+                      if (currentOrderData.paymentMethod != null)
+                        _buildDetailRow(
+                          'ວິທີຈ່າຍ:',
+                          currentOrderData.paymentMethod!,
                         ),
-                      ),
-                      const SizedBox(height: 12),
-                      ...order.items.map(
-                        (item) => _buildDetailedItemCard(item, controller),
-                      ),
+                      if (currentOrderData.trackingNumber != null)
+                        _buildDetailRow(
+                          'ເລກຕິດຕາມ:',
+                          currentOrderData.trackingNumber!,
+                        ),
                     ],
                   ),
                 ),
               ),
-            ],
 
-            const SizedBox(height: 20),
+              const SizedBox(height: 16),
 
-            // Action Buttons
-            Row(
-              children: [
-                if (order.canCancel) ...[
-                  Expanded(
-                    child: ElevatedButton.icon(
-                      onPressed:
-                          () => controller.showCancelConfirmation(
-                            order.oid,
-                            order.oid,
+              // Shipping Timeline
+              Card(
+                elevation: 2,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          const Icon(Icons.timeline, color: Colors.blue),
+                          const SizedBox(width: 8),
+                          const Text(
+                            'ໄທມ໌ລາຍການຈັດສົ່ງ',
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
-                      icon: const Icon(Icons.cancel),
-                      label: const Text('ຍົກເລີກຄໍາສັ່ງ'),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.red,
-                        foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
+                        ],
                       ),
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                ],
+                      const SizedBox(height: 16),
+                      Obx(() {
+                        if (controller.isLoadingTimeline.value) {
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        }
 
-                if (order.canRepay)
-                  Expanded(
-                    child: ElevatedButton.icon(
-                      onPressed:
-                          () => _showRepayConfirmation(order, controller),
-                      icon: const Icon(Icons.payment),
-                      label: const Text('ຈ່າຍເງິນຕອນນີ້'),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.orange,
-                        foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
+                        if (controller.timeline.isEmpty) {
+                          // Load timeline on first open
+                          controller.fetchShippingTimeline(
+                            currentOrderData.oid,
+                          );
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        }
+
+                        return _buildTimeline(controller.timeline);
+                      }),
+                    ],
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: 16),
+
+              // Items List
+              if (currentOrderData.items.isNotEmpty) ...[
+                Card(
+                  elevation: 2,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'ລາຍການສິນຄ້າ',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        ...currentOrderData.items.map(
+                          (item) => _buildDetailedItemCard(item, controller),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+
+              const SizedBox(height: 20),
+
+              // Action Buttons
+              Row(
+                children: [
+                  if (currentOrderData.canCancel) ...[
+                    Expanded(
+                      child: ElevatedButton.icon(
+                        onPressed:
+                            () => controller.showCancelConfirmation(
+                              currentOrderData.oid,
+                              currentOrderData.oid,
+                            ),
+                        icon: const Icon(Icons.cancel),
+                        label: const Text('ຍົກເລີກຄໍາສັ່ງ'),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.red,
+                          foregroundColor: Colors.white,
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
                         ),
                       ),
                     ),
-                  ),
-              ],
-            ),
-          ],
-        ),
-      ),
+                    const SizedBox(width: 12),
+                  ],
+
+                  if (currentOrderData.canRepay)
+                    Expanded(
+                      child: ElevatedButton.icon(
+                        onPressed:
+                            () => _showRepayConfirmation(
+                              currentOrderData,
+                              controller,
+                            ),
+                        icon: const Icon(Icons.payment),
+                        label: const Text('ຈ່າຍເງິນຕອນນີ້'),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.orange,
+                          foregroundColor: Colors.white,
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+            ],
+          ),
+        );
+      }),
     );
   }
 
