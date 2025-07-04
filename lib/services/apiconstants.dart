@@ -49,5 +49,10 @@ class ApiConstants {
   static const String reviewSummaryEndpoint = '/api/reviews'; // GET /:productId/summary
   static const String userReviewEndpoint = '/api/reviews'; // GET /:productId/user, DELETE /:productId
 
+  // Product popular and latest endpoints
+  static const String popularProductsEndpoint = '/api/products/popular';
+  static const String latestProductsEndpoint = '/api/products/latest';
+
+
   // Add other endpoints as needed
 }
