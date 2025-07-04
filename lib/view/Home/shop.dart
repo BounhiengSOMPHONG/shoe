@@ -758,16 +758,19 @@ class _ShopState extends State<Shop> {
                           height: 120,
                           width: double.infinity,
                           child: Center(
-                            child: Image.network(
-                              item.image ?? '',
-                              fit: BoxFit.contain,
-                              errorBuilder: (context, error, stackTrace) {
-                                return Icon(
-                                  Icons.image_not_supported,
-                                  size: 50,
-                                  color: Colors.blueGrey[300],
-                                );
-                              },
+                            child: Hero(
+                              tag: 'product_${item.id}',
+                              child: Image.network(
+                                item.image ?? '',
+                                fit: BoxFit.contain,
+                                errorBuilder: (context, error, stackTrace) {
+                                  return Icon(
+                                    Icons.image_not_supported,
+                                    size: 50,
+                                    color: Colors.blueGrey[300],
+                                  );
+                                },
+                              ),
                             ),
                           ),
                         ),
