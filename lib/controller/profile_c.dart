@@ -27,7 +27,7 @@ class ProfileC extends GetxController {
   final RxBool isEditing = false.obs;
   final RxBool isChangingPassword = false.obs;
   final Rx<User?> currentUser = Rx<User?>(null);
-  final RxString selectedSex = 'Male'.obs;
+  final RxString selectedSex = 'ຊາຍ'.obs;
 
   // Password visibility
   final RxBool isCurrentPasswordHidden = true.obs;
@@ -102,7 +102,7 @@ class ProfileC extends GetxController {
         datebirthController.text = '';
       }
 
-      selectedSex.value = user.sex ?? 'Male';
+      selectedSex.value = user.sex ?? 'ຊາຍ';
     }
   }
 

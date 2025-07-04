@@ -72,7 +72,7 @@ class _ProductDetailsState extends State<ProductDetails>
                 ),
                 SizedBox(height: 20),
                 Text(
-                  'กำลังโหลดข้อมูลสินค้า...',
+                  'ກຳລັງໂຫຼດຂໍ້ມູນສິນຄ້າ...',
                   style: TextStyle(
                     fontSize: 16,
                     color: Colors.blueGrey[600],
@@ -210,7 +210,7 @@ class _ProductDetailsState extends State<ProductDetails>
                                           ),
                                           SizedBox(height: 8),
                                           Text(
-                                            'ไม่สามารถโหลดรูปภาพได้',
+                                            'ບໍ່ສາມາດໂຫຼດຮູບພາບໄດ້',
                                             style: TextStyle(
                                               color: Colors.grey[500],
                                               fontSize: 14,
@@ -318,7 +318,7 @@ class _ProductDetailsState extends State<ProductDetails>
                 border: Border.all(color: Colors.blue.shade200),
               ),
               child: Text(
-                product.brand ?? 'Unknown Brand',
+                product.brand ?? 'ແບຣນບໍ່ຮູ້ຈັກ',
                 style: TextStyle(
                   fontSize: 14,
                   color: Colors.blue.shade700,
@@ -330,7 +330,7 @@ class _ProductDetailsState extends State<ProductDetails>
         ),
         SizedBox(height: 12),
         Text(
-          product.name ?? 'Unnamed Product',
+          product.name ?? 'ສິນຄ້າບໍ່ມີຊື່',
           style: TextStyle(
             fontSize: 28,
             fontWeight: FontWeight.bold,
@@ -368,7 +368,7 @@ class _ProductDetailsState extends State<ProductDetails>
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'ราคา',
+                'ລາຄາ',
                 style: TextStyle(
                   fontSize: 16,
                   color: Colors.white.withOpacity(0.9),
@@ -409,7 +409,7 @@ class _ProductDetailsState extends State<ProductDetails>
             ),
             SizedBox(width: 8),
             Text(
-              'รายละเอียดสินค้า',
+              'ລາຍລະອຽດສິນຄ້າ',
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
@@ -427,7 +427,7 @@ class _ProductDetailsState extends State<ProductDetails>
             border: Border.all(color: Colors.grey.shade200),
           ),
           child: Text(
-            product.description ?? 'ไม่มีรายละเอียดสินค้า',
+            product.description ?? 'ບໍ່ມີລາຍລະອຽດສິນຄ້າ',
             style: TextStyle(
               fontSize: 16,
               color: Colors.blueGrey[700],
@@ -448,7 +448,7 @@ class _ProductDetailsState extends State<ProductDetails>
             Icon(Icons.straighten, color: Colors.blue.shade600, size: 24),
             SizedBox(width: 8),
             Text(
-              'เลือกไซส์',
+              'ເລືອກໄຊສ໌',
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
@@ -547,7 +547,7 @@ class _ProductDetailsState extends State<ProductDetails>
             Icon(Icons.palette_outlined, color: Colors.blue.shade600, size: 24),
             SizedBox(width: 8),
             Text(
-              'เลือกสี',
+              'ເລືອກສີ',
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
@@ -660,7 +660,7 @@ class _ProductDetailsState extends State<ProductDetails>
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'สถานะสินค้า',
+                  'ສະຖານະສິນຄ້າ',
                   style: TextStyle(
                     fontSize: 14,
                     color:
@@ -672,7 +672,7 @@ class _ProductDetailsState extends State<ProductDetails>
                 ),
                 SizedBox(height: 4),
                 Text(
-                  quantity > 0 ? 'มีสินค้าในสต็อก $quantity ชิ้น' : 'สินค้าหมด',
+                  quantity > 0 ? 'ມີສິນຄ້າໃນສຕ໌ອກ $quantity ຊິ້ນ' : 'ສິນຄ້າໝົດ',
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
@@ -699,10 +699,10 @@ class _ProductDetailsState extends State<ProductDetails>
             quantity > 0
                 ? () {
                   controller.addToCart();
-                  // แสดงข้อความแจ้งเตือนสำเร็จ
+                  // ສະແດງຂໍ້ຄວາມແຈ້ງເຕືອນສຳເລັດ
                   Get.snackbar(
-                    'สำเร็จ',
-                    'เพิ่มสินค้าลงตะกร้าแล้ว',
+                    'ສຳເລັດ',
+                    'ເພີ່ມສິນຄ້າລົງຕະກຣ້າແລ້ວ',
                     snackPosition: SnackPosition.BOTTOM,
                     backgroundColor: Colors.green.shade600,
                     colorText: Colors.white,
@@ -737,7 +737,7 @@ class _ProductDetailsState extends State<ProductDetails>
             ),
             SizedBox(width: 12),
             Text(
-              quantity > 0 ? 'เพิ่มลงตะกร้า' : 'สินค้าหมด',
+              quantity > 0 ? 'ເພີ່ມລົງຕະກຣ້າ' : 'ສິນຄ້າໝົດ',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
           ],
@@ -799,7 +799,7 @@ class _ProductDetailsState extends State<ProductDetails>
                 ),
                 SizedBox(height: 4),
                 Text(
-                  '${summary.totalReviews} รีวิว',
+                  '${summary.totalReviews} ຣີວິວ',
                   style: TextStyle(
                     fontSize: 14,
                     color: Colors.orange.shade700,
@@ -889,7 +889,7 @@ class _ProductDetailsState extends State<ProductDetails>
             ),
             SizedBox(width: 8),
             Text(
-              'รีวิวและคะแนน',
+              'ຣີວິວແລະຄະແນນ',
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
@@ -925,8 +925,8 @@ class _ProductDetailsState extends State<ProductDetails>
           children: [
             Text(
               reviewController.hasUserReviewed
-                  ? 'แก้ไขรีวิวของคุณ'
-                  : 'เพิ่มรีวิวของคุณ',
+                  ? 'ແກ້ໄຂຣີວິວຂອງທ່ານ'
+                  : 'ເພີ່ມຣີວິວຂອງທ່ານ',
               style: TextStyle(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
@@ -938,7 +938,7 @@ class _ProductDetailsState extends State<ProductDetails>
 
             // Star Rating
             Text(
-              'คะแนน:',
+              'ຄະແນນ:',
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
@@ -974,7 +974,7 @@ class _ProductDetailsState extends State<ProductDetails>
 
             // Comment Field
             Text(
-              'ความคิดเห็น (ไม่บังคับ):',
+              'ຄວາມຄິດເຫັນ (ບໍ່ບັງຄັບ):',
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
@@ -986,7 +986,7 @@ class _ProductDetailsState extends State<ProductDetails>
               controller: reviewController.commentController,
               maxLines: 3,
               decoration: InputDecoration(
-                hintText: 'เขียนความคิดเห็นเกี่ยวกับสินค้านี้...',
+                hintText: 'ຂຽນຄວາມຄິດເຫັນກ່ຽວກັບສິນຄ້ານີ້...',
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
                   borderSide: BorderSide(color: Colors.blue.shade300),
@@ -1103,7 +1103,7 @@ class _ProductDetailsState extends State<ProductDetails>
                 ),
                 SizedBox(height: 16),
                 Text(
-                  'ยังไม่มีรีวิวสำหรับสินค้านี้',
+                  'ຍັງບໍ່ມີຣີວິວສຳລັບສິນຄ້ານີ້',
                   style: TextStyle(
                     fontSize: 16,
                     color: Colors.grey.shade600,
@@ -1112,7 +1112,7 @@ class _ProductDetailsState extends State<ProductDetails>
                 ),
                 SizedBox(height: 8),
                 Text(
-                  'เป็นคนแรกที่รีวิวสินค้านี้',
+                  'ເປັນຄົນທຳອິດທີ່ຣີວິວສິນຄ້ານີ້',
                   style: TextStyle(fontSize: 14, color: Colors.grey.shade500),
                 ),
               ],
@@ -1134,7 +1134,7 @@ class _ProductDetailsState extends State<ProductDetails>
                 Icon(Icons.reviews, color: Colors.blueGrey[600], size: 20),
                 SizedBox(width: 8),
                 Text(
-                  'รีวิวจากลูกค้า (${reviewController.reviews.length})',
+                  'ຣີວິວຈາກລູກຄ້າ (${reviewController.reviews.length})',
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
@@ -1254,18 +1254,18 @@ class _ProductDetailsState extends State<ProductDetails>
     Get.dialog(
       AlertDialog(
         title: Text(
-          'ลบรีวิว',
+          'ລົບຣີວິວ',
           style: TextStyle(
             fontWeight: FontWeight.bold,
             color: Colors.red.shade700,
           ),
         ),
-        content: Text('คุณต้องการลบรีวิวนี้หรือไม่?'),
+        content: Text('ທ່ານຕ້ອງການລົບຣີວິວນີ້ຫຼືບໍ່?'),
         actions: [
           TextButton(
             onPressed: () => Get.back(),
             child: Text(
-              'ยกเลิก',
+              'ຍົກເລີກ',
               style: TextStyle(color: Colors.grey.shade600),
             ),
           ),
@@ -1277,7 +1277,7 @@ class _ProductDetailsState extends State<ProductDetails>
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.red.shade500,
             ),
-            child: Text('ลบ', style: TextStyle(color: Colors.white)),
+            child: Text('ລົບ', style: TextStyle(color: Colors.white)),
           ),
         ],
       ),

@@ -27,9 +27,9 @@ class ShopC extends GetxController {
 
   // Sort options
   final List<Map<String, String>> sortOptions = [
-    {'value': '', 'label': 'ไม่เรียงลำดับ'},
-    {'value': 'asc', 'label': 'ราคาต่ำ - สูง'},
-    {'value': 'desc', 'label': 'ราคาสูง - ต่ำ'},
+    {'value': '', 'label': 'ບໍ່ຈັດຮຽງລຳດັບ'},
+    {'value': 'asc', 'label': 'ລາຄາຕ່ຳ - ສູງ'},
+    {'value': 'desc', 'label': 'ລາຄາສູງ - ຕ່ຳ'},
   ];
 
   RxList<PItem> get items => _items;

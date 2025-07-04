@@ -18,144 +18,338 @@ class _FavoriteState extends State<Favorite> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Column(
-        children: [
-          Container(
-            padding: EdgeInsets.all(20),
-            child: Text(
-              'Favorite Items',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            ),
-          ),
-          Expanded(
-            child: RefreshIndicator(
-              onRefresh: () => favorite_c.fetchFavorites(),
-              child: Obx(() {
-                if (favorite_c.isLoading.value) {
-                  return Center(
+    return Scaffold(
+      backgroundColor: Colors.grey[50],
+      body: SafeArea(
+        child: Column(
+          children: [
+            // Header Section
+            Container(
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [Colors.blue.shade400, Colors.blue.shade600],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+                borderRadius: const BorderRadius.only(
+                  bottomLeft: Radius.circular(30),
+                  bottomRight: Radius.circular(30),
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.blueAccent.withOpacity(0.3),
+                    spreadRadius: 2,
+                    blurRadius: 10,
+                    offset: const Offset(0, 3),
+                  ),
+                ],
+              ),
+              child: Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.2),
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    child: const Icon(
+                      Icons.favorite,
+                      color: Colors.white,
+                      size: 28,
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  Expanded(
                     child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        CircularProgressIndicator(color: Colors.green),
-                        SizedBox(height: 16),
-                        Text(
-                          'Loading favorites...',
+                        const Text(
+                          'ລາຍການທີ່ມັກ',
                           style: TextStyle(
-                            fontSize: 16,
-                            color: Colors.grey[600],
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Obx(
+                          () => Text(
+                            '${favorite_c.favoriteItems.length} ລາຍການ',
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.white.withOpacity(0.9),
+                            ),
                           ),
                         ),
                       ],
                     ),
-                  );
-                }
-
-                if (favorite_c.error.value.isNotEmpty) {
-                  return Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(Icons.error_outline, size: 64, color: Colors.red),
-                        SizedBox(height: 16),
-                        Text(
-                          favorite_c.error.value,
-                          style: TextStyle(fontSize: 18, color: Colors.red),
-                        ),
-                      ],
-                    ),
-                  );
-                }
-
-                if (favorite_c.favoriteItems.isEmpty) {
-                  return Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.favorite_border,
-                          size: 64,
-                          color: Colors.grey,
-                        ),
-                        SizedBox(height: 16),
-                        Text(
-                          'No favorite items yet',
-                          style: TextStyle(fontSize: 18, color: Colors.grey),
-                        ),
-                      ],
-                    ),
-                  );
-                }
-
-                return GridView.builder(
-                  padding: EdgeInsets.all(16),
-                  physics: BouncingScrollPhysics(),
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    crossAxisSpacing: 16.0,
-                    mainAxisSpacing: 16.0,
-                    childAspectRatio:
-                        MediaQuery.of(context).size.width /
-                        (MediaQuery.of(context).size.height / 1.6),
                   ),
-                  itemCount: favorite_c.favoriteItems.length,
-                  itemBuilder: (context, index) {
-                    final item = favorite_c.favoriteItems[index];
-                    return GestureDetector(
-                      onTap: () => shop_c.openProductDetails(index),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(12),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.grey.withOpacity(0.1),
-                              spreadRadius: 1,
-                              blurRadius: 5,
+                  // Refresh Button
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white.withOpacity(0.2),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: IconButton(
+                      icon: const Icon(Icons.refresh, color: Colors.white),
+                      onPressed: () => favorite_c.fetchFavorites(),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            // Content Section
+            Expanded(
+              child: RefreshIndicator(
+                onRefresh: () => favorite_c.fetchFavorites(),
+                color: Colors.pink.shade400,
+                child: Obx(() {
+                  if (favorite_c.isLoading.value) {
+                    return Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Container(
+                            width: 80,
+                            height: 80,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(20),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.pink.withOpacity(0.1),
+                                  spreadRadius: 2,
+                                  blurRadius: 10,
+                                  offset: const Offset(0, 3),
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
-                        child: Stack(
-                          children: [
-                            Column(
+                            child: Center(
+                              child: CircularProgressIndicator(
+                                color: Colors.pink.shade400,
+                                strokeWidth: 3,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 20),
+                          Text(
+                            'ກຳລັງໂຫຼດລາຍການທີ່ມັກ...',
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.grey[600],
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  }
+
+                  if (favorite_c.error.value.isNotEmpty) {
+                    return Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Container(
+                            width: 100,
+                            height: 100,
+                            decoration: BoxDecoration(
+                              color: Colors.red.shade50,
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: Icon(
+                              Icons.error_outline,
+                              size: 50,
+                              color: Colors.red.shade400,
+                            ),
+                          ),
+                          const SizedBox(height: 20),
+                          Text(
+                            favorite_c.error.value,
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.red.shade600,
+                              fontWeight: FontWeight.w500,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                          const SizedBox(height: 16),
+                          ElevatedButton(
+                            onPressed: () => favorite_c.fetchFavorites(),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.red.shade400,
+                              foregroundColor: Colors.white,
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 24,
+                                vertical: 12,
+                              ),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                            ),
+                            child: const Text('ລອງໃໝ່'),
+                          ),
+                        ],
+                      ),
+                    );
+                  }
+
+                  if (favorite_c.favoriteItems.isEmpty) {
+                    return Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Container(
+                            width: 120,
+                            height: 120,
+                            decoration: BoxDecoration(
+                              color: Colors.grey.shade50,
+                              borderRadius: BorderRadius.circular(30),
+                              border: Border.all(
+                                color: Colors.grey.shade200,
+                                width: 2,
+                              ),
+                            ),
+                            child: Icon(
+                              Icons.favorite_border,
+                              size: 60,
+                              color: Colors.grey.shade400,
+                            ),
+                          ),
+                          const SizedBox(height: 24),
+                          Text(
+                            'ຍັງບໍ່ມີລາຍການທີ່ມັກ',
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.grey[700],
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          Text(
+                            'ເລີ່ມຊອບຫາສິນຄ້າທີ່ທ່ານມັກແລ້ວກົດໃສ່ໃຈ',
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Colors.grey[500],
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ],
+                      ),
+                    );
+                  }
+
+                  return Container(
+                    padding: const EdgeInsets.all(16),
+                    child: GridView.builder(
+                      physics: const BouncingScrollPhysics(),
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            crossAxisSpacing: 16.0,
+                            mainAxisSpacing: 16.0,
+                            childAspectRatio: 0.65,
+                          ),
+                      itemCount: favorite_c.favoriteItems.length,
+                      itemBuilder: (context, index) {
+                        final item = favorite_c.favoriteItems[index];
+                        return GestureDetector(
+                          onTap: () {
+                            // Navigate to product details
+                            Get.toNamed(
+                              '/product-details',
+                              arguments: {
+                                'productId': item.id,
+                                'product': item,
+                              },
+                            );
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(20),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey.withOpacity(0.1),
+                                  spreadRadius: 1,
+                                  blurRadius: 10,
+                                  offset: const Offset(0, 3),
+                                ),
+                              ],
+                            ),
+                            child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
+                                // Product Image
                                 Stack(
                                   children: [
                                     Container(
-                                      height: 120,
+                                      height: 140,
                                       width: double.infinity,
-                                      child: Center(
+                                      decoration: BoxDecoration(
+                                        borderRadius: const BorderRadius.only(
+                                          topLeft: Radius.circular(20),
+                                          topRight: Radius.circular(20),
+                                        ),
+                                        color: Colors.grey.shade50,
+                                      ),
+                                      child: ClipRRect(
+                                        borderRadius: const BorderRadius.only(
+                                          topLeft: Radius.circular(20),
+                                          topRight: Radius.circular(20),
+                                        ),
                                         child: Image.network(
                                           item.image ?? '',
-                                          fit: BoxFit.contain,
+                                          fit: BoxFit.cover,
                                           errorBuilder: (
                                             context,
                                             error,
                                             stackTrace,
                                           ) {
-                                            return Icon(
-                                              Icons.image_not_supported,
-                                              size: 50,
-                                              color: Colors.grey,
+                                            return Container(
+                                              color: Colors.grey.shade100,
+                                              child: Icon(
+                                                Icons.image_not_supported,
+                                                size: 40,
+                                                color: Colors.grey.shade400,
+                                              ),
                                             );
                                           },
                                         ),
                                       ),
                                     ),
+                                    // Favorite Button
                                     Positioned(
-                                      top: 0,
-                                      left: 8,
-                                      child: Obx(
-                                        () => IconButton(
+                                      top: 8,
+                                      right: 8,
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          color: Colors.white.withOpacity(0.9),
+                                          borderRadius: BorderRadius.circular(
+                                            20,
+                                          ),
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color: Colors.black.withOpacity(
+                                                0.1,
+                                              ),
+                                              blurRadius: 4,
+                                              offset: const Offset(0, 2),
+                                            ),
+                                          ],
+                                        ),
+                                        child: IconButton(
                                           icon: Icon(
                                             favorite_c.isFavorite(item.id)
                                                 ? Icons.favorite
                                                 : Icons.favorite_border,
                                             color:
                                                 favorite_c.isFavorite(item.id)
-                                                    ? Colors.red
-                                                    : Colors.grey,
+                                                    ? Colors.red.shade400
+                                                    : Colors.grey.shade400,
+                                            size: 20,
                                           ),
                                           onPressed:
                                               () => favorite_c.toggleFavorite(
@@ -166,78 +360,74 @@ class _FavoriteState extends State<Favorite> {
                                     ),
                                   ],
                                 ),
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        item.name ?? 'Unnamed Product',
-                                        style: TextStyle(
-                                          fontSize:
-                                              MediaQuery.of(
-                                                        context,
-                                                      ).size.width >
-                                                      380
-                                                  ? 16
-                                                  : 10,
-                                          fontWeight: FontWeight.bold,
+
+                                // Product Info
+                                Expanded(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(12),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          item.name ?? 'ສິນຄ້າບໍ່ມີຊື່',
+                                          style: const TextStyle(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.black87,
+                                          ),
+                                          maxLines: 2,
+                                          overflow: TextOverflow.ellipsis,
                                         ),
-                                        maxLines: 2,
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                      SizedBox(height: 4),
-                                      Text(
-                                        'ລາຄາ: ${item.price} K',
-                                        style: TextStyle(
-                                          fontSize: 14,
-                                          color: Colors.green,
-                                          fontWeight: FontWeight.bold,
+                                        const SizedBox(height: 8),
+                                        if (item.brand != null) ...[
+                                          Text(
+                                            item.brand!,
+                                            style: TextStyle(
+                                              fontSize: 12,
+                                              color: Colors.grey[600],
+                                            ),
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                          const SizedBox(height: 4),
+                                        ],
+                                        const Spacer(),
+                                        Row(
+                                          children: [
+                                            Icon(
+                                              Icons.attach_money,
+                                              size: 16,
+                                              color: Colors.green.shade600,
+                                            ),
+                                            Expanded(
+                                              child: Text(
+                                                '${item.price?.toStringAsFixed(0) ?? '0'} K',
+                                                style: TextStyle(
+                                                  fontSize: 16,
+                                                  color: Colors.green.shade600,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                            ),
+                                          ],
                                         ),
-                                      ),
-                                    ],
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ],
                             ),
-                            // Positioned(
-                            //   right: 0,
-                            //   bottom: 0,
-                            //   child: ElevatedButton(
-                            //     onPressed: () {
-                            //       List<String> sizes = (item.size ?? "null")
-                            //           .split(',');
-                            //       List<String> colors = (item.color ?? "null")
-                            //           .split(',');
-                            //       PDC.showOptionsModal(
-                            //         item,
-                            //         sizes,
-                            //         colors,
-                            //         context,
-                            //       );
-                            //     },
-                            //     style: ElevatedButton.styleFrom(
-                            //       backgroundColor: Colors.blue,
-                            //       shape: CircleBorder(),
-                            //       padding: EdgeInsets.all(8),
-                            //     ),
-                            //     child: Icon(
-                            //       Icons.add_shopping_cart,
-                            //       color: Colors.white,
-                            //     ),
-                            //   ),
-                            // ),
-                          ],
-                        ),
-                      ),
-                    );
-                  },
-                );
-              }),
+                          ),
+                        );
+                      },
+                    ),
+                  );
+                }),
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

@@ -62,7 +62,8 @@ class _ShopState extends State<Shop> {
                   TextField(
                     controller: _searchController,
                     decoration: InputDecoration(
-                      hintText: 'ค้นหาสินค้า เช่น Nike, Adidas, ເກີບແຟຊັ່ນ...',
+                      hintText:
+                          'ຄົ້ນຫາສິນຄ້າ ເຊັ່ນ Nike, Adidas, ເກີບແຟຊັ່ນ...',
                       prefixIcon: Icon(
                         Icons.search,
                         color: Colors.blueGrey[300],
@@ -94,7 +95,7 @@ class _ShopState extends State<Shop> {
                       ),
                     ),
                     onChanged: (value) {
-                      // Real-time search เมื่อพิมพ์ครบ 2 ตัวอักษร
+                      // ການຄົ້ນຫາທັນທີເມື່ອພິມຄົບ 2 ຕົວອັກສອນ
                       if (value.length >= 2) {
                         search_c.searchProducts(value);
                       } else if (value.isEmpty) {
@@ -102,7 +103,7 @@ class _ShopState extends State<Shop> {
                       }
                     },
                     onSubmitted: (value) {
-                      // ค้นหาเมื่อกด Enter
+                      // ຄົ້ນຫາເມື່ອກົດ Enter
                       if (value.trim().isNotEmpty) {
                         search_c.searchProducts(value);
                       }
@@ -125,7 +126,7 @@ class _ShopState extends State<Shop> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'ประเภท:',
+                              'ປະເພດ:',
                               style: TextStyle(
                                 fontSize: 12,
                                 fontWeight: FontWeight.bold,
@@ -146,7 +147,7 @@ class _ShopState extends State<Shop> {
                                           ? null
                                           : search_c.selectedProductType.value,
                                   hint: Text(
-                                    'เลือกประเภท',
+                                    'ເລືອກປະເພດ',
                                     style: TextStyle(fontSize: 12),
                                   ),
                                   isExpanded: true,
@@ -160,7 +161,7 @@ class _ShopState extends State<Shop> {
                                     DropdownMenuItem<String>(
                                       value: '',
                                       child: Text(
-                                        'ทั้งหมด',
+                                        'ທັງໝົດ',
                                         style: TextStyle(fontSize: 12),
                                       ),
                                     ),
@@ -194,7 +195,7 @@ class _ShopState extends State<Shop> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              'แบรนด์:',
+                              'ແບຣນ:',
                               style: TextStyle(
                                 fontSize: 12,
                                 fontWeight: FontWeight.bold,
@@ -215,7 +216,7 @@ class _ShopState extends State<Shop> {
                                           ? null
                                           : search_c.selectedBrand.value,
                                   hint: Text(
-                                    'เลือกแบรนด์',
+                                    'ເລືອກແບຣນ',
                                     style: TextStyle(fontSize: 12),
                                   ),
                                   isExpanded: true,
@@ -229,7 +230,7 @@ class _ShopState extends State<Shop> {
                                     DropdownMenuItem<String>(
                                       value: '',
                                       child: Text(
-                                        'ทั้งหมด',
+                                        'ທັງໝົດ',
                                         style: TextStyle(fontSize: 12),
                                       ),
                                     ),
@@ -261,7 +262,7 @@ class _ShopState extends State<Shop> {
                       Icon(Icons.sort, color: Colors.blueGrey[600], size: 20),
                       SizedBox(width: 8),
                       Text(
-                        'เรียงตาม:',
+                        'ຈັດຮຽງຕາມ:',
                         style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.bold,
@@ -286,7 +287,7 @@ class _ShopState extends State<Shop> {
                                       : shop_c.sortOrder.value.isEmpty
                                       ? ''
                                       : shop_c.sortOrder.value,
-                              hint: Text('เลือกการเรียงลำดับ'),
+                              hint: Text('ເລືອກການຈັດຮຽງລຳດັບ'),
                               isExpanded: true,
                               underline: SizedBox(),
                               icon: Icon(
@@ -364,7 +365,7 @@ class _ShopState extends State<Shop> {
                                       ),
                                       SizedBox(width: 4),
                                       Text(
-                                        'รีเฟรช',
+                                        'ໂຫຼດຂໍ້ມູນໃໝ່',
                                         style: TextStyle(
                                           color: Colors.white,
                                           fontSize: 11,
@@ -442,7 +443,7 @@ class _ShopState extends State<Shop> {
                                                   ),
                                                   SizedBox(width: 4),
                                                   Text(
-                                                    'ล้าง',
+                                                    'ລ້າງ',
                                                     style: TextStyle(
                                                       color: Colors.white,
                                                       fontSize: 11,
@@ -470,7 +471,7 @@ class _ShopState extends State<Shop> {
             //products grid
             Expanded(
               child: Obx(() {
-                // แสดงผลการค้นหาถ้ากำลังค้นหา
+                // ສະແດງຜົນການຄົ້ນຫາຖ້າກຳລັງຄົ້ນຫາ
                 if (search_c.isSearchActive.value) {
                   if (search_c.isLoading.value) {
                     return Center(
@@ -480,7 +481,7 @@ class _ShopState extends State<Shop> {
                           CircularProgressIndicator(color: Colors.blue),
                           SizedBox(height: 16),
                           Text(
-                            'กำลังค้นหา "${search_c.searchQuery.value}"...',
+                            'ກຳລັງຄົ້ນຫາ "${search_c.searchQuery.value}"...',
                             style: TextStyle(
                               fontSize: 16,
                               color: Colors.blueGrey[600],
@@ -513,16 +514,16 @@ class _ShopState extends State<Shop> {
                           SizedBox(height: 16),
                           ElevatedButton(
                             onPressed: () => search_c.refreshSearch(),
-                            child: Text('ลองค้นหาอีกครั้ง'),
+                            child: Text('ລອງຄົ້ນຫາອີກຄັ້ງ'),
                           ),
                         ],
                       ),
                     );
                   }
 
-                  // แสดงผลการค้นหา
+                  // ສະແດງຜົນການຄົ້ນຫາ
                   if (search_c.searchResults.isEmpty) {
-                    // ไม่พบผลการค้นหา
+                    // ບໍ່ພົບຜົນການຄົ້ນຫາ
                     return Center(
                       child: Padding(
                         padding: const EdgeInsets.all(32.0),
@@ -536,7 +537,7 @@ class _ShopState extends State<Shop> {
                             ),
                             SizedBox(height: 16),
                             Text(
-                              'ไม่พบสินค้าที่ค้นหา',
+                              'ບໍ່ພົບສິນຄ້າທີ່ຄົ້ນຫາ',
                               style: TextStyle(
                                 fontSize: 20,
                                 fontWeight: FontWeight.bold,
@@ -554,7 +555,7 @@ class _ShopState extends State<Shop> {
                             ),
                             SizedBox(height: 16),
                             Text(
-                              'ลองค้นหาด้วยคำอื่น เช่น Nike, Adidas หรือชื่อสินค้า',
+                              'ລອງຄົ້ນຫາດ້ວຍຄຳອື່ນ ເຊັ່ນ Nike, Adidas ຫຼືຊື່ສິນຄ້າ',
                               style: TextStyle(
                                 fontSize: 14,
                                 color: Colors.grey[500],
@@ -569,7 +570,7 @@ class _ShopState extends State<Shop> {
 
                   return Column(
                     children: [
-                      // แสดงจำนวนผลการค้นหา
+                      // ສະແດງຈຳນວນຜົນການຄົ້ນຫາ
                       Container(
                         width: double.infinity,
                         padding: EdgeInsets.symmetric(
@@ -592,7 +593,7 @@ class _ShopState extends State<Shop> {
                             SizedBox(width: 8),
                             Expanded(
                               child: Text(
-                                'พบสินค้า ${search_c.searchResults.length} รายการสำหรับ "${search_c.searchQuery.value}"',
+                                'ພົບສິນຄ້າ ${search_c.searchResults.length} ລາຍການສຳລັບ "${search_c.searchQuery.value}"',
                                 style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold,
@@ -613,7 +614,7 @@ class _ShopState extends State<Shop> {
                   );
                 }
 
-                // แสดงสินค้าปกติเมื่อไม่ได้ค้นหา
+                // ສະແດງສິນຄ້າປົກກະຕິເມື່ອບໍ່ໄດ້ຄົ້ນຫາ
                 if (shop_c.isLoading.value && shop_c.items.isEmpty) {
                   return Center(
                     child: Column(
@@ -624,7 +625,7 @@ class _ShopState extends State<Shop> {
                         ), // Changed color
                         SizedBox(height: 16),
                         Text(
-                          'Loading products...',
+                          'ກຳລັງໂຫຼດສິນຄ້າ...',
                           style: TextStyle(
                             fontSize: 16,
                             color: Colors.blueGrey[600],
@@ -656,7 +657,7 @@ class _ShopState extends State<Shop> {
                         SizedBox(height: 8),
                         ElevatedButton(
                           onPressed: () => shop_c.refreshShopData(),
-                          child: Text('Retry'),
+                          child: Text('ລອງໃໝ່'),
                         ),
                       ],
                     ),
@@ -675,7 +676,7 @@ class _ShopState extends State<Shop> {
                         ),
                         SizedBox(height: 16),
                         Text(
-                          'No products found',
+                          'ບໍ່ພົບສິນຄ້າ',
                           style: TextStyle(
                             fontSize: 18,
                             color: Colors.blueGrey[600],
@@ -800,7 +801,7 @@ class _ShopState extends State<Shop> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            item.name ?? 'Unnamed Product',
+                            item.name ?? 'ສິນຄ້າບໍ່ມີຊື່',
                             style: TextStyle(
                               fontSize:
                                   MediaQuery.of(context).size.width > 380

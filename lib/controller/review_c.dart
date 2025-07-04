@@ -219,8 +219,8 @@ class ReviewC extends GetxController {
   Future<bool> submitReview(int productId) async {
     if (userId.value.isEmpty) {
       Get.snackbar(
-        'ข้อผิดพลาด',
-        'กรุณาเข้าสู่ระบบก่อนให้คะแนน',
+        'ຂໍ້ຜິດພາດ',
+        'ກະລຸນາເຂົ້າສູ່ລະບົບກ່ອນໃຫ້ຄະແນນ',
         snackPosition: SnackPosition.TOP,
         backgroundColor: Colors.red.withOpacity(0.8),
         colorText: Colors.white,
@@ -231,8 +231,8 @@ class ReviewC extends GetxController {
 
     if (selectedRating.value == 0) {
       Get.snackbar(
-        'ข้อผิดพลาด',
-        'กรุณาให้คะแนนสินค้า',
+        'ຂໍ້ຜິດພາດ',
+        'ກະລຸນາໃຫ້ຄະແນນສິນຄ້າ',
         snackPosition: SnackPosition.TOP,
         backgroundColor: Colors.orange.withOpacity(0.8),
         colorText: Colors.white,
@@ -243,7 +243,7 @@ class ReviewC extends GetxController {
 
     try {
       isSubmitting.value = true;
-      EasyLoading.show(status: 'กำลังบันทึกรีวิว...');
+      EasyLoading.show(status: 'ກຳລັງບັນທຶກຣີວິວ...');
 
       final response = await _apiService.post(
         ApiConstants.reviewsEndpoint,
@@ -256,10 +256,8 @@ class ReviewC extends GetxController {
 
       if (response.success) {
         Get.snackbar(
-          'สำเร็จ',
-          userReview.value != null
-              ? 'อัปเดตรีวิวเรียบร้อย'
-              : 'เพิ่มรีวิวเรียบร้อย',
+          'ສຳເລັດ',
+          userReview.value != null ? 'ອັບເດດຣີວິວຮຽບຮ້ອຍ' : 'ເພີ່ມຣີວິວຮຽບຮ້ອຍ',
           snackPosition: SnackPosition.TOP,
           backgroundColor: Colors.green.withOpacity(0.8),
           colorText: Colors.white,
@@ -271,8 +269,8 @@ class ReviewC extends GetxController {
         return true;
       } else {
         Get.snackbar(
-          'ข้อผิดพลาด',
-          response.message ?? 'ไม่สามารถบันทึกรีวิวได้',
+          'ຂໍ້ຜິດພາດ',
+          response.message ?? 'ບໍ່ສາມາດບັນທຶກຣີວິວໄດ້',
           snackPosition: SnackPosition.TOP,
           backgroundColor: Colors.red.withOpacity(0.8),
           colorText: Colors.white,
@@ -282,8 +280,8 @@ class ReviewC extends GetxController {
       }
     } catch (e) {
       Get.snackbar(
-        'ข้อผิดพลาด',
-        'เกิดข้อผิดพลาด: $e',
+        'ຂໍ້ຜິດພາດ',
+        'ເກີດຂໍ້ຜິດພາດ: $e',
         snackPosition: SnackPosition.TOP,
         backgroundColor: Colors.red.withOpacity(0.8),
         colorText: Colors.white,
@@ -303,7 +301,7 @@ class ReviewC extends GetxController {
     }
 
     try {
-      EasyLoading.show(status: 'กำลังลบรีวิว...');
+      EasyLoading.show(status: 'ກຳລັງລົບຣີວິວ...');
 
       final response = await _apiService.delete(
         '${ApiConstants.userReviewEndpoint}/$productId',
@@ -311,8 +309,8 @@ class ReviewC extends GetxController {
 
       if (response.success) {
         Get.snackbar(
-          'สำเร็จ',
-          'ลบรีวิวเรียบร้อย',
+          'ສຳເລັດ',
+          'ລົບຣີວິວຮຽບຮ້ອຍ',
           snackPosition: SnackPosition.TOP,
           backgroundColor: Colors.green.withOpacity(0.8),
           colorText: Colors.white,
@@ -325,8 +323,8 @@ class ReviewC extends GetxController {
         return true;
       } else {
         Get.snackbar(
-          'ข้อผิดพลาด',
-          response.message ?? 'ไม่สามารถลบรีวิวได้',
+          'ຂໍ້ຜິດພາດ',
+          response.message ?? 'ບໍ່ສາມາດລົບຣີວິວໄດ້',
           snackPosition: SnackPosition.TOP,
           backgroundColor: Colors.red.withOpacity(0.8),
           colorText: Colors.white,
@@ -336,8 +334,8 @@ class ReviewC extends GetxController {
       }
     } catch (e) {
       Get.snackbar(
-        'ข้อผิดพลาด',
-        'เกิดข้อผิดพลาด: $e',
+        'ຂໍ້ຜິດພາດ',
+        'ເກີດຂໍ້ຜິດພາດ: $e',
         snackPosition: SnackPosition.TOP,
         backgroundColor: Colors.red.withOpacity(0.8),
         colorText: Colors.white,
@@ -378,7 +376,7 @@ class ReviewC extends GetxController {
   }
 
   String get submitButtonText {
-    final text = hasUserReviewed ? 'อัปเดตรีวิว' : 'เพิ่มรีวิว';
+    final text = hasUserReviewed ? 'ອັບເດດຣີວິວ' : 'ເພີ່ມຣີວິວ';
     debugPrint(
       'submitButtonText: hasUserReviewed=$hasUserReviewed, text="$text"',
     );
@@ -394,11 +392,11 @@ class ReviewC extends GetxController {
 
     if (difference.inDays == 0) {
       if (difference.inHours == 0) {
-        return '${difference.inMinutes} นาทีที่แล้ว';
+        return '${difference.inMinutes} ນາທີທີ່ແລ້ວ';
       }
-      return '${difference.inHours} ชั่วโมงที่แล้ว';
+      return '${difference.inHours} ຊົ່ວໂມງທີ່ແລ້ວ';
     } else if (difference.inDays < 7) {
-      return '${difference.inDays} วันที่แล้ว';
+      return '${difference.inDays} ວັນທີ່ແລ້ວ';
     } else {
       return '${date.day}/${date.month}/${date.year}';
     }

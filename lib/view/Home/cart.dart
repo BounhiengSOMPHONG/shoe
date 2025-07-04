@@ -45,7 +45,7 @@ class _CartState extends State<Cart> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      'My Cart',
+                      'ຕະກຣ້າຂອງຂ້ອຍ',
                       style: TextStyle(
                         fontSize: 24,
                         fontWeight: FontWeight.bold,
@@ -84,7 +84,7 @@ class _CartState extends State<Cart> {
                                 ),
                                 SizedBox(height: 16),
                                 Text(
-                                  'Your cart is empty',
+                                  'ຕະກຣ້າຂອງທ່ານວ່າງເປົ່າ',
                                   style: TextStyle(
                                     fontSize: 18,
                                     color:
@@ -179,7 +179,7 @@ class _CartState extends State<Cart> {
                                                 CrossAxisAlignment.start,
                                             children: [
                                               Text(
-                                                item.name ?? 'Unnamed Product',
+                                                item.name ?? 'ສິນຄ້າບໍ່ມີຊື່',
                                                 style: TextStyle(
                                                   fontSize: 16,
                                                   fontWeight: FontWeight.bold,
@@ -191,7 +191,7 @@ class _CartState extends State<Cart> {
                                               SizedBox(height: 4),
                                               if (item.size != null)
                                                 Text(
-                                                  'Size: ${item.size}',
+                                                  'ໄຊສ໌: ${item.size}',
                                                   style: TextStyle(
                                                     color:
                                                         Colors
@@ -200,7 +200,7 @@ class _CartState extends State<Cart> {
                                                 ),
                                               if (item.color != null)
                                                 Text(
-                                                  'Color: ${item.color}',
+                                                  'ສີ: ${item.color}',
                                                   style: TextStyle(
                                                     color:
                                                         Colors
@@ -355,7 +355,7 @@ class _CartState extends State<Cart> {
                             elevation: 0,
                           ),
                           child: Text(
-                            'Checkout',
+                            'ຊຳລະເງິນ',
                             style: TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,

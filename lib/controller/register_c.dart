@@ -12,7 +12,7 @@ class RegisterC extends GetxController {
   final TextEditingController firstNameController = TextEditingController();
   final TextEditingController lastNameController = TextEditingController();
   final TextEditingController genderController = TextEditingController(
-    text: "Male",
+    text: "ຊາຍ",
   );
   final TextEditingController birthdayController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
@@ -266,7 +266,7 @@ class RegisterC extends GetxController {
     emailController.clear();
     firstNameController.clear();
     lastNameController.clear();
-    genderController.text = "Male";
+    genderController.text = "ຊາຍ";
     birthdayController.clear();
     passwordController.clear();
     confirmPasswordController.clear();

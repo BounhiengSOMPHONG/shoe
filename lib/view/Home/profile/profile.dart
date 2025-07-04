@@ -345,7 +345,7 @@ class ProfilePage extends StatelessWidget {
         value: profileC.selectedSex.value,
         onChanged:
             profileC.isEditing.value
-                ? (value) => profileC.selectedSex.value = value ?? 'Male'
+                ? (value) => profileC.selectedSex.value = value ?? 'ຊາຍ'
                 : null,
         decoration: InputDecoration(
           labelText: 'Sex',
@@ -370,7 +370,7 @@ class ProfilePage extends StatelessWidget {
           fillColor: profileC.isEditing.value ? null : Colors.grey.shade50,
         ),
         items:
-            ['Male', 'Female'].map((String value) {
+            ['ຊາຍ', 'ຍິງ'].map((String value) {
               return DropdownMenuItem<String>(value: value, child: Text(value));
             }).toList(),
       ),

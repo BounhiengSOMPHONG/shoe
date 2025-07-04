@@ -25,8 +25,8 @@ class SplashC extends GetxController {
     if (!isLoggedIn.value) {
       Get.off(Onboard());
     } else {
-      // Get.off(Login());
-      Get.off(Layout());
+      Get.off(Login());
+      // Get.off(Layout());
     }
   }
 }

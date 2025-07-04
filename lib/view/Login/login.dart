@@ -105,7 +105,7 @@ class _LoginState extends State<Login> {
                     controller: _loginC.passwordController,
                     obscureText: _loginC.isPasswordHidden.value,
                     decoration: InputDecoration(
-                      labelText: 'Password',
+                      labelText: 'ລະຫັດຜ່ານ',
                       labelStyle: TextStyle(
                         color: Color(0xFF000000).withOpacity(0.3),
                         fontSize: 16,
@@ -152,7 +152,7 @@ class _LoginState extends State<Login> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
-                      "Forgot ",
+                      "ລືມ ",
                       style: TextStyle(color: Colors.black87, fontSize: 14),
                     ),
                     InkWell(
@@ -160,7 +160,7 @@ class _LoginState extends State<Login> {
                         print("Password tapped");
                       },
                       child: Text(
-                        "Password",
+                        "ລະຫັດຜ່ານ",
                         style: TextStyle(
                           color: Color(0xFF1723AC),
                           fontSize: 14,

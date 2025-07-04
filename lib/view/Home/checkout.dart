@@ -33,12 +33,12 @@ class _CheckoutPageState extends State<CheckoutPage> {
                   ),
                   if (item.size != null)
                     Text(
-                      'Size: ${item.size}',
+                      'ໄຊສ໌: ${item.size}',
                       style: TextStyle(fontSize: 13, color: Colors.grey[600]),
                     ),
                   if (item.color != null)
                     Text(
-                      'Color: ${item.color}',
+                      'ສີ: ${item.color}',
                       style: TextStyle(fontSize: 13, color: Colors.grey[600]),
                     ),
                 ],
@@ -71,8 +71,8 @@ class _CheckoutPageState extends State<CheckoutPage> {
   void _handleCheckout() {
     if (checkoutController.selectedAddress.value == null) {
       Get.snackbar(
-        'Error',
-        'Please select a delivery address',
+        'ຂໍ້ຜິດພາດ',
+        'ກະລຸນາເລືອກທີ່ຢູ່ຈັດສົ່ງ',
         snackPosition: SnackPosition.TOP,
       );
       return;
@@ -108,7 +108,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        title: const Text('Checkout', style: TextStyle(color: Colors.black)),
+        title: const Text('ຊຳລະເງິນ', style: TextStyle(color: Colors.black)),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () => Navigator.pop(context),
@@ -130,7 +130,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const Text(
-                    'สรุปรายการสั่งซื้อ',
+                    'ສະຫຼຸບລາຍການສັ່ງຊື້',
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 10),
@@ -183,7 +183,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       const Text(
-                        'ที่อยู่จัดส่ง',
+                        'ທີ່ຢູ່ຈັດສົ່ງ',
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
@@ -191,7 +191,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                       ),
                       TextButton(
                         onPressed: () => addressController.addNewAddress(),
-                        child: const Text('+ เพิ่มที่อยู่ใหม่'),
+                        child: const Text('+ ເພີ່ມທີ່ຢູ່ໃໝ່'),
                       ),
                     ],
                   ),
@@ -201,7 +201,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                       return const Center(child: CircularProgressIndicator());
                     }
                     if (addressController.addresses.isEmpty) {
-                      return const Text('ไม่มีที่อยู่จัดส่ง กรุณาเพิ่มที่อยู่');
+                      return const Text('ບໍ່ມີທີ່ຢູ່ຈັດສົ່ງ ກະລຸນາເພີ່ມທີ່ຢູ່');
                     }
 
                     return GestureDetector(
@@ -215,7 +215,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   const Text(
-                                    'เลือกที่อยู่จัดส่ง',
+                                    'ເລືອກທີ່ຢູ່ຈັດສົ່ງ',
                                     style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                     ),
@@ -290,7 +290,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                                           ],
                                         )
                                         : const Text(
-                                          'เลือกที่อยู่จัดส่ง',
+                                          'ເລືອກທີ່ຢູ່ຈັດສົ່ງ',
                                           style: TextStyle(color: Colors.grey),
                                         ),
                               ),
@@ -317,7 +317,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const Text(
-                    'ชำระเงิน',
+                    'ການຊຳລະເງິນ',
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 10),
@@ -336,7 +336,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                             children: [
                               Icon(Icons.qr_code),
                               SizedBox(width: 10),
-                              Text('Payment'),
+                              Text('ການຊຳລະເງິນ'),
                             ],
                           ),
                         ),
@@ -376,7 +376,7 @@ class _CheckoutPageState extends State<CheckoutPage> {
                 ),
                 onPressed: _handleCheckout,
                 child: const Text(
-                  'ยืนยันการสั่งซื้อ',
+                  'ຢືນຢັນການສັ່ງຊື້',
                   style: TextStyle(fontSize: 16),
                 ),
               ),

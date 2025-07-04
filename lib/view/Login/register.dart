@@ -12,7 +12,7 @@ class Register extends StatefulWidget {
 
 class _RegisterState extends State<Register> {
   final _registerC = Get.put(RegisterC());
-  String _selectedGender = 'Male';
+  String _selectedGender = 'ຊາຍ';
   Widget customRadio(String gender) {
     final isSelected = _selectedGender == gender;
     return GestureDetector(
@@ -80,7 +80,7 @@ class _RegisterState extends State<Register> {
               //Title
               Container(
                 child: Text(
-                  'Register',
+                  'ລົງທະບຽນ',
                   style: TextStyle(
                     color: Color(0xFF1932D7),
                     fontSize: Size.width * 0.09,
@@ -98,10 +98,10 @@ class _RegisterState extends State<Register> {
                     keyboardType: TextInputType.number,
                     inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                     onChanged: (value) {
-                      _registerC.validatePhone(); // เรียกฟังก์ชันเช็คเบอร์
+                      _registerC.validatePhone(); // ເອີ້ນຟັງຊັ່ນເຊັກເບີ
                     },
                     decoration: InputDecoration(
-                      labelText: 'Phone',
+                      labelText: 'ເບີໂທ',
                       labelStyle: TextStyle(
                         color: Color(0xFF000000).withOpacity(0.3),
                         fontSize: 16,
@@ -144,7 +144,7 @@ class _RegisterState extends State<Register> {
                       _registerC.validateEmail();
                     },
                     decoration: InputDecoration(
-                      labelText: 'Email',
+                      labelText: 'ອີເມວ',
                       labelStyle: TextStyle(
                         color: Color(0xFF000000).withOpacity(0.3),
                         fontSize: 16,
@@ -181,7 +181,7 @@ class _RegisterState extends State<Register> {
                 child: TextField(
                   controller: _registerC.firstNameController,
                   decoration: InputDecoration(
-                    labelText: 'FirstName',
+                    labelText: 'ຊື່',
                     labelStyle: TextStyle(
                       color: Color(0xFF000000).withOpacity(0.3),
                       fontSize: 16,
@@ -213,7 +213,7 @@ class _RegisterState extends State<Register> {
                 child: TextField(
                   controller: _registerC.lastNameController, //null,
                   decoration: InputDecoration(
-                    labelText: 'LastName',
+                    labelText: 'ນາມສະກຸນ',
                     labelStyle: TextStyle(
                       color: Color(0xFF000000).withOpacity(0.3),
                       fontSize: 16,
@@ -246,14 +246,14 @@ class _RegisterState extends State<Register> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      'Gender :',
+                      'ເພດ :',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 16,
                       ),
                     ),
-                    customRadio("Male"),
-                    customRadio("Female"),
+                    customRadio("ຊາຍ"),
+                    customRadio("ຍິງ"),
                   ],
                 ),
               ),
@@ -281,7 +281,7 @@ class _RegisterState extends State<Register> {
                           value: _registerC.selectedDay.value,
                           hint: Padding(
                             padding: EdgeInsets.only(right: 8.0),
-                            child: Text("DD"),
+                            child: Text("ວັນ"),
                           ),
                           underline: SizedBox(),
                           icon: Image.asset('images/icons/Arrow.png'),
@@ -316,7 +316,7 @@ class _RegisterState extends State<Register> {
                           value: _registerC.selectedMonth.value,
                           hint: Padding(
                             padding: EdgeInsets.only(right: 8.0),
-                            child: Text("Month"),
+                            child: Text("ເດືອນ"),
                           ),
                           underline: SizedBox(),
                           icon: Image.asset('images/icons/Arrow.png'),
@@ -351,7 +351,7 @@ class _RegisterState extends State<Register> {
                           value: _registerC.selectedYear.value,
                           hint: Padding(
                             padding: EdgeInsets.only(right: 8.0),
-                            child: Text("Year"),
+                            child: Text("ປີ"),
                           ),
                           underline: SizedBox(),
                           icon: Image.asset('images/icons/Arrow.png'),
@@ -383,7 +383,7 @@ class _RegisterState extends State<Register> {
                     controller: _registerC.passwordController,
                     obscureText: _registerC.isPasswordHidden.value,
                     decoration: InputDecoration(
-                      labelText: 'Password',
+                      labelText: 'ລະຫັດຜ່ານ',
                       labelStyle: TextStyle(
                         color: Color(0xFF000000).withOpacity(0.3),
                         fontSize: 16,
@@ -433,7 +433,7 @@ class _RegisterState extends State<Register> {
                     onChanged: (value) => _registerC.validatePasswordMatch(),
 
                     decoration: InputDecoration(
-                      labelText: 'Password Confirm',
+                      labelText: 'ຢືນຢັນລະຫັດຜ່ານ',
                       labelStyle: TextStyle(
                         color: Color(0xFF000000).withOpacity(0.3),
                         fontSize: 16,

@@ -21,7 +21,8 @@ class ApiConstants {
   static const String productTypesEndpoint = '/api/product-types';
   static const String brandsEndpoint = '/api/brands';
 
-  static const String showWishlistEndpoint = '/api/showWishlist/';
+  // Wishlist endpoints - แก้ไขให้ตรงกับ backend
+  static const String showWishlistEndpoint = '/api/showWishlist';
   static const String addToWishlistEndpoint = '/api/insertWishlist';
   static const String removeFromWishlistEndpoint = '/api/deleteWishlist/';
 

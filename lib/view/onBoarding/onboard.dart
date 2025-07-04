@@ -92,8 +92,8 @@ class _OnboardState extends State<Onboard> {
                         () => Text(
                           Onboard_C.currentboard.value <
                                   Onboard_C.onboardData.length - 1
-                              ? 'NEXT'
-                              : 'GET STARTED',
+                              ? 'ຕໍ່ໄປ'
+                              : 'ເລີ່ມຕົ້ນ',
                           style: TextStyle(
                             fontSize: Size.width * 0.07,
                             fontWeight: FontWeight.bold,
@@ -102,8 +102,8 @@ class _OnboardState extends State<Onboard> {
                         ),
                       ),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.transparent, // ทำให้ปุ่มโปร่งใส
-                        shadowColor: Colors.transparent, // ลบเงา
+                        backgroundColor: Colors.transparent, // ເຮັດໃຫ້ປຸ່ມໂປ່ງໃສ
+                        shadowColor: Colors.transparent, // ລົບເງົາ
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(15.0),
                         ),

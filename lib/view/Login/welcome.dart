@@ -55,7 +55,7 @@ class _WelcomeState extends State<Welcome> {
                         mainAxisSize: MainAxisSize.max,
                         children: [
                           Text(
-                            'Login',
+                            'ເຂົ້າສູ່ລະບົບ',
                             style: TextStyle(
                               fontSize: 32,
                               fontWeight: FontWeight.bold,
@@ -66,7 +66,7 @@ class _WelcomeState extends State<Welcome> {
                             text: TextSpan(
                               children: [
                                 TextSpan(
-                                  text: 'to App ',
+                                  text: 'ໃສ່ App ',
                                   style: TextStyle(
                                     fontSize: 32,
                                     fontWeight: FontWeight.bold,
@@ -104,7 +104,7 @@ class _WelcomeState extends State<Welcome> {
                       controller: _loginC.emailPhoneController,
                       keyboardType: TextInputType.emailAddress,
                       decoration: InputDecoration(
-                        labelText: 'Phone OR Email',
+                        labelText: 'ເບີໂທ ຫຼື ອີເມວ',
                         labelStyle: TextStyle(
                           color: Color(0xFF000000).withOpacity(0.3),
                           fontSize: 16,
@@ -147,7 +147,7 @@ class _WelcomeState extends State<Welcome> {
                         controller: _loginC.passwordController,
                         obscureText: _loginC.isPasswordHidden.value,
                         decoration: InputDecoration(
-                          labelText: 'Password',
+                          labelText: 'ລະຫັດຜ່ານ',
                           labelStyle: TextStyle(
                             color: Color(0xFF000000).withOpacity(0.3),
                             fontSize: 16,
@@ -194,7 +194,7 @@ class _WelcomeState extends State<Welcome> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Text(
-                          "Forgot ",
+                          "ລືມ ",
                           style: TextStyle(color: Colors.black87, fontSize: 14),
                         ),
                         InkWell(
@@ -202,7 +202,7 @@ class _WelcomeState extends State<Welcome> {
                             print("Password tapped");
                           },
                           child: Text(
-                            "Password",
+                            "ລະຫັດຜ່ານ",
                             style: TextStyle(
                               color: Color(0xFF0500D4),
                               fontSize: 14,

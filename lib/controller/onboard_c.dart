@@ -6,19 +6,19 @@ class OnboardC extends GetxController {
   final List<Map<String, dynamic>> onboardData = [
     {
       'image': 'images/ob1.png',
-      'title': 'View product 360 degrees',
+      'title': 'ເບິ່ງສິນຄ້າແບບ 360 ອົງສາ',
       'description':
-          'You can see the product with all angles, true and convenient',
+          'ທ່ານສາມາດເບິ່ງສິນຄ້າຈາກທຸກມຸມມອງ ທີ່ແທ້ຈິງແລະສະດວກ',
     },
     {
       'image': 'images/ob2.png',
-      'title': 'View product 360 degrees',
-      'description': 'Connect with friends and family easily.',
+      'title': 'ເຊື່ອມຕໍ່ກັບເພື່ອນແລະຄອບຄົວ',
+      'description': 'ເຊື່ອມຕໍ່ກັບເພື່ອນແລະຄອບຄົວໄດ້ຢ່າງງ່າຍດາຍ',
     },
     {
       'image': 'images/ob3.png',
-      'title': 'Get Started Now',
-      'description': 'Join us and explore the world of possibilities.',
+      'title': 'ເລີ່ມຕົ້ນດຽວນີ້',
+      'description': 'ເຂົ້າຮ່ວມກັບພວກເຮົາແລະສຳຫຼວດໂລກແຫ່ງຄວາມເປັນໄປໄດ້',
     },
   ];
   final PageController pageonbord = PageController();
@@ -30,8 +30,8 @@ class OnboardC extends GetxController {
   void onNextPage() {
     if (currentboard.value < onboardData.length - 1) {
       pageonbord.nextPage(
-        duration: Duration(milliseconds: 300), // ระยะเวลาเปลี่ยนหน้า
-        curve: Curves.fastOutSlowIn, // ลักษณะการเคลื่อนไหว
+        duration: Duration(milliseconds: 300), // ລະຍະເວລາເປລີ່ຍນໜ້າ
+        curve: Curves.fastOutSlowIn, // ລັກສະນະການເຄື່ອນໄຫວ
       );
     } else {
       Get.to(Welcome());

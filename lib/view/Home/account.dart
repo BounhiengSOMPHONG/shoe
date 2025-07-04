@@ -29,7 +29,7 @@ class _AccountState extends State<Account> {
                     height: 350,
                     decoration: BoxDecoration(
                       gradient: LinearGradient(
-                        colors: [Colors.teal.shade400, Colors.teal.shade600],
+                        colors: [Colors.blue.shade400, Colors.blue.shade600],
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
                       ),
@@ -52,8 +52,8 @@ class _AccountState extends State<Account> {
                           ),
                           child: Image.asset(
                             'images/LOGO.png',
-                            width: 50,
-                            height: 50,
+                            width: 100,
+                            height: 100,
                           ),
                         ),
                       ),
@@ -89,21 +89,22 @@ class _AccountState extends State<Account> {
                       // แสดงชื่อจริงของผู้ใช้
                       Obx(
                         () => Text(
-                          _account.currentUser.value?.fullName ?? 'Loading...',
+                          _account.currentUser.value?.fullName ??
+                              'ກຳລັງໂຫຼດ...',
                           style: const TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 22, // Slightly larger font
-                            color: Colors.white, // White text for contrast
+                            color: Colors.black, // White text for contrast
                           ),
                         ),
                       ),
-                      // แสดงอีเมลจริงของผู้ใช้
+                      // ສະແດງອີເມວຈິງຂອງຜູ້ໃຊ້
                       Obx(
                         () => Text(
-                          _account.currentUser.value?.email ?? 'Loading...',
+                          _account.currentUser.value?.email ?? 'ກຳລັງໂຫຼດ...',
                           style: const TextStyle(
                             fontSize: 18,
-                            color: Colors.white70,
+                            color: Colors.black87,
                           ), // Slightly smaller and lighter white
                         ),
                       ),
@@ -193,7 +194,7 @@ class _AccountState extends State<Account> {
                         size: 24, // Slightly larger icon
                       ),
                       title: const Text(
-                        'Profile',
+                        'ໂປຣໄຟລ໌',
                         style: TextStyle(
                           fontWeight: FontWeight.w500,
                           fontSize: 16, // Slightly larger font
@@ -224,7 +225,7 @@ class _AccountState extends State<Account> {
                         size: 24, // Slightly larger icon
                       ),
                       title: const Text(
-                        'Address',
+                        'ທີ່ຢູ່',
                         style: TextStyle(
                           fontWeight: FontWeight.w500,
                           fontSize: 16, // Slightly larger font
@@ -280,7 +281,7 @@ class _AccountState extends State<Account> {
                   //Logout
                   Card(
                     // Using Card for better visual separation
-                    color: Colors.red,
+                    color: Colors.blue,
                     elevation: 2, // Add a subtle shadow
                     margin: const EdgeInsets.only(bottom: 8),
                     shape: RoundedRectangleBorder(
@@ -293,7 +294,7 @@ class _AccountState extends State<Account> {
                         size: 24, // Slightly larger icon
                       ),
                       title: const Text(
-                        'Sign out',
+                        'ອອກຈາກລະບົບ',
                         style: TextStyle(
                           fontWeight: FontWeight.w500,
                           fontSize: 16, // Slightly larger font
