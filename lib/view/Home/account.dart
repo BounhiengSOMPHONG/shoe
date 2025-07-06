@@ -42,7 +42,7 @@ class _AccountState extends State<Account> {
                   ), // Added horizontal padding
                   child: Column(
                     children: [
-                      const SizedBox(height: 50), // เพิ่มระยะห่างด้านบน
+                      // const SizedBox(height: 50), // เพิ่มระยะห่างด้านบน
                       // โลโก้
                       Center(
                         child: Container(
@@ -52,8 +52,8 @@ class _AccountState extends State<Account> {
                           ),
                           child: Image.asset(
                             'images/LOGO.png',
-                            width: 100,
-                            height: 100,
+                            width: 50,
+                            height: 50,
                           ),
                         ),
                       ),

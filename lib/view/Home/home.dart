@@ -307,13 +307,13 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                 ),
               )
               : Container(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                    colors: [Colors.blue.shade50, Colors.white],
-                  ),
-                ),
+                // decoration: BoxDecoration(
+                //   gradient: LinearGradient(
+                //     begin: Alignment.topCenter,
+                //     end: Alignment.bottomCenter,
+                //     colors: [Colors.blue.shade50, Colors.white],
+                //   ),
+                // ),
                 child: FadeTransition(
                   opacity: _fadeAnimation,
                   child: SingleChildScrollView(
@@ -328,13 +328,13 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                           ),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(20),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.blue.shade200.withOpacity(0.3),
-                                blurRadius: 12,
-                                offset: Offset(0, 4),
-                              ),
-                            ],
+                            // boxShadow: [
+                            //   BoxShadow(
+                            //     color: Colors.blue.shade200.withOpacity(0.3),
+                            //     blurRadius: 12,
+                            //     offset: Offset(0, 4),
+                            //   ),
+                            // ],
                           ),
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(20),
@@ -360,16 +360,6 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                                       },
                                       child: Container(
                                         width: double.infinity,
-                                        decoration: BoxDecoration(
-                                          gradient: LinearGradient(
-                                            begin: Alignment.topLeft,
-                                            end: Alignment.bottomRight,
-                                            colors: [
-                                              Colors.blue.shade400,
-                                              Colors.blue.shade600,
-                                            ],
-                                          ),
-                                        ),
                                         child: Image.asset(
                                           imageUrl,
                                           fit: BoxFit.contain,

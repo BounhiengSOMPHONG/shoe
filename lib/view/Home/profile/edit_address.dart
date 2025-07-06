@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 
 class EditAddressPage extends StatefulWidget {
   final Address address;
-  
+
   const EditAddressPage({super.key, required this.address});
 
   @override
@@ -14,7 +14,7 @@ class EditAddressPage extends StatefulWidget {
 
 class _EditAddressPageState extends State<EditAddressPage> {
   final AddressC addressController = Get.find<AddressC>();
-  
+
   late TextEditingController villageController;
   late TextEditingController districtController;
   late TextEditingController provinceController;
@@ -28,7 +28,9 @@ class _EditAddressPageState extends State<EditAddressPage> {
     villageController = TextEditingController(text: widget.address.village);
     districtController = TextEditingController(text: widget.address.district);
     provinceController = TextEditingController(text: widget.address.province);
-    transportationController = TextEditingController(text: widget.address.transportation ?? '');
+    transportationController = TextEditingController(
+      text: widget.address.transportation ?? '',
+    );
     branchController = TextEditingController(text: widget.address.branch ?? '');
   }
 
@@ -48,12 +50,9 @@ class _EditAddressPageState extends State<EditAddressPage> {
       appBar: AppBar(
         title: const Text(
           'Edit Address',
-          style: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-          ),
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
-        backgroundColor: Colors.teal,
+        backgroundColor: Colors.blue,
         iconTheme: const IconThemeData(color: Colors.white),
         elevation: 0,
       ),
@@ -66,13 +65,13 @@ class _EditAddressPageState extends State<EditAddressPage> {
             Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: Colors.teal.shade50,
+                color: Colors.blue.shade50,
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: Colors.teal.shade200),
+                border: Border.all(color: Colors.blue.shade200),
               ),
               child: Row(
                 children: [
-                  Icon(Icons.edit_location_alt, color: Colors.teal.shade600),
+                  Icon(Icons.edit_location_alt, color: Colors.blue.shade600),
                   const SizedBox(width: 12),
                   Expanded(
                     child: Column(
@@ -81,7 +80,7 @@ class _EditAddressPageState extends State<EditAddressPage> {
                         Text(
                           'Editing Address for:',
                           style: TextStyle(
-                            color: Colors.teal.shade600,
+                            color: Colors.blue.shade600,
                             fontSize: 12,
                             fontWeight: FontWeight.w500,
                           ),
@@ -89,7 +88,7 @@ class _EditAddressPageState extends State<EditAddressPage> {
                         Text(
                           '${widget.address.firstName} ${widget.address.lastName}',
                           style: TextStyle(
-                            color: Colors.teal.shade800,
+                            color: Colors.blue.shade800,
                             fontSize: 16,
                             fontWeight: FontWeight.bold,
                           ),
@@ -97,7 +96,7 @@ class _EditAddressPageState extends State<EditAddressPage> {
                         Text(
                           widget.address.phone,
                           style: TextStyle(
-                            color: Colors.teal.shade600,
+                            color: Colors.blue.shade600,
                             fontSize: 14,
                           ),
                         ),
@@ -107,14 +106,14 @@ class _EditAddressPageState extends State<EditAddressPage> {
                 ],
               ),
             ),
-            
+
             const SizedBox(height: 24),
-            
+
             // Form Fields
             _buildFormSection(),
-            
+
             const SizedBox(height: 32),
-            
+
             // Action Buttons
             _buildActionButtons(),
           ],
@@ -150,7 +149,7 @@ class _EditAddressPageState extends State<EditAddressPage> {
             ),
           ),
           const SizedBox(height: 20),
-          
+
           // Village
           _buildTextField(
             controller: villageController,
@@ -158,7 +157,7 @@ class _EditAddressPageState extends State<EditAddressPage> {
             icon: Icons.home_outlined,
             required: true,
           ),
-          
+
           // District
           _buildTextField(
             controller: districtController,
@@ -166,7 +165,7 @@ class _EditAddressPageState extends State<EditAddressPage> {
             icon: Icons.location_city_outlined,
             required: true,
           ),
-          
+
           // Province
           _buildTextField(
             controller: provinceController,
@@ -174,7 +173,7 @@ class _EditAddressPageState extends State<EditAddressPage> {
             icon: Icons.map_outlined,
             required: true,
           ),
-          
+
           // Transportation
           _buildTextField(
             controller: transportationController,
@@ -182,7 +181,7 @@ class _EditAddressPageState extends State<EditAddressPage> {
             icon: Icons.local_shipping_outlined,
             required: false,
           ),
-          
+
           // Branch
           _buildTextField(
             controller: branchController,
@@ -209,7 +208,7 @@ class _EditAddressPageState extends State<EditAddressPage> {
         controller: controller,
         decoration: InputDecoration(
           labelText: label,
-          prefixIcon: Icon(icon, color: Colors.teal),
+          prefixIcon: Icon(icon, color: Colors.blue),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(8),
             borderSide: BorderSide(color: Colors.grey.shade300),
@@ -220,7 +219,7 @@ class _EditAddressPageState extends State<EditAddressPage> {
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(8),
-            borderSide: const BorderSide(color: Colors.teal, width: 2),
+            borderSide: const BorderSide(color: Colors.blue, width: 2),
           ),
         ),
       ),
@@ -245,7 +244,7 @@ class _EditAddressPageState extends State<EditAddressPage> {
               ),
             ),
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.teal,
+              backgroundColor: Colors.blue,
               padding: const EdgeInsets.symmetric(vertical: 16),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8),
@@ -253,9 +252,9 @@ class _EditAddressPageState extends State<EditAddressPage> {
             ),
           ),
         ),
-        
+
         const SizedBox(height: 12),
-        
+
         // Delete Button
         Container(
           width: double.infinity,
