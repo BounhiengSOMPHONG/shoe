@@ -48,11 +48,21 @@ class ProductDetailsC extends GetxController {
       return;
     }
 
+    final availableSizes = getAvailableSizes();
+    if (availableSizes.isEmpty) {
+      selectedStockItem.value = null;
+      return;
+    }
+
+    // Ensure selectedSizeIndex is within bounds
+    if (selectedSizeIndex.value >= availableSizes.length) {
+      selectedSizeIndex.value = 0;
+    }
+
     final availableStockForSelectedSize =
         currentProduct.value!.Stock!
             .where(
-              (stock) =>
-                  stock.Size == getAvailableSizes()[selectedSizeIndex.value],
+              (stock) => stock.Size == availableSizes[selectedSizeIndex.value],
             )
             .toList();
 
@@ -63,11 +73,16 @@ class ProductDetailsC extends GetxController {
 
     // Ensure selectedColorIndex is within bounds of available colors for the selected size
     final availableColors = getAvailableColors();
+    if (availableColors.isEmpty) {
+      selectedStockItem.value = null;
+      return;
+    }
+
     if (selectedColorIndex.value >= availableColors.length) {
       selectedColorIndex.value = 0;
     }
 
-    final selectedSize = getAvailableSizes()[selectedSizeIndex.value];
+    final selectedSize = availableSizes[selectedSizeIndex.value];
     final selectedColor = availableColors[selectedColorIndex.value];
 
     selectedStockItem.value = currentProduct.value!.Stock!.firstWhereOrNull(
@@ -91,7 +106,14 @@ class ProductDetailsC extends GetxController {
     if (currentProduct.value == null || currentProduct.value!.Stock == null) {
       return [];
     }
-    final selectedSize = getAvailableSizes()[selectedSizeIndex.value];
+
+    final availableSizes = getAvailableSizes();
+    if (availableSizes.isEmpty ||
+        selectedSizeIndex.value >= availableSizes.length) {
+      return [];
+    }
+
+    final selectedSize = availableSizes[selectedSizeIndex.value];
     return currentProduct.value!.Stock!
         .where(
           (stock) => stock.Size == selectedSize && (stock.Quantity ?? 0) > 0,
@@ -249,16 +271,19 @@ class ProductDetailsC extends GetxController {
                     itemBuilder: (context, index) {
                       final color = colors[index];
                       // Check if this color has stock with quantity > 0 for the selected size
+                      final availableSizes = getAvailableSizes();
                       final isColorAvailable =
-                          product.Stock?.any(
-                            (stock) =>
-                                stock.Size ==
-                                    getAvailableSizes()[selectedSizeIndex
-                                        .value] &&
-                                stock.Color == color &&
-                                (stock.Quantity ?? 0) > 0,
-                          ) ??
-                          false;
+                          availableSizes.isNotEmpty &&
+                          selectedSizeIndex.value < availableSizes.length &&
+                          (product.Stock?.any(
+                                (stock) =>
+                                    stock.Size ==
+                                        availableSizes[selectedSizeIndex
+                                            .value] &&
+                                    stock.Color == color &&
+                                    (stock.Quantity ?? 0) > 0,
+                              ) ??
+                              false);
                       return GestureDetector(
                         onTap:
                             isColorAvailable

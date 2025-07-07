@@ -564,15 +564,15 @@ class _ProductDetailsState extends State<ProductDetails>
             itemCount: colors.length,
             itemBuilder: (context, index) {
               final color = colors[index];
-              final isColorAvailable =
-                  product.Stock?.any(
+              final isColorAvailable = sizes.isNotEmpty && 
+                  controller.selectedSizeIndex.value < sizes.length &&
+                  (product.Stock?.any(
                     (stock) =>
                         stock.Size ==
                             sizes[controller.selectedSizeIndex.value] &&
                         stock.Color == color &&
                         (stock.Quantity ?? 0) > 0,
-                  ) ??
-                  false;
+                  ) ?? false);
 
               return Obx(
                 () => GestureDetector(
