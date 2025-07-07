@@ -48,7 +48,11 @@ class ApiService {
       final responseBody = jsonDecode(response.body);
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        return ApiResponse(success: true, data: responseBody);
+        return ApiResponse(
+          success: true, 
+          data: responseBody,
+          message: responseBody['message'],
+        );
       }
       if (response.statusCode == 403) {
         Get.dialog(

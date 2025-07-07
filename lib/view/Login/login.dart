@@ -58,13 +58,31 @@ class _LoginState extends State<Login> {
                               : username;
 
                       String maskedEmail = maskedUsername + '@' + domain;
-                      return Text(
-                        maskedEmail,
-                        style: TextStyle(
-                          fontSize: 30,
-                          fontWeight: FontWeight.w400,
-                          color: Colors.black,
-                        ),
+                      return Column(
+                        children: [
+                          Text(
+                            maskedEmail,
+                            style: TextStyle(
+                              fontSize: 30,
+                              fontWeight: FontWeight.w400,
+                              color: Colors.black,
+                            ),
+                          ),
+                          SizedBox(height: 10),
+                          // InkWell(
+                          //   onTap: () {
+                          //     _loginC.navigateToWelcome();
+                          //   },
+                          //   child: Text(
+                          //     'ປ່ຽນບັນຊີ',
+                          //     style: TextStyle(
+                          //       color: Color(0xFF1723AC),
+                          //       fontSize: 14,
+                          //       decoration: TextDecoration.underline,
+                          //     ),
+                          //   ),
+                          // ),
+                        ],
                       );
                     } else {
                       // Mask phone number
@@ -75,23 +93,59 @@ class _LoginState extends State<Login> {
                                   '*' * (identifier.length - 6) +
                                   identifier.substring(identifier.length - 2)
                               : identifier;
-                      return Text(
-                        maskedPhone,
-                        style: TextStyle(
-                          fontSize: 30,
-                          fontWeight: FontWeight.w400,
-                          color: Colors.black,
-                        ),
+                      return Column(
+                        children: [
+                          Text(
+                            maskedPhone,
+                            style: TextStyle(
+                              fontSize: 30,
+                              fontWeight: FontWeight.w400,
+                              color: Colors.black,
+                            ),
+                          ),
+                          SizedBox(height: 10),
+                          InkWell(
+                            onTap: () {
+                              _loginC.navigateToWelcome();
+                            },
+                            child: Text(
+                              'ປ່ຽນບັນຊີ',
+                              style: TextStyle(
+                                color: Color(0xFF1723AC),
+                                fontSize: 14,
+                                decoration: TextDecoration.underline,
+                              ),
+                            ),
+                          ),
+                        ],
                       );
                     }
                   } else {
-                    return Text(
-                      'ຍັງບໍ່ໄດ້ເຂົ້າສູ່ລະບົບ',
-                      style: TextStyle(
-                        fontSize: 30,
-                        fontWeight: FontWeight.w400,
-                        color: Colors.black,
-                      ),
+                    return Column(
+                      children: [
+                        Text(
+                          'ຍັງບໍ່ໄດ້ເຂົ້າສູ່ລະບົບ',
+                          style: TextStyle(
+                            fontSize: 30,
+                            fontWeight: FontWeight.w400,
+                            color: Colors.black,
+                          ),
+                        ),
+                        SizedBox(height: 10),
+                        InkWell(
+                          onTap: () {
+                            _loginC.navigateToWelcome();
+                          },
+                          child: Text(
+                            'ເຂົ້າສູ່ລະບົບ',
+                            style: TextStyle(
+                              color: Color(0xFF1723AC),
+                              fontSize: 14,
+                              decoration: TextDecoration.underline,
+                            ),
+                          ),
+                        ),
+                      ],
                     );
                   }
                 }),

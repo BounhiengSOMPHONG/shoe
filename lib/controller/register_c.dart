@@ -27,6 +27,8 @@ class RegisterC extends GetxController {
   final RxString confirmPasswordError = ''.obs;
   final RxString phoneError = ''.obs;
   final RxString emailError = ''.obs;
+  final RxString passwordError = ''.obs;
+  final RxString birthdayError = ''.obs;
   final RxBool isFormValid = false.obs;
   final RxBool isLoading = false.obs;
 
@@ -94,6 +96,7 @@ class RegisterC extends GetxController {
   void _setupListeners() {
     phoneController.addListener(() => validatePhone());
     emailController.addListener(() => validateEmail());
+    passwordController.addListener(() => validatePassword());
     passwordController.addListener(() => validatePasswordMatch());
     confirmPasswordController.addListener(() => validatePasswordMatch());
 
@@ -101,6 +104,11 @@ class RegisterC extends GetxController {
     ever(selectedDay, (_) => _updateBirthdayField());
     ever(selectedMonth, (_) => _updateBirthdayField());
     ever(selectedYear, (_) => _updateBirthdayField());
+
+    // Validate birthday when any dropdown changes
+    ever(selectedDay, (_) => validateBirthday());
+    ever(selectedMonth, (_) => validateBirthday());
+    ever(selectedYear, (_) => validateBirthday());
   }
 
   void _updateBirthdayField() {
@@ -129,7 +137,7 @@ class RegisterC extends GetxController {
     if (confirmPasswordController.text.isEmpty) {
       confirmPasswordError.value = '';
     } else if (confirmPasswordController.text != passwordController.text) {
-      confirmPasswordError.value = "Passwords do not match";
+      confirmPasswordError.value = "รหัสผ่านไม่ตรงกัน";
     } else {
       confirmPasswordError.value = "";
     }
@@ -140,8 +148,8 @@ class RegisterC extends GetxController {
     final phone = phoneController.text;
     if (phone.isEmpty) {
       phoneError.value = 'กรุณากรอกเบอร์โทรศัพท์';
-    } else if (phone.length < 8) {
-      phoneError.value = 'เบอร์โทรศัพท์ต้องมีอย่างน้อย 8 หลัก';
+    } else if (phone.length != 8) {
+      phoneError.value = 'กรุณากรอกเบอร์โทรให้ครบ 8 หลัก';
     } else {
       phoneError.value = '';
     }
@@ -161,6 +169,52 @@ class RegisterC extends GetxController {
     _checkFormValidity();
   }
 
+  void validatePassword() {
+    final password = passwordController.text;
+    if (password.isEmpty) {
+      passwordError.value = '';
+    } else if (password.length < 6) {
+      passwordError.value = 'รหัสผ่านต้องมีอย่างน้อย 6 ตัวอักษร';
+    } else {
+      passwordError.value = '';
+    }
+    _checkFormValidity();
+  }
+
+  void validateBirthday() {
+    if (selectedDay.value == null ||
+        selectedMonth.value == null ||
+        selectedYear.value == null) {
+      birthdayError.value = '';
+      return;
+    }
+
+    try {
+      final year = int.parse(selectedYear.value!);
+      final month = months.indexOf(selectedMonth.value!) + 1;
+      final day = int.parse(selectedDay.value!);
+
+      final birthDate = DateTime(year, month, day);
+      final today = DateTime.now();
+      int age = today.year - birthDate.year;
+
+      // Check if birthday has occurred this year
+      if (today.month < birthDate.month ||
+          (today.month == birthDate.month && today.day < birthDate.day)) {
+        age--;
+      }
+
+      if (age < 18) {
+        birthdayError.value = 'คุณต้องมีอายุอย่างน้อย 18 ปี';
+      } else {
+        birthdayError.value = '';
+      }
+    } catch (e) {
+      birthdayError.value = '';
+    }
+    _checkFormValidity();
+  }
+
   void _checkFormValidity() {
     isFormValid.value =
         phoneController.text.isNotEmpty &&
@@ -171,7 +225,9 @@ class RegisterC extends GetxController {
         lastNameController.text.isNotEmpty &&
         genderController.text.isNotEmpty &&
         birthdayController.text.isNotEmpty &&
+        birthdayError.value.isEmpty &&
         passwordController.text.isNotEmpty &&
+        passwordError.value.isEmpty &&
         confirmPasswordController.text.isNotEmpty &&
         confirmPasswordError.value.isEmpty;
   }
@@ -204,7 +260,7 @@ class RegisterC extends GetxController {
       content: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text("โทรศัพท์: ${phoneController.text}"),
+          Text("โทรศัพท์: +85620${phoneController.text}"),
           Text("อีเมล: ${emailController.text}"),
           Text("ชื่อ: ${firstNameController.text} ${lastNameController.text}"),
           Text("เพศ: ${genderController.text}"),
@@ -224,23 +280,41 @@ class RegisterC extends GetxController {
     EasyLoading.show(status: 'Loading...');
 
     try {
+      final requestData = {
+        'Phone': '+85620${phoneController.text}',
+        'Email': emailController.text,
+        'FirstName': firstNameController.text,
+        'LastName': lastNameController.text,
+        'Sex': genderController.text,
+        'Datebirth': birthdayController.text,
+        'Password': passwordController.text,
+        'Images': null, // Optional field
+      };
+
+      // Debug logging
+      print('Registration request data:');
+      print(requestData);
+
       final response = await _apiService.post(
         ApiConstants.registerEndpoint,
-        data: {
-          'Phone': phoneController.text,
-          'Email': emailController.text,
-          'FirstName': firstNameController.text,
-          'LastName': lastNameController.text,
-          'Sex': genderController.text,
-          'Datebirth': birthdayController.text,
-          'Password': passwordController.text,
-        },
+        data: requestData,
       );
 
       isLoading.value = false;
       EasyLoading.dismiss();
 
-      if (response.message?.toLowerCase().contains('success') == true) {
+      // Debug logging
+      print('Registration response:');
+      print('Success: ${response.success}');
+      print('Message: ${response.message}');
+      print('Data: ${response.data}');
+
+      if (response.success == true ||
+          response.message?.toLowerCase().contains('success') == true ||
+          response.message?.toLowerCase().contains('insert successful') ==
+              true ||
+          response.message?.toLowerCase().contains('registration successful') ==
+              true) {
         Get.snackbar(
           'สำเร็จ',
           'ลงทะเบียนสำเร็จ',
@@ -277,6 +351,8 @@ class RegisterC extends GetxController {
 
     phoneError.value = '';
     emailError.value = '';
+    passwordError.value = '';
+    birthdayError.value = '';
     confirmPasswordError.value = '';
     isFormValid.value = false;
   }

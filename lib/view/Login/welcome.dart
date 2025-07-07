@@ -100,42 +100,65 @@ class _WelcomeState extends State<Welcome> {
                   // Phone or Email field
                   Container(
                     margin: EdgeInsets.symmetric(horizontal: 20),
-                    child: TextField(
-                      controller: _loginC.emailPhoneController,
-                      keyboardType: TextInputType.emailAddress,
-                      decoration: InputDecoration(
-                        labelText: 'ເບີໂທ ຫຼື ອີເມວ',
-                        labelStyle: TextStyle(
-                          color: Color(0xFF000000).withOpacity(0.3),
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                        border: OutlineInputBorder(),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                          borderSide: BorderSide(
-                            color: Color(0xFF0500D4),
-                            width: 2,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        TextField(
+                          controller: _loginC.emailPhoneController,
+                          keyboardType: TextInputType.emailAddress,
+                          onChanged: (value) => _loginC.validateEmailPhone(),
+                          decoration: InputDecoration(
+                            labelText: 'ເບີໂທ ຫຼື ອີເມວ',
+                            labelStyle: TextStyle(
+                              color: Color(0xFF000000).withOpacity(0.3),
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            border: OutlineInputBorder(),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                              borderSide: BorderSide(
+                                color: Color(0xFF0500D4),
+                                width: 2,
+                              ),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                              borderSide: BorderSide(
+                                color: Color(0xFF0500D4),
+                                width: 2,
+                              ),
+                            ),
+                            contentPadding: EdgeInsets.all(20),
+                            suffixIcon: Container(
+                              margin: EdgeInsets.only(right: 10),
+                              child: IconButton(
+                                icon: Image.asset('images/icons/close.png'),
+                                onPressed: () {
+                                  _loginC.emailPhoneController.clear();
+                                  _loginC.validateEmailPhone();
+                                },
+                              ),
+                            ),
                           ),
                         ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                          borderSide: BorderSide(
-                            color: Color(0xFF0500D4),
-                            width: 2,
-                          ),
+                        // Error message display
+                        Obx(
+                          () =>
+                              _loginC.emailPhoneError.value.isNotEmpty
+                                  ? Container(
+                                    margin: EdgeInsets.only(top: 8, left: 4),
+                                    child: Text(
+                                      _loginC.emailPhoneError.value,
+                                      style: TextStyle(
+                                        color: Colors.red,
+                                        fontSize: 12,
+                                      ),
+                                    ),
+                                  )
+                                  : SizedBox.shrink(),
                         ),
-                        contentPadding: EdgeInsets.all(20),
-                        suffixIcon: Container(
-                          margin: EdgeInsets.only(right: 10),
-                          child: IconButton(
-                            icon: Image.asset('images/icons/close.png'),
-                            onPressed: () {
-                              _loginC.emailPhoneController.clear();
-                            },
-                          ),
-                        ),
-                      ),
+                      ],
                     ),
                   ),
                   SizedBox(height: 30),

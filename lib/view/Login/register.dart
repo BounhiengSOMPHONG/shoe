@@ -373,6 +373,19 @@ class _RegisterState extends State<Register> {
                   ),
                 ),
               ),
+              // Birthday error display
+              Obx(
+                () =>
+                    _registerC.birthdayError.value.isNotEmpty
+                        ? Container(
+                          margin: EdgeInsets.symmetric(horizontal: 20),
+                          child: Text(
+                            _registerC.birthdayError.value,
+                            style: TextStyle(color: Colors.red, fontSize: 12),
+                          ),
+                        )
+                        : SizedBox.shrink(),
+              ),
               SizedBox(height: 30),
 
               //TextField for Password
@@ -417,6 +430,10 @@ class _RegisterState extends State<Register> {
                           onPressed: _registerC.togglePasswordVisibility,
                         ),
                       ),
+                      errorText:
+                          _registerC.passwordError.value == ''
+                              ? null
+                              : _registerC.passwordError.value,
                     ),
                   ),
                 ),

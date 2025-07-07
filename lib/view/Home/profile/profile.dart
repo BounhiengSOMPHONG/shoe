@@ -40,6 +40,35 @@ class ProfilePage extends StatelessWidget {
     }
   }
 
+  // Show delete confirmation dialog
+  void _showDeleteConfirmation(ProfileC profileC) {
+    Get.dialog(
+      AlertDialog(
+        title: const Text(
+          'ລົບບັນຊີ',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+        content: const Text(
+          'ທ່ານແນ່ໃຈບໍ່ວ່າຕ້ອງການລົບບັນຊີຂອງທ່ານ? ການກະທຳນີ້ບໍ່ສາມາດຍົກເລີກໄດ້.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Get.back(),
+            child: const Text('ຍົກເລີກ'),
+          ),
+          TextButton(
+            onPressed: () {
+              Get.back();
+              profileC.deleteAccount();
+            },
+            style: TextButton.styleFrom(foregroundColor: Colors.red),
+            child: const Text('ລົບ'),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final ProfileC profileC = Get.put(ProfileC());
@@ -633,7 +662,7 @@ class ProfilePage extends StatelessWidget {
             onPressed:
                 profileC.isLoading.value
                     ? null
-                    : () => profileC.deleteAccount(),
+                    : () => _showDeleteConfirmation(profileC),
             icon: const Icon(Icons.delete_outline, color: Colors.red),
             label: const Text(
               'ລົບບັນຊີ',
