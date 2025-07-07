@@ -733,6 +733,17 @@ class _ShopState extends State<Shop> {
           return Center(child: CircularProgressIndicator(color: Colors.blue));
         }
         final item = items[index];
+
+        // ตรวจสอบจำนวนสินค้าคงเหลือ
+        int totalStock = 0;
+        if (item.Stock != null && item.Stock!.isNotEmpty) {
+          totalStock = item.Stock!.fold(
+            0,
+            (sum, stock) => sum + (stock.Quantity ?? 0),
+          );
+        }
+        bool isOutOfStock = totalStock == 0;
+
         return GestureDetector(
           onTap: () => Get.to(() => ProductDetails(product: item)),
           child: Container(
@@ -775,9 +786,44 @@ class _ShopState extends State<Shop> {
                             ),
                           ),
                         ),
+                        // สถานะสินค้าหมด
+                        if (isOutOfStock)
+                          Positioned(
+                            top: 8,
+                            left: 8,
+                            child: Container(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 8,
+                                vertical: 4,
+                              ),
+                              decoration: BoxDecoration(
+                                color: Colors.red.shade600,
+                                borderRadius: BorderRadius.circular(12),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.red.withOpacity(0.3),
+                                    spreadRadius: 1,
+                                    blurRadius: 4,
+                                    offset: Offset(0, 2),
+                                  ),
+                                ],
+                              ),
+                              child: Text(
+                                'ສິນຄ້າໝົດ',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ),
                         Positioned(
                           top: 0,
-                          left: 8,
+                          left:
+                              isOutOfStock
+                                  ? 80
+                                  : 8, // ปรับตำแหน่งเมื่อมี badge สินค้าหมด
                           child: Obx(
                             () => IconButton(
                               icon: Icon(
@@ -814,13 +860,56 @@ class _ShopState extends State<Shop> {
                             overflow: TextOverflow.ellipsis,
                           ),
                           SizedBox(height: 4),
-                          Text(
-                            'ລາຄາ: ${item.price} K',
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: Colors.green,
-                              fontWeight: FontWeight.bold,
-                            ),
+                          Row(
+                            children: [
+                              Text(
+                                'ລາຄາ: ${item.price} K',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.green,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              Spacer(),
+                              // แสดงจำนวนสินค้าคงเหลือ
+                              Container(
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: 6,
+                                  vertical: 2,
+                                ),
+                                decoration: BoxDecoration(
+                                  color:
+                                      isOutOfStock
+                                          ? Colors.red.shade100
+                                          : (totalStock <= 5
+                                              ? Colors.orange.shade100
+                                              : Colors.green.shade100),
+                                  borderRadius: BorderRadius.circular(8),
+                                  border: Border.all(
+                                    color:
+                                        isOutOfStock
+                                            ? Colors.red.shade300
+                                            : (totalStock <= 5
+                                                ? Colors.orange.shade300
+                                                : Colors.green.shade300),
+                                    width: 1,
+                                  ),
+                                ),
+                                child: Text(
+                                  '${totalStock} ຊິ້ນ',
+                                  style: TextStyle(
+                                    fontSize: 10,
+                                    color:
+                                        isOutOfStock
+                                            ? Colors.red.shade700
+                                            : (totalStock <= 5
+                                                ? Colors.orange.shade700
+                                                : Colors.green.shade700),
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                         ],
                       ),
@@ -831,16 +920,24 @@ class _ShopState extends State<Shop> {
                   right: 8,
                   bottom: 8,
                   child: ElevatedButton(
-                    onPressed: () {
-                      PDC.showOptionsModal(item, context);
-                    },
+                    onPressed:
+                        isOutOfStock
+                            ? null
+                            : () {
+                              PDC.showOptionsModal(item, context);
+                            },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blue,
+                      backgroundColor:
+                          isOutOfStock ? Colors.grey.shade400 : Colors.blue,
                       shape: CircleBorder(),
                       padding: EdgeInsets.all(10),
-                      elevation: 4,
+                      elevation: isOutOfStock ? 0 : 4,
                     ),
-                    child: Icon(Icons.add_shopping_cart, color: Colors.white),
+                    child: Icon(
+                      isOutOfStock ? Icons.block : Icons.add_shopping_cart,
+                      color: Colors.white,
+                      size: 20,
+                    ),
                   ),
                 ),
               ],
