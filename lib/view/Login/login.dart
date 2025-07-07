@@ -69,19 +69,6 @@ class _LoginState extends State<Login> {
                             ),
                           ),
                           SizedBox(height: 10),
-                          // InkWell(
-                          //   onTap: () {
-                          //     _loginC.navigateToWelcome();
-                          //   },
-                          //   child: Text(
-                          //     'ປ່ຽນບັນຊີ',
-                          //     style: TextStyle(
-                          //       color: Color(0xFF1723AC),
-                          //       fontSize: 14,
-                          //       decoration: TextDecoration.underline,
-                          //     ),
-                          //   ),
-                          // ),
                         ],
                       );
                     } else {
@@ -104,19 +91,19 @@ class _LoginState extends State<Login> {
                             ),
                           ),
                           SizedBox(height: 10),
-                          InkWell(
-                            onTap: () {
-                              _loginC.navigateToWelcome();
-                            },
-                            child: Text(
-                              'ປ່ຽນບັນຊີ',
-                              style: TextStyle(
-                                color: Color(0xFF1723AC),
-                                fontSize: 14,
-                                decoration: TextDecoration.underline,
-                              ),
-                            ),
-                          ),
+                          // InkWell(
+                          //   onTap: () {
+                          //     _loginC.navigateToWelcome();
+                          //   },
+                          //   child: Text(
+                          //     'ປ່ຽນບັນຊີ',
+                          //     style: TextStyle(
+                          //       color: Color(0xFF1723AC),
+                          //       fontSize: 14,
+                          //       decoration: TextDecoration.underline,
+                          //     ),
+                          //   ),
+                          // ),
                         ],
                       );
                     }

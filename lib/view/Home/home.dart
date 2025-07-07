@@ -102,13 +102,18 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
   Widget buildModernProductCard(PItem product) {
     // ตรวจสอบจำนวนสินค้าคงเหลือ
     int totalStock = 0;
+    bool hasStockData = false;
+
     if (product.Stock != null && product.Stock!.isNotEmpty) {
       totalStock = product.Stock!.fold(
         0,
         (sum, stock) => sum + (stock.Quantity ?? 0),
       );
+      hasStockData = true;
     }
-    bool isOutOfStock = totalStock == 0;
+
+    // ถ้าไม่มีข้อมูล Stock ให้ถือว่ามีสินค้า (ไม่แสดงว่าหมด)
+    bool isOutOfStock = hasStockData && totalStock == 0;
 
     return Container(
       width: 160,
@@ -155,7 +160,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                           color: Colors.blue.shade50,
                           child: Icon(Icons.image, color: Colors.blue.shade300),
                         ),
-                    // สถานะสินค้าหมด
+                    // สถานะสินค้าหมด (แสดงเฉพาะเมื่อมีข้อมูล Stock และจำนวนเป็น 0)
                     if (isOutOfStock)
                       Positioned(
                         top: 8,
@@ -215,7 +220,7 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                         color: Colors.blue.shade600,
                       ),
                       Text(
-                        '${product.price?.toStringAsFixed(0) ?? '-'} ฿',
+                        '${product.price?.toStringAsFixed(0) ?? '-'} K',
                         style: TextStyle(
                           color: Colors.blue.shade600,
                           fontWeight: FontWeight.bold,
@@ -223,44 +228,45 @@ class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
                         ),
                       ),
                       Spacer(),
-                      // แสดงจำนวนสินค้าคงเหลือ
-                      Container(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 4,
-                          vertical: 1,
-                        ),
-                        decoration: BoxDecoration(
-                          color:
-                              isOutOfStock
-                                  ? Colors.red.shade100
-                                  : (totalStock <= 5
-                                      ? Colors.orange.shade100
-                                      : Colors.green.shade100),
-                          borderRadius: BorderRadius.circular(6),
-                          border: Border.all(
+                      // แสดงจำนวนสินค้าคงเหลือ (แสดงเฉพาะเมื่อมีข้อมูล Stock)
+                      if (hasStockData)
+                        Container(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 4,
+                            vertical: 1,
+                          ),
+                          decoration: BoxDecoration(
                             color:
                                 isOutOfStock
-                                    ? Colors.red.shade300
+                                    ? Colors.red.shade100
                                     : (totalStock <= 5
-                                        ? Colors.orange.shade300
-                                        : Colors.green.shade300),
-                            width: 0.5,
+                                        ? Colors.orange.shade100
+                                        : Colors.green.shade100),
+                            borderRadius: BorderRadius.circular(6),
+                            border: Border.all(
+                              color:
+                                  isOutOfStock
+                                      ? Colors.red.shade300
+                                      : (totalStock <= 5
+                                          ? Colors.orange.shade300
+                                          : Colors.green.shade300),
+                              width: 0.5,
+                            ),
+                          ),
+                          child: Text(
+                            '${totalStock}',
+                            style: TextStyle(
+                              fontSize: 8,
+                              color:
+                                  isOutOfStock
+                                      ? Colors.red.shade700
+                                      : (totalStock <= 5
+                                          ? Colors.orange.shade700
+                                          : Colors.green.shade700),
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
-                        child: Text(
-                          '${totalStock}',
-                          style: TextStyle(
-                            fontSize: 8,
-                            color:
-                                isOutOfStock
-                                    ? Colors.red.shade700
-                                    : (totalStock <= 5
-                                        ? Colors.orange.shade700
-                                        : Colors.green.shade700),
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
                     ],
                   ),
                 ],

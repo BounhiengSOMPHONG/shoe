@@ -736,13 +736,18 @@ class _ShopState extends State<Shop> {
 
         // ตรวจสอบจำนวนสินค้าคงเหลือ
         int totalStock = 0;
+        bool hasStockData = false;
+
         if (item.Stock != null && item.Stock!.isNotEmpty) {
           totalStock = item.Stock!.fold(
             0,
             (sum, stock) => sum + (stock.Quantity ?? 0),
           );
+          hasStockData = true;
         }
-        bool isOutOfStock = totalStock == 0;
+
+        // ถ้าไม่มีข้อมูล Stock ให้ถือว่ามีสินค้า (ไม่แสดงว่าหมด)
+        bool isOutOfStock = hasStockData && totalStock == 0;
 
         return GestureDetector(
           onTap: () => Get.to(() => ProductDetails(product: item)),
@@ -870,9 +875,10 @@ class _ShopState extends State<Shop> {
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
-                              Spacer(),
-                              // แสดงจำนวนสินค้าคงเหลือ
-                              Container(
+                                                    Spacer(),
+                      // แสดงจำนวนสินค้าคงเหลือ (แสดงเฉพาะเมื่อมีข้อมูล Stock)
+                      if (hasStockData)
+                        Container(
                                 padding: EdgeInsets.symmetric(
                                   horizontal: 6,
                                   vertical: 2,
