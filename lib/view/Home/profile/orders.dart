@@ -158,6 +158,24 @@ class OrdersPage extends StatelessWidget {
                         controller.formatDate(order.orderDate),
                         style: TextStyle(color: Colors.grey[600], fontSize: 12),
                       ),
+                      const SizedBox(height: 4),
+                      Row(
+                        children: [
+                          Icon(
+                            order.paymentMethodIcon,
+                            size: 14,
+                            color: Colors.grey[600],
+                          ),
+                          const SizedBox(width: 4),
+                          Text(
+                            order.paymentMethodText,
+                            style: TextStyle(
+                              color: Colors.grey[600],
+                              fontSize: 12,
+                            ),
+                          ),
+                        ],
+                      ),
                     ],
                   ),
                 ),
@@ -284,7 +302,11 @@ class OrdersPage extends StatelessWidget {
                                 order.oid,
                               ),
                           icon: const Icon(Icons.cancel, size: 18),
-                          label: const Text('ຍົກເລີກ'),
+                          label: Text(
+                            order.paymentMethod == 'on delivery'
+                                ? 'ຍົກເລີກ'
+                                : 'ຍົກເລີກ',
+                          ),
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.red,
                             foregroundColor: Colors.white,
@@ -570,7 +592,7 @@ class OrderDetailPage extends StatelessWidget {
                       if (currentOrderData.paymentMethod != null)
                         _buildDetailRow(
                           'ວິທີຈ່າຍ:',
-                          currentOrderData.paymentMethod!,
+                          currentOrderData.paymentMethodText,
                         ),
                       if (currentOrderData.trackingNumber != null)
                         _buildDetailRow(
@@ -678,7 +700,11 @@ class OrderDetailPage extends StatelessWidget {
                               currentOrderData.oid,
                             ),
                         icon: const Icon(Icons.cancel),
-                        label: const Text('ຍົກເລີກຄໍາສັ່ງ'),
+                        label: Text(
+                          currentOrderData.paymentMethod == 'on delivery'
+                              ? 'ຍົກເລີກຄໍາສັ່ງ'
+                              : 'ຍົກເລີກຄໍາສັ່ງ',
+                        ),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.red,
                           foregroundColor: Colors.white,
@@ -714,6 +740,39 @@ class OrderDetailPage extends StatelessWidget {
                     ),
                 ],
               ),
+
+              // Show note for destination payments that can be cancelled
+              if (currentOrderData.canCancel &&
+                  currentOrderData.paymentMethod == 'on delivery' &&
+                  currentOrderData.shipStatus == 'preparing')
+                Container(
+                  margin: const EdgeInsets.only(top: 12),
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: Colors.orange[50],
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: Colors.orange[200]!),
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.info_outline,
+                        color: Colors.orange[700],
+                        size: 20,
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          'ທ່ານສາມາດຍົກເລີກຄໍາສັ່ງຊື້ນີ້ໄດ້ ເນື່ອງຈາກຍັງບໍ່ໄດ້ຈັດສົ່ງ',
+                          style: TextStyle(
+                            color: Colors.orange[800],
+                            fontSize: 12,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
             ],
           ),
         );

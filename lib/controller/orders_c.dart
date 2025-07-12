@@ -53,7 +53,41 @@ class Order {
   bool get isCompleted => orderStatus.toLowerCase() == 'completed';
   bool get isCancelled => orderStatus.toLowerCase() == 'cancelled';
   bool get canRepay => isPending;
-  bool get canCancel => isPending;
+
+  // สามารถยกเลิกได้ถ้าเป็น pending หรือเป็น destination ที่ยังไม่ได้ส่ง
+  bool get canCancel {
+    if (isPending) return true;
+    if (isCompleted &&
+        paymentMethod == 'on delivery' &&
+        shipStatus == 'preparing') {
+      return true;
+    }
+    return false;
+  }
+
+  // แสดงวิธีการจ่ายเงิน
+  String get paymentMethodText {
+    switch (paymentMethod?.toLowerCase()) {
+      case 'card':
+        return 'ການຊຳລະເງິນ (Card)';
+      case 'on delivery':
+        return 'ຈ່າຍປາຍທາງ (COD)';
+      default:
+        return paymentMethod ?? 'ບໍ່ຮູ້';
+    }
+  }
+
+  // ไอคอนสำหรับวิธีการจ่ายเงิน
+  IconData get paymentMethodIcon {
+    switch (paymentMethod?.toLowerCase()) {
+      case 'card':
+        return Icons.credit_card;
+      case 'on delivery':
+        return Icons.payments_outlined;
+      default:
+        return Icons.payment;
+    }
+  }
 
   String get statusText {
     switch (orderStatus.toLowerCase()) {
