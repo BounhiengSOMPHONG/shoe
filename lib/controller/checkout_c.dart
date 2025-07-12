@@ -5,10 +5,11 @@ import 'package:app_shoe/services/apiservice.dart';
 import 'package:app_shoe/services/apiconstants.dart';
 import 'package:app_shoe/controller/cart_c.dart';
 import 'package:url_launcher/url_launcher_string.dart';
+import 'package:flutter/material.dart';
 
 class CheckoutC extends GetxController {
   final ApiService _apiService = ApiService();
-  final RxString selectedPaymentMethod = 'cod'.obs;
+  final RxString selectedPaymentMethod = 'destination'.obs;
   final Rx<Address?> selectedAddress = Rx<Address?>(null);
 
   void updatePaymentMethod(String method) {
@@ -40,31 +41,70 @@ class CheckoutC extends GetxController {
       if (response.success) {
         final datas = response.data; // ไม่ต้อง jsonDecode แล้ว
         print('Response status: $datas');
-        final returnedUrl = datas['session_url'];
-        print('URL received: $returnedUrl');
-        try {
-          bool launched = await launchUrlString(returnedUrl);
+
+        // จัดการตาม payment method
+        if (paymentMethod == 'destination') {
+          // สำหรับ COD - ไม่มี session_url, ไปหน้ารายการ orders เลย
           final cartController = Get.find<CartC>();
-          await cartController.clearCart(); // ใช้ method ใหม่แทน (async)
-          if (launched) {
-            // เปิด Stripe ได้ → พาไปหน้ารอดำเนินการ
-            await Future.delayed(Duration(milliseconds: 300));
-            Get.to(() => OrdersPage());
+          await cartController.clearCart();
+
+          Get.snackbar(
+            'ສຳເລັດ',
+            'ການສັ່ງຊື້ສຳເລັດແລ້ວ ກະລຸນາຈ່າຍເງິນປາຍທາງ',
+            snackPosition: SnackPosition.TOP,
+            backgroundColor: Colors.green[100],
+            colorText: Colors.green[900],
+            duration: Duration(seconds: 3),
+          );
+
+          await Future.delayed(Duration(seconds: 2));
+          Get.to(() => OrdersPage());
+        } else if (paymentMethod == 'card') {
+          // สำหรับ card payment - เปิด Stripe session
+          final returnedUrl = datas['session_url'];
+          print('URL received: $returnedUrl');
+
+          if (returnedUrl != null && returnedUrl.isNotEmpty) {
+            try {
+              bool launched = await launchUrlString(returnedUrl);
+              final cartController = Get.find<CartC>();
+              await cartController.clearCart();
+
+              if (launched) {
+                // เปิด Stripe ได้ → พาไปหน้ารอดำเนินการ
+                await Future.delayed(Duration(milliseconds: 300));
+                Get.to(() => OrdersPage());
+              } else {
+                Get.snackbar(
+                  'Error',
+                  'ไม่สามารถเปิดหน้าชำระเงินได้',
+                  snackPosition: SnackPosition.TOP,
+                );
+              }
+            } catch (e) {
+              print('Could not launch URL: $e');
+              Get.snackbar(
+                'Error',
+                'Cannot open payment page. Please try again.',
+                snackPosition: SnackPosition.TOP,
+              );
+            }
           } else {
             Get.snackbar(
               'Error',
-              'ไม่สามารถเปิดหน้าชำระเงินได้',
+              'Payment session URL not received',
               snackPosition: SnackPosition.TOP,
             );
           }
-        } catch (e) {
-          print('Could not launch URL: $e');
-          Get.snackbar(
-            'Error',
-            'Cannot open payment page. Please try again.',
-            snackPosition: SnackPosition.TOP,
-          );
         }
+      } else if (response.statusCode == 400) {
+        Get.snackbar(
+          'ຂໍ້ຜິດພາດ',
+          'ສິນຄ້າບາງລາຍບໍ່ພຽງພໍ ກະລຸນາກວດສອບການສັ່ງຊື້ຄືນ',
+          snackPosition: SnackPosition.TOP,
+          backgroundColor: Colors.red[100],
+          colorText: Colors.red[900],
+        );
       } else {
         throw Exception(response.message ?? 'Failed to place order');
       }

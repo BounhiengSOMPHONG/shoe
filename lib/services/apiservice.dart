@@ -10,8 +10,14 @@ class ApiResponse {
   final bool success;
   final dynamic data;
   final String? message;
+  final int? statusCode;
 
-  ApiResponse({required this.success, this.data, this.message});
+  ApiResponse({
+    required this.success,
+    this.data,
+    this.message,
+    this.statusCode,
+  });
 }
 
 class ApiService {
@@ -49,9 +55,10 @@ class ApiService {
 
       if (response.statusCode == 200 || response.statusCode == 201) {
         return ApiResponse(
-          success: true, 
+          success: true,
           data: responseBody,
           message: responseBody['message'],
+          statusCode: response.statusCode,
         );
       }
       if (response.statusCode == 403) {
@@ -72,11 +79,13 @@ class ApiService {
         return ApiResponse(
           success: false,
           message: 'Unauthorized access. Please log in again.',
+          statusCode: response.statusCode,
         );
       } else {
         return ApiResponse(
           success: false,
           message: responseBody['message'] ?? 'Request failed',
+          statusCode: response.statusCode,
         );
       }
     } catch (e) {
@@ -96,11 +105,16 @@ class ApiService {
       final responseBody = jsonDecode(response.body);
 
       if (response.statusCode == 200) {
-        return ApiResponse(success: true, data: responseBody);
+        return ApiResponse(
+          success: true,
+          data: responseBody,
+          statusCode: response.statusCode,
+        );
       } else {
         return ApiResponse(
           success: false,
           message: responseBody['message'] ?? 'Request failed',
+          statusCode: response.statusCode,
         );
       }
     } catch (e) {
@@ -124,7 +138,11 @@ class ApiService {
       final responseBody = jsonDecode(response.body);
 
       if (response.statusCode == 200 || response.statusCode == 201) {
-        return ApiResponse(success: true, data: responseBody);
+        return ApiResponse(
+          success: true,
+          data: responseBody,
+          statusCode: response.statusCode,
+        );
       }
       if (response.statusCode == 403) {
         Get.dialog(
@@ -144,11 +162,13 @@ class ApiService {
         return ApiResponse(
           success: false,
           message: 'Unauthorized access. Please log in again.',
+          statusCode: response.statusCode,
         );
       } else {
         return ApiResponse(
           success: false,
           message: responseBody['message'] ?? 'Request failed',
+          statusCode: response.statusCode,
         );
       }
     } catch (e) {
@@ -168,7 +188,11 @@ class ApiService {
       final responseBody = jsonDecode(response.body);
 
       if (response.statusCode == 200) {
-        return ApiResponse(success: true, data: responseBody);
+        return ApiResponse(
+          success: true,
+          data: responseBody,
+          statusCode: response.statusCode,
+        );
       }
       if (response.statusCode == 403) {
         Get.dialog(
@@ -188,11 +212,13 @@ class ApiService {
         return ApiResponse(
           success: false,
           message: 'Unauthorized access. Please log in again.',
+          statusCode: response.statusCode,
         );
       } else {
         return ApiResponse(
           success: false,
           message: responseBody['message'] ?? 'Request failed',
+          statusCode: response.statusCode,
         );
       }
     } catch (e) {
