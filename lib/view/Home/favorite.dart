@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../controller/favorite_c.dart';
 import '../../controller/product_details_c.dart';
+import '../../model/product_m.dart';
+import 'product_details.dart';
 
 class Favorite extends StatefulWidget {
   const Favorite({super.key});
@@ -258,13 +260,7 @@ class _FavoriteState extends State<Favorite> {
                         return GestureDetector(
                           onTap: () {
                             // Navigate to product details
-                            Get.toNamed(
-                              '/product-details',
-                              arguments: {
-                                'productId': item.id,
-                                'product': item,
-                              },
-                            );
+                            Get.to(() => ProductDetails(product: item));
                           },
                           child: Container(
                             decoration: BoxDecoration(
@@ -410,6 +406,41 @@ class _FavoriteState extends State<Favorite> {
                                                 ),
                                               ),
                                             ),
+                                            // แสดงจำนวนสินค้าคงเหลือ
+                                            if (item.Stock != null &&
+                                                item.Stock!.isNotEmpty) ...[
+                                              const SizedBox(width: 4),
+                                              Container(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                      horizontal: 4,
+                                                      vertical: 1,
+                                                    ),
+                                                decoration: BoxDecoration(
+                                                  color: _getStockColor(
+                                                    item.Stock!,
+                                                  ),
+                                                  borderRadius:
+                                                      BorderRadius.circular(6),
+                                                  border: Border.all(
+                                                    color: _getStockBorderColor(
+                                                      item.Stock!,
+                                                    ),
+                                                    width: 0.5,
+                                                  ),
+                                                ),
+                                                child: Text(
+                                                  '${_getTotalStock(item.Stock!)}',
+                                                  style: TextStyle(
+                                                    fontSize: 8,
+                                                    color: _getStockTextColor(
+                                                      item.Stock!,
+                                                    ),
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
                                           ],
                                         ),
                                       ],
@@ -430,5 +461,43 @@ class _FavoriteState extends State<Favorite> {
         ),
       ),
     );
+  }
+
+  // Helper methods for stock display
+  int _getTotalStock(List<StockItem> stockItems) {
+    return stockItems.fold(0, (sum, stock) => sum + (stock.Quantity ?? 0));
+  }
+
+  Color _getStockColor(List<StockItem> stockItems) {
+    int totalStock = _getTotalStock(stockItems);
+    if (totalStock == 0) {
+      return Colors.red.shade100;
+    } else if (totalStock <= 5) {
+      return Colors.orange.shade100;
+    } else {
+      return Colors.green.shade100;
+    }
+  }
+
+  Color _getStockBorderColor(List<StockItem> stockItems) {
+    int totalStock = _getTotalStock(stockItems);
+    if (totalStock == 0) {
+      return Colors.red.shade300;
+    } else if (totalStock <= 5) {
+      return Colors.orange.shade300;
+    } else {
+      return Colors.green.shade300;
+    }
+  }
+
+  Color _getStockTextColor(List<StockItem> stockItems) {
+    int totalStock = _getTotalStock(stockItems);
+    if (totalStock == 0) {
+      return Colors.red.shade700;
+    } else if (totalStock <= 5) {
+      return Colors.orange.shade700;
+    } else {
+      return Colors.green.shade700;
+    }
   }
 }

@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:convert';
 import '../model/product_m.dart';
 import '../services/apiconstants.dart';
 import '../services/apiservice.dart';
@@ -58,6 +59,22 @@ class FavoriteC extends GetxController {
         if (response.data != null && response.data['data'] != null) {
           List<PItem> products =
               (response.data['data'] as List).map((item) {
+                // Parse Stock JSON string
+                List<StockItem> stockItems = [];
+                try {
+                  if (item['Stock'] != null &&
+                      item['Stock'] != '[]' &&
+                      item['Stock'] != 'null') {
+                    List<dynamic> stockList = jsonDecode(item['Stock']);
+                    stockItems =
+                        stockList
+                            .map((stockJson) => StockItem.fromJson(stockJson))
+                            .toList();
+                  }
+                } catch (e) {
+                  debugPrint('Error parsing Stock JSON: $e');
+                }
+
                 return PItem(
                   id: double.tryParse(item['Product_ID']?.toString() ?? '0'),
                   name: item['Name'] as String?,
@@ -65,6 +82,7 @@ class FavoriteC extends GetxController {
                   image: item['Image'] as String?,
                   brand: item['Brand'] as String?,
                   description: item['Description'] as String?,
+                  Stock: stockItems,
                 );
               }).toList();
 
