@@ -108,123 +108,120 @@ class _HomeView extends StatelessWidget {
           colors: [Colors.grey[50]!, Colors.white],
         ),
       ),
-      child: FadeTransition(
-        opacity: homeC.fadeAnimation,
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              // Modern Carousel Section
-              Container(
-                height: size.height * 0.25,
-                margin: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(24),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.grey.withOpacity(0.1),
-                      spreadRadius: 1,
-                      blurRadius: 12,
-                      offset: Offset(0, 6),
-                    ),
-                  ],
-                ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(24),
-                  child: CarouselSlider(
-                    options: CarouselOptions(
-                      height: size.height * 0.25,
-                      autoPlay: true,
-                      enlargeCenterPage: true,
-                      viewportFraction: 1.0,
-                      autoPlayInterval: Duration(seconds: 4),
-                    ),
-                    items:
-                        homeC.imgList.asMap().entries.map((item) {
-                          String imageUrl = item.value['image'] as String;
-                          Widget Function()? pageBuilder =
-                              item.value['page'] as Widget Function()?;
-                          return GestureDetector(
-                            onTap: () {
-                              if (pageBuilder != null)
-                                Get.to(() => pageBuilder());
-                            },
-                            child: Container(
-                              width: double.infinity,
-                              // decoration: BoxDecoration(
-                              //   gradient: LinearGradient(
-                              //     begin: Alignment.topLeft,
-                              //     end: Alignment.bottomRight,
-                              //     colors: [Colors.blue[50]!, Colors.blue[100]!],
-                              //   ),
-                              // ),
-                              child: Image.asset(
-                                imageUrl,
-                                fit: BoxFit.contain,
-                                errorBuilder: (context, error, stackTrace) {
-                                  return Container(
-                                    decoration: BoxDecoration(
-                                      gradient: LinearGradient(
-                                        begin: Alignment.topLeft,
-                                        end: Alignment.bottomRight,
-                                        colors: [
-                                          Colors.blue[100]!,
-                                          Colors.blue[200]!,
-                                        ],
-                                      ),
-                                    ),
-                                    child: Center(
-                                      child: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          Icon(
-                                            Icons.local_offer,
-                                            color: Colors.blue[600],
-                                            size: 48,
-                                          ),
-                                          SizedBox(height: 12),
-                                          Text(
-                                            'ໂປຣໂມຊັນພິເສດ',
-                                            style: TextStyle(
-                                              color: Colors.blue[700],
-                                              fontSize: 20,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                          SizedBox(height: 4),
-                                          Text(
-                                            'ສິນຄ້າຄຸນນະພາບສູງ',
-                                            style: TextStyle(
-                                              color: Colors.blue[600],
-                                              fontSize: 14,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  );
-                                },
-                              ),
-                            ),
-                          );
-                        }).toList(),
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            // Modern Carousel Section
+            Container(
+              height: size.height * 0.25,
+              margin: EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(24),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.1),
+                    spreadRadius: 1,
+                    blurRadius: 12,
+                    offset: Offset(0, 6),
                   ),
+                ],
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(24),
+                child: CarouselSlider(
+                  options: CarouselOptions(
+                    height: size.height * 0.25,
+                    autoPlay: true,
+                    enlargeCenterPage: true,
+                    viewportFraction: 1.0,
+                    autoPlayInterval: Duration(seconds: 4),
+                  ),
+                  items:
+                      homeC.imgList.asMap().entries.map((item) {
+                        String imageUrl = item.value['image'] as String;
+                        Widget Function()? pageBuilder =
+                            item.value['page'] as Widget Function()?;
+                        return GestureDetector(
+                          onTap: () {
+                            if (pageBuilder != null)
+                              Get.to(() => pageBuilder());
+                          },
+                          child: Container(
+                            width: double.infinity,
+                            // decoration: BoxDecoration(
+                            //   gradient: LinearGradient(
+                            //     begin: Alignment.topLeft,
+                            //     end: Alignment.bottomRight,
+                            //     colors: [Colors.blue[50]!, Colors.blue[100]!],
+                            //   ),
+                            // ),
+                            child: Image.asset(
+                              imageUrl,
+                              fit: BoxFit.contain,
+                              errorBuilder: (context, error, stackTrace) {
+                                return Container(
+                                  decoration: BoxDecoration(
+                                    gradient: LinearGradient(
+                                      begin: Alignment.topLeft,
+                                      end: Alignment.bottomRight,
+                                      colors: [
+                                        Colors.blue[100]!,
+                                        Colors.blue[200]!,
+                                      ],
+                                    ),
+                                  ),
+                                  child: Center(
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Icon(
+                                          Icons.local_offer,
+                                          color: Colors.blue[600],
+                                          size: 48,
+                                        ),
+                                        SizedBox(height: 12),
+                                        Text(
+                                          'ໂປຣໂມຊັນພິເສດ',
+                                          style: TextStyle(
+                                            color: Colors.blue[700],
+                                            fontSize: 20,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        SizedBox(height: 4),
+                                        Text(
+                                          'ສິນຄ້າຄຸນນະພາບສູງ',
+                                          style: TextStyle(
+                                            color: Colors.blue[600],
+                                            fontSize: 14,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                        );
+                      }).toList(),
                 ),
               ),
+            ),
 
-              // Popular Products Section
-              _buildSectionHeader('🔥 ສິນຄ້າແນະນຳ', Icons.star),
-              SizedBox(height: 12),
-              _buildProductList(homeC.popularProducts, homeC),
-              SizedBox(height: 32),
+            // Popular Products Section
+            _buildSectionHeader('🔥 ສິນຄ້າແນະນຳ', Icons.star),
+            SizedBox(height: 12),
+            _buildProductList(homeC.popularProducts, homeC),
+            SizedBox(height: 32),
 
-              // Latest Products Section
-              _buildSectionHeader('🆕 ສິນຄ້າມາໃໝ່', Icons.new_releases),
-              SizedBox(height: 12),
-              _buildProductList(homeC.latestProducts, homeC),
-              SizedBox(height: 32),
-            ],
-          ),
+            // Latest Products Section
+            _buildSectionHeader('🆕 ສິນຄ້າມາໃໝ່', Icons.new_releases),
+            SizedBox(height: 12),
+            _buildProductList(homeC.latestProducts, homeC),
+            SizedBox(height: 32),
+          ],
         ),
       ),
     );

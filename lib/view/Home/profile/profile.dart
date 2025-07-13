@@ -1,5 +1,6 @@
 import 'package:app_shoe/controller/profile_c.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
 class ProfilePage extends StatelessWidget {
@@ -189,6 +190,23 @@ class ProfilePage extends StatelessWidget {
                 ),
                 const SizedBox(height: 4),
                 Obx(
+                  () {
+                    String phoneDisplay = '';
+                    if (profileC.currentUser.value?.phone != null && 
+                        profileC.currentUser.value!.phone!.isNotEmpty) {
+                      // Format phone number for display
+                      phoneDisplay = profileC.formatPhoneNumber(profileC.currentUser.value!.phone!);
+                    }
+                    return phoneDisplay.isNotEmpty 
+                      ? Text(
+                          phoneDisplay,
+                          style: const TextStyle(fontSize: 14, color: Colors.white60),
+                        )
+                      : const SizedBox.shrink();
+                  },
+                ),
+                const SizedBox(height: 4),
+                Obx(
                   () => Text(
                     'ID: ${profileC.currentUser.value?.uid ?? ''}',
                     style: const TextStyle(fontSize: 12, color: Colors.white60),
@@ -270,13 +288,7 @@ class ProfilePage extends StatelessWidget {
           ),
 
           // Phone
-          _buildFormField(
-            controller: profileC.phoneController,
-            label: 'ເບີໂທ',
-            icon: Icons.phone_outlined,
-            enabled: profileC.isEditing.value,
-            keyboardType: TextInputType.phone,
-          ),
+          _buildPhoneField(profileC),
 
           // Date of Birth
           Obx(
@@ -382,6 +394,93 @@ class ProfilePage extends StatelessWidget {
           filled: !enabled,
           fillColor: enabled ? null : Colors.grey.shade50,
         ),
+      ),
+    );
+  }
+
+  Widget _buildPhoneField(ProfileC profileC) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Country code display (non-editable)
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            decoration: BoxDecoration(
+              color: Colors.grey.shade100,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: Colors.grey.shade300),
+            ),
+            child: Row(
+              children: [
+                const Icon(Icons.phone_outlined, color: Colors.blue),
+                const SizedBox(width: 8),
+                Text(
+                  '+85620',
+                  style: TextStyle(
+                    color: Colors.grey.shade600,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(width: 8),
+                const Text(
+                  '|',
+                  style: TextStyle(color: Colors.grey),
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Obx(() {
+                    // Get the local phone number (without country code) for display
+                    String displayValue = '';
+                    if (profileC.phoneController.text.isNotEmpty) {
+                      displayValue = profileC.getLocalPhoneNumber(profileC.phoneController.text);
+                    }
+                    
+                    return TextFormField(
+                      controller: TextEditingController(text: displayValue),
+                      enabled: profileC.isEditing.value,
+                      keyboardType: TextInputType.number,
+                      inputFormatters: [
+                        // Only allow digits
+                        FilteringTextInputFormatter.digitsOnly,
+                        // Limit to 8 digits
+                        LengthLimitingTextInputFormatter(8),
+                      ],
+                      onChanged: (value) {
+                        // Update the main controller with formatted value
+                        if (value.isNotEmpty) {
+                          String formattedValue = profileC.formatPhoneNumber(value);
+                          profileC.phoneController.text = formattedValue;
+                        } else {
+                          profileC.phoneController.text = '';
+                        }
+                      },
+                      decoration: const InputDecoration(
+                        hintText: '12345678',
+                        border: InputBorder.none,
+                        contentPadding: EdgeInsets.zero,
+                      ),
+                      style: const TextStyle(fontSize: 16),
+                    );
+                  }),
+                ),
+              ],
+            ),
+          ),
+          // Helper text
+          if (profileC.isEditing.value)
+            Padding(
+              padding: const EdgeInsets.only(top: 4, left: 12),
+              child: Text(
+                'ກະລຸນາປ້ອນເບີໂທ 8 ຕົວເລກ (ບໍ່ລວມລະຫັດປະເທດ)',
+                style: TextStyle(
+                  color: Colors.grey.shade600,
+                  fontSize: 12,
+                ),
+              ),
+            ),
+        ],
       ),
     );
   }

@@ -35,6 +35,10 @@ class ProfileC extends GetxController {
   final RxBool isNewPasswordHidden = true.obs;
   final RxBool isConfirmPasswordHidden = true.obs;
 
+  // Phone number constants
+  static const String countryCode = '+85620';
+  static const int phoneNumberLength = 8;
+
   // Services
   final ApiService _apiService = ApiService();
 
@@ -122,6 +126,57 @@ class ProfileC extends GetxController {
     }
   }
 
+  // Format phone number with country code
+  String formatPhoneNumber(String phone) {
+    // Remove all non-digit characters
+    String digitsOnly = phone.replaceAll(RegExp(r'[^\d]'), '');
+
+    // If it starts with 85620, remove it to get the local number
+    if (digitsOnly.startsWith('85620')) {
+      digitsOnly = digitsOnly.substring(5);
+    }
+
+    // Limit to 8 digits
+    if (digitsOnly.length > phoneNumberLength) {
+      digitsOnly = digitsOnly.substring(0, phoneNumberLength);
+    }
+
+    // Return formatted number with country code
+    return '$countryCode$digitsOnly';
+  }
+
+  // Validate phone number format
+  bool isValidPhoneNumber(String phone) {
+    // Remove all non-digit characters
+    String digitsOnly = phone.replaceAll(RegExp(r'[^\d]'), '');
+
+    // If it starts with 85620, remove it to get the local number
+    if (digitsOnly.startsWith('85620')) {
+      digitsOnly = digitsOnly.substring(5);
+    }
+
+    // Check if it's exactly 8 digits
+    return digitsOnly.length == phoneNumberLength;
+  }
+
+  // Get local phone number (without country code)
+  String getLocalPhoneNumber(String phone) {
+    // Remove all non-digit characters
+    String digitsOnly = phone.replaceAll(RegExp(r'[^\d]'), '');
+
+    // If it starts with 85620, remove it to get the local number
+    if (digitsOnly.startsWith('85620')) {
+      digitsOnly = digitsOnly.substring(5);
+    }
+
+    // Limit to 8 digits
+    if (digitsOnly.length > phoneNumberLength) {
+      digitsOnly = digitsOnly.substring(0, phoneNumberLength);
+    }
+
+    return digitsOnly;
+  }
+
   // Populate form controllers with user data
   void _populateControllers() {
     if (_isDisposed) return; // Don't proceed if controller is disposed
@@ -132,7 +187,13 @@ class ProfileC extends GetxController {
         firstNameController.text = user.firstName;
         lastNameController.text = user.lastName;
         emailController.text = user.email;
-        phoneController.text = user.phone ?? '';
+
+        // Format phone number with country code for display
+        String phoneValue = user.phone ?? '';
+        if (phoneValue.isNotEmpty) {
+          phoneValue = formatPhoneNumber(phoneValue);
+        }
+        phoneController.text = phoneValue;
 
         // Handle date formatting properly
         String dateValue = user.datebirth ?? '';
@@ -297,13 +358,16 @@ class ProfileC extends GetxController {
     EasyLoading.show(status: 'Updating profile...');
 
     try {
+      // Format phone number before sending to API
+      String formattedPhone = formatPhoneNumber(phoneController.text.trim());
+
       final response = await _apiService.put(
         ApiConstants.updateUserProfileEndpoint,
         data: {
           'FirstName': firstNameController.text.trim(),
           'LastName': lastNameController.text.trim(),
           'Email': emailController.text.trim(),
-          'Phone': phoneController.text.trim(),
+          'Phone': formattedPhone,
           'Datebirth':
               datebirthController.text.trim().isEmpty
                   ? null
@@ -454,6 +518,17 @@ class ProfileC extends GetxController {
       if (!GetUtils.isEmail(emailController.text.trim())) {
         _showErrorMessage('กรุณากรอกอีเมลที่ถูกต้อง');
         return false;
+      }
+
+      // Validate phone number
+      String phoneInput = phoneController.text.trim();
+      if (phoneInput.isNotEmpty) {
+        if (!isValidPhoneNumber(phoneInput)) {
+          _showErrorMessage(
+            'เบอร์โทรศัพท์ต้องมี 8 หลัก (ไม่รวมรหัสประเทศ +85620)',
+          );
+          return false;
+        }
       }
 
       return true;
