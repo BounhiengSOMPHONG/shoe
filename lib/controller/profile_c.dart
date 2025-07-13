@@ -312,32 +312,32 @@ class ProfileC extends GetxController {
 
     try {
       if (currentPasswordController.text.isEmpty) {
-        _showErrorMessage('กรุณากรอกรหัสผ่านปัจจุบัน');
+        _showErrorMessage('ກະລຸນາປ້ອນລະຫັດຜ່ານປະຈຸບັນ');
         return false;
       }
 
       if (newPasswordController.text.isEmpty) {
-        _showErrorMessage('กรุณากรอกรหัสผ่านใหม่');
+        _showErrorMessage('ກະລຸນາປ້ອນລະຫັດຜ່ານໃໝ່');
         return false;
       }
 
       if (newPasswordController.text.length < 6) {
-        _showErrorMessage('รหัสผ่านใหม่ต้องมีอย่างน้อย 6 ตัวอักษร');
+        _showErrorMessage('ລະຫັດຜ່ານໃໝ່ຕ້ອງມີ 6 ຕົວຂຶ້ນໄປ');
         return false;
       }
 
       if (confirmPasswordController.text.isEmpty) {
-        _showErrorMessage('กรุณายืนยันรหัสผ่านใหม่');
+        _showErrorMessage('ກະລຸນາຢືນຢັນລະຫັດຜ່ານໃໝ່');
         return false;
       }
 
       if (newPasswordController.text != confirmPasswordController.text) {
-        _showErrorMessage('รหัสผ่านใหม่ไม่ตรงกัน');
+        _showErrorMessage('ລະຫັດຜ່ານໃໝ່ບໍ່ກົງກັນ');
         return false;
       }
 
       if (currentPasswordController.text == newPasswordController.text) {
-        _showErrorMessage('รหัสผ่านใหม่ต้องแตกต่างจากรหัสผ่านปัจจุบัน');
+        _showErrorMessage('ລະຫັດຜ່ານໃໝ່ຕ້ອງແຕກຕ່າງຈາກລະຫັດຜ່ານເກົ່າ');
         return false;
       }
 
@@ -501,22 +501,22 @@ class ProfileC extends GetxController {
 
     try {
       if (firstNameController.text.trim().isEmpty) {
-        _showErrorMessage('กรุณากรอกชื่อ');
+        _showErrorMessage('ກະລຸນາປ້ອນຊື່');
         return false;
       }
 
       if (lastNameController.text.trim().isEmpty) {
-        _showErrorMessage('กรุณากรอกนามสกุล');
+        _showErrorMessage('ກະລຸນາປ້ອນນາມສະກຸນ');
         return false;
       }
 
       if (emailController.text.trim().isEmpty) {
-        _showErrorMessage('กรุณากรอกอีเมล');
+        _showErrorMessage('ກະລຸນາປ້ອນອີເມວ');
         return false;
       }
 
       if (!GetUtils.isEmail(emailController.text.trim())) {
-        _showErrorMessage('กรุณากรอกอีเมลที่ถูกต้อง');
+        _showErrorMessage('ກະລຸນາປ້ອນອີເມວໃຫ້ຖືກຕ້ອງ');
         return false;
       }
 
@@ -524,9 +524,7 @@ class ProfileC extends GetxController {
       String phoneInput = phoneController.text.trim();
       if (phoneInput.isNotEmpty) {
         if (!isValidPhoneNumber(phoneInput)) {
-          _showErrorMessage(
-            'เบอร์โทรศัพท์ต้องมี 8 หลัก (ไม่รวมรหัสประเทศ +85620)',
-          );
+          _showErrorMessage('ເບີໂທ້ຕ້ອງມີ 8 ຕົວ (ບໍ່ລວມ +85620)');
           return false;
         }
       }
@@ -543,7 +541,7 @@ class ProfileC extends GetxController {
     if (_isDisposed) return; // Don't proceed if controller is disposed
 
     Get.snackbar(
-      'ข้อผิดพลาด',
+      'ເກີດຂໍ້ຜິດພາດ',
       message,
       snackPosition: SnackPosition.BOTTOM,
       backgroundColor: Colors.red.withOpacity(0.8),
@@ -556,14 +554,13 @@ class ProfileC extends GetxController {
 
     try {
       Get.snackbar(
-        'สำเร็จ',
+        'ສຳເລັດ',
         message,
         snackPosition: SnackPosition.BOTTOM,
         backgroundColor: Colors.green.withOpacity(0.8),
         colorText: Colors.white,
         duration: const Duration(seconds: 2),
       );
-      Get.to(() => Welcome());
     } catch (e) {
       print('Error showing success message: $e');
     }

@@ -77,7 +77,7 @@ class CheckoutC extends GetxController {
               } else {
                 Get.snackbar(
                   'Error',
-                  'ไม่สามารถเปิดหน้าชำระเงินได้',
+                  'ບໍ່ສາມາດເປີດໜ້າຊຳລະເງິນໄດ້',
                   snackPosition: SnackPosition.TOP,
                 );
               }

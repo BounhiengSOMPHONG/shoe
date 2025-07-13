@@ -527,6 +527,7 @@ class _RegisterState extends State<Register> {
               SizedBox(height: 20),
               // link to welcome
               Container(
+                margin: EdgeInsets.only(bottom: 100, top: 20),
                 alignment: Alignment.center,
                 child: Row(
                   mainAxisSize: MainAxisSize.min,

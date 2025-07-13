@@ -81,16 +81,16 @@ class LoginC extends GetxController {
       if (input.contains('@')) {
         final emailRegex = RegExp(r'^[^@]+@[^@]+\.[^@]+');
         if (!emailRegex.hasMatch(input)) {
-          emailPhoneError.value = 'รูปแบบอีเมลไม่ถูกต้อง';
+          emailPhoneError.value = 'ຮູບແບບອີເມວບໍ່ຖືກຕ້ອງ';
         } else {
           emailPhoneError.value = '';
         }
       } else {
         // Check if it's a phone number
         if (input.length != 8) {
-          emailPhoneError.value = 'กรุณากรอกเบอร์โทรให้ครบ 8 หลัก';
+          emailPhoneError.value = 'ກະລຸນາປ້ອນເບີໂທໃຫ້ຄົບ 8 ຫຼັກ';
         } else if (!RegExp(r'^[0-9]+$').hasMatch(input)) {
-          emailPhoneError.value = 'เบอร์โทรศัพท์ต้องเป็นตัวเลขเท่านั้น';
+          emailPhoneError.value = 'ເບີໂທໂທ້ອງເປັນຕົວເລກເທົ່ານັ້ນ';
         } else {
           emailPhoneError.value = '';
         }
@@ -184,7 +184,7 @@ class LoginC extends GetxController {
       final identifier = emailPhoneController.text.trim();
 
       if (identifier.isEmpty) {
-        _showErrorMessage('กรุณากรอกอีเมลหรือเบอร์โทรศัพท์');
+        _showErrorMessage('ກະລຸນາປ້ອນອີເມວ ຫຼື ເບີໂທ');
         return false;
       }
 
@@ -194,7 +194,7 @@ class LoginC extends GetxController {
       }
 
       if (passwordController.text.isEmpty) {
-        _showErrorMessage('กรุณากรอกรหัสผ่าน');
+        _showErrorMessage('ກະລຸນາປ້ອນລະຫັດຜ່ານ');
         return false;
       }
 
@@ -210,7 +210,7 @@ class LoginC extends GetxController {
     if (_isDisposed) return; // Don't proceed if controller is disposed
 
     Get.snackbar(
-      'ข้อผิดพลาด',
+      'ເກີດຂໍ້ຜິດພາດ',
       message,
       snackPosition: SnackPosition.BOTTOM,
       backgroundColor: Colors.red.withOpacity(0.8),

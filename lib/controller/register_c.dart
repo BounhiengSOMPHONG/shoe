@@ -137,7 +137,7 @@ class RegisterC extends GetxController {
     if (confirmPasswordController.text.isEmpty) {
       confirmPasswordError.value = '';
     } else if (confirmPasswordController.text != passwordController.text) {
-      confirmPasswordError.value = "รหัสผ่านไม่ตรงกัน";
+      confirmPasswordError.value = "ລະຫັດຜ່ານບໍ່ກົງກັນ";
     } else {
       confirmPasswordError.value = "";
     }
@@ -147,9 +147,9 @@ class RegisterC extends GetxController {
   void validatePhone() {
     final phone = phoneController.text;
     if (phone.isEmpty) {
-      phoneError.value = 'กรุณากรอกเบอร์โทรศัพท์';
+      phoneError.value = 'ກະລຸນາປ້ອນເບີໂທ';
     } else if (phone.length != 8) {
-      phoneError.value = 'กรุณากรอกเบอร์โทรให้ครบ 8 หลัก';
+      phoneError.value = 'ກະລຸນາປ້ອນເບີໂທໃຫ້ຄົບ 8 ຫລັກ';
     } else {
       phoneError.value = '';
     }
@@ -160,9 +160,9 @@ class RegisterC extends GetxController {
     final email = emailController.text;
     final emailRegex = RegExp(r'^[^@]+@[^@]+\.[^@]+');
     if (email.isEmpty) {
-      emailError.value = 'กรุณากรอกอีเมล';
+      emailError.value = 'ກະລຸນາປ້ອນອີເມວ';
     } else if (!emailRegex.hasMatch(email)) {
-      emailError.value = 'รูปแบบอีเมลไม่ถูกต้อง';
+      emailError.value = 'ຮູບແບບອີເມວບໍ່ຖືກຕ້ອງ';
     } else {
       emailError.value = '';
     }
@@ -174,7 +174,7 @@ class RegisterC extends GetxController {
     if (password.isEmpty) {
       passwordError.value = '';
     } else if (password.length < 6) {
-      passwordError.value = 'รหัสผ่านต้องมีอย่างน้อย 6 ตัวอักษร';
+      passwordError.value = 'ລະຫັດຜ່ານຕ້ອງມີອຢ່າງນ້ອຍ 6 ຕັວອັກສະນາ';
     } else {
       passwordError.value = '';
     }
@@ -205,7 +205,7 @@ class RegisterC extends GetxController {
       }
 
       if (age < 18) {
-        birthdayError.value = 'คุณต้องมีอายุอย่างน้อย 18 ปี';
+        birthdayError.value = 'ທ່ານຕ້ອງມີອາຢຸອຢ່າງນ້ອຍ 18 ປີ';
       } else {
         birthdayError.value = '';
       }
@@ -234,7 +234,7 @@ class RegisterC extends GetxController {
 
   Future<void> register() async {
     if (!isFormValid.value) {
-      _showErrorDialog('กรุณากรอกข้อมูลให้ถูกต้องและครบถ้วน');
+      _showErrorDialog('ກະລຸນາປ້ອນຂໍ້ມູນໃຫ້ຖືກຕ້ອງ ແລະ ຄົບຖ້ວນ');
       return;
     }
 
@@ -244,7 +244,7 @@ class RegisterC extends GetxController {
 
   void _showErrorDialog(String message) {
     Get.snackbar(
-      'ข้อผิดพลาด',
+      'ເກີດຂໍ້ຜິດພາດ',
       message,
       icon: const Icon(Icons.error, color: Colors.red),
       snackPosition: SnackPosition.TOP,
@@ -256,21 +256,21 @@ class RegisterC extends GetxController {
   void _showConfirmationDialog() {
     _updateBirthdayField();
     Get.defaultDialog(
-      title: "ตรวจสอบข้อมูล",
+      title: "ກວດສອບຂໍ້ມູນ",
       content: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text("โทรศัพท์: +85620${phoneController.text}"),
-          Text("อีเมล: ${emailController.text}"),
-          Text("ชื่อ: ${firstNameController.text} ${lastNameController.text}"),
-          Text("เพศ: ${genderController.text}"),
-          Text("วันเกิด: ${birthdayController.text}"),
+          Text("ເບີໂທ: +85620${phoneController.text}"),
+          Text("ອີເມວ: ${emailController.text}"),
+          Text("ຊື່: ${firstNameController.text} ${lastNameController.text}"),
+          Text("ເພຨ: ${genderController.text}"),
+          Text("ວັນເກິດ: ${birthdayController.text}"),
         ],
       ),
-      textConfirm: "ตกลง",
+      textConfirm: "ຕົກລົງ",
       confirmTextColor: Colors.white,
       onConfirm: () => _submitRegistration(),
-      textCancel: "ยกเลิก",
+      textCancel: "ຍົກເລີກ",
     );
   }
 
@@ -316,21 +316,19 @@ class RegisterC extends GetxController {
           response.message?.toLowerCase().contains('registration successful') ==
               true) {
         Get.snackbar(
-          'สำเร็จ',
-          'ลงทะเบียนสำเร็จ',
+          'ສຳເລັດ',
+          'ລົງທະບຽນສຳເລັດ',
           backgroundColor: Colors.green,
           colorText: Colors.white,
         );
         navigateToWelcome();
       } else {
-        _showErrorDialog(
-          response.message ?? 'การลงทะเบียนล้มเหลว โปรดลองอีกครั้ง',
-        );
+        _showErrorDialog(response.message ?? 'ລົງທະບຽນບໍ່ສຳເລັດ ກະລຸນາລອງໃໝ່');
       }
     } catch (e) {
       isLoading.value = false;
       EasyLoading.dismiss();
-      _showErrorDialog('เกิดข้อผิดพลาดในการเชื่อมต่อ โปรดลองอีกครั้ง');
+      _showErrorDialog('ເກີດຂໍ້ຜິດພາດໃນການເຊື່ອມຕ່າງ ກະລຸນາລອງໃໝ່');
       print('Registration error: $e');
     }
   }

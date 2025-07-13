@@ -57,9 +57,9 @@ class SearchC extends GetxController {
           _productTypes.add(ProductType.fromJson(item));
         }
 
-        print('✅ โหลด ProductTypes สำเร็จ: ${_productTypes.length} รายการ');
+        print('✅ ໂຫຼດປະເພດສິນຄ້າສຳເລັດ: ${_productTypes.length} ລາຍການ');
       } else {
-        print('❌ ไม่สามารถโหลด ProductTypes ได้: ${response.message}');
+        print('❌ ບໍ່ສາມາດໂຫຼດປະເພດສິນຄ້າໄດ້: ${response.message}');
       }
     } catch (e) {
       print('💥 Error fetching product types: $e');
@@ -79,9 +79,9 @@ class SearchC extends GetxController {
           _brands.add(Brand.fromJson(item));
         }
 
-        print('✅ โหลด Brands สำเร็จ: ${_brands.length} รายการ');
+        print('✅ ໂຫຼດແບຣນສຳເລັດ: ${_brands.length} ລາຍການ');
       } else {
-        print('❌ ไม่สามารถโหลด Brands ได้: ${response.message}');
+        print('❌ ບໍ່ສາມາດໂຫຼດແບຣນໄດ້: ${response.message}');
       }
     } catch (e) {
       print('💥 Error fetching brands: $e');
@@ -100,7 +100,7 @@ class SearchC extends GetxController {
       return;
     }
 
-    print('🔍 เริ่มค้นหา: "${query}"');
+    print('🔍 ເລີ່ມຄົ້ນຫາ: "${query}"');
 
     isLoading.value = true;
     isSearchActive.value = true;
@@ -120,25 +120,25 @@ class SearchC extends GetxController {
         final List<dynamic> productsData = response.data['data'] ?? [];
         _searchResults.clear();
 
-        print('🎯 พบสินค้า ${productsData.length} รายการ');
+        print('🎯 ພົບສິນຄ້າ ${productsData.length} ລາຍການ');
 
         for (var item in productsData) {
           _searchResults.add(PItem.fromJson(item));
         }
 
         if (_searchResults.isEmpty) {
-          error.value = 'ไม่พบสินค้าที่ค้นหา "${query}"';
+          error.value = 'ບໍ່ພົບສິນຄ້າທີ່ຄົ້ນຫາ "${query}"';
         } else {
           print(
-            '✅ เพิ่มสินค้าเข้า searchResults แล้ว: ${_searchResults.length} รายการ',
+            '✅ ເພີ່ມສິນຄ້າເຂົ້າ searchResults ແລ້ວ: ${_searchResults.length} ລາຍການ',
           );
         }
       } else {
-        error.value = response.message ?? 'เกิดข้อผิดพลาดในการค้นหา';
+        error.value = response.message ?? 'ເກີດຂໍ້ຜິດພາດໃນການຄົ້ນຫາ';
         print('❌ API Error: ${response.message}');
       }
     } catch (e) {
-      error.value = 'เกิดข้อผิดพลาดในการเชื่อมต่อ: $e';
+      error.value = 'ເກີດຂໍ້ຜິດພາດໃນການເຊື່ອມຕໍ່: $e';
       print('💥 Exception: $e');
     } finally {
       isLoading.value = false;
@@ -180,7 +180,7 @@ class SearchC extends GetxController {
         searchData['sort'] = sortBy;
       }
 
-      print('🔍 ค้นหาด้วยฟิลเตอร์: $searchData');
+      print('🔍 ຄົ້ນຫາດ້ວຍຟິວເຕີ: $searchData');
 
       final response = await _apiService.post(
         ApiConstants.searchProductsEndpoint,
@@ -199,13 +199,13 @@ class SearchC extends GetxController {
         _applySorting();
 
         if (_searchResults.isEmpty) {
-          error.value = 'ไม่พบสินค้าที่ตรงกับเงื่อนไข';
+          error.value = 'ບໍ່ພົບສິນຄ້າທີ່ຕົງກັບເງື່ອນໄຂ';
         }
       } else {
-        error.value = response.message ?? 'เกิดข้อผิดพลาดในการค้นหา';
+        error.value = response.message ?? 'ເກີດຂໍ້ຜິດພາດໃນການຄົ້ນຫາ';
       }
     } catch (e) {
-      error.value = 'เกิดข้อผิดพลาดในการเชื่อมต่อ: $e';
+      error.value = 'ເກີດຂໍ້ຜິດພາດໃນການເຊື່ອມຕໍ່: $e';
       print('Error searching products with filters: $e');
     } finally {
       isLoading.value = false;
