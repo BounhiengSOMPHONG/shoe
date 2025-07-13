@@ -563,6 +563,7 @@ class ProfileC extends GetxController {
         colorText: Colors.white,
         duration: const Duration(seconds: 2),
       );
+      Get.to(() => Welcome());
     } catch (e) {
       print('Error showing success message: $e');
     }
